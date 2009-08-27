@@ -7,7 +7,7 @@ else
 endif
 
 
-OBJECTS	= Point.o
+OBJECTS	= Point.o Element.o
 
 all: $(OBJECTS)
 	ar rcs bem2d.a $(OBJECTS)
@@ -15,3 +15,5 @@ all: $(OBJECTS)
 %.o: %.cpp
 	$(CPP) $(CFLAGS) -I$(GSLINC) -I$(ATLASINC) -c $<
 
+clean:
+	rm -f *.o *~ bem2d.a

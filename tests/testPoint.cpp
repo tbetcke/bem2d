@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE( point )
 
   BOOST_CHECK_CLOSE( length(p2), 5.0, 1E-15);
 
-  bem2d::Point p3=normalize(p2);
+  bem2d::Point p3=bem2d::normalize(p2);
   BOOST_CHECK_CLOSE( p3.x, 3./5, 1E-15);
   BOOST_CHECK_CLOSE( p3.y, 4./5, 1E-15);
 

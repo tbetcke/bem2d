@@ -1,12 +1,7 @@
-/*
- * point.cpp
- *
- *  Created on: Mar 23, 2009
- *      Author: tbetcke
- */
-
 #include "Point.h"
-#include<cmath>
+#include <cmath>
+
+
 
 namespace bem2d {
 

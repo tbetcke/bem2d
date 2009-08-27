@@ -1,12 +1,5 @@
-/* 
- * File:   Point.h
- * Author: tbetcke
- *
- * Created on July 30, 2009, 7:01 PM
- */
 #ifndef _POINT_H
 #define	_POINT_H
-
 #include<iostream>
 
 namespace bem2d {
