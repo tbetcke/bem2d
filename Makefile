@@ -1,4 +1,5 @@
-include make.inc
+include ./config/$(config).inc
+MAKE += config=$(config)
 
 ifeq ($(debug),y)
    MAKE += debug=y

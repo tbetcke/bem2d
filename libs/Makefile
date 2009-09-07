@@ -1,4 +1,4 @@
-include ../make.inc
+include ../config/$(config).inc
 
 ifeq ($(debug),y)
    CFLAGS += $(DEBUGFLAGS)
