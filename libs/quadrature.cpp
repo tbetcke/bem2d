@@ -1,4 +1,6 @@
 #include "quadrature.h"
+#include <tr1/array>
+#include <cstdlib>
 
 namespace bem2d {
 
@@ -7,12 +9,6 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
     // in the interval [0,1]
 
 
-    /*
-        double* beta;
-        double* alpha;
-        double* work;
-        double* v;
-     */
         char c = 'V';
         int info;
 
@@ -25,20 +21,11 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
             return;
         }
 
-        /* Allocate memory */
-
-        /*
-        alpha = (double*) calloc(N, sizeof (double));
-        beta = (double*) calloc(N - 1, sizeof (double));
-        v = (double*) malloc(N * N * sizeof (double));
-        work = (double*) malloc((2 * N - 2) * sizeof (double));
-
-        */
-
         dvector alpha(N,0);
         dvector beta(N-1,0);
         dvector v(N*N,0);
         dvector work(2*N-2,0);
+
 
         /* Fill the Array */
 
@@ -57,15 +44,7 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
             w[i] = v[i * N] * v[i * N];
         }
 
-        /*
-        free(alpha);
-        free(beta);
-        free(work);
-        free(v);
-        */
-
         if (info) throw lapack_error();
 
     }
-
 }
