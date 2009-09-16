@@ -12,6 +12,7 @@ OBJECTS	= UnitTest.o testPoint.o testConstElement.o
 
 all: $(OBJECTS)
 	$(CPP) $(CFLAGS) -o UnitTest $(OBJECTS) ../libs/bem2d.a $(LDFLAGS)
+	$(CPP) $(CFLAGS) -o test test.cpp ../libs/bem2d.a $(LDFLAGS)
 	./UnitTest
 
 %.o: %.cpp

@@ -14,6 +14,7 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
 
 
         x.clear(); w.clear(); // Make sure that x and w are empty
+        x.reserve(N); w.reserve(N);
 
         if (N == 1) {
             x.push_back(0.5);
@@ -47,4 +48,7 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
         if (info) throw lapack_error();
 
     }
+
+
+
 }
