@@ -14,11 +14,11 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
 
 
         x.clear(); w.clear(); // Make sure that x and w are empty
-        x.reserve(N); w.reserve(N);
+        x.resize(N); w.resize(N);
 
         if (N == 1) {
-            x.push_back(0.5);
-            w.push_back(1.0);
+            x[0]=0.5;
+            w[0]=1.0;
             return;
         }
 
@@ -30,7 +30,7 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
 
         /* Fill the Array */
 
-        for (int i = 0; i < N - 1; i++) {
+        for (std::size_t i = 0; i < N - 1; i++) {
             beta[i] = .5 / sqrt(1. - 1. / (4. * (i + 1)*(i + 1)));
         }
 
@@ -40,7 +40,7 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
 
         /* Return results */
 
-        for (int i = 0; i < N; i++) {
+        for (std::size_t i = 0; i < N; i++) {
             x[i] = (1.0 + alpha[i]) / 2.0;
             w[i] = v[i * N] * v[i * N];
         }
@@ -49,6 +49,23 @@ void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
 
     }
 
+void mappoints(dvector& x, dvector& w, double a, double b){
+
+    for (std::size_t i = 0; i < x.size(); i++) {
+        x[i] = a + (b - a) * x[i];
+        w[i] = (b - a) * w[i];
+    }
+
+}
+
+void mappoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double c, double d){
+
+	for (std::size_t i=0; i< x.size(); i++){
+		x[i]=a+(b-a)*x[i];
+		y[i]=c+(d-c)*y[i];
+		w[i]=(b-a)*(d-c)*w[i];
+	}
+}
 
 
 }

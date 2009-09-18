@@ -12,6 +12,13 @@ namespace bem2d {
     class lapack_error {
     };
 
+    class interval_exception {
+    };
+
+    class parameter_exception{
+
+    };
+
 }
 
 

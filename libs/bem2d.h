@@ -9,6 +9,7 @@
 #include "Point.h"
 #include "Element.h"
 #include "ConstBasis.h"
+#include "QuadPoints.h"
 
 
 

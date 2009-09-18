@@ -7,6 +7,8 @@
 namespace bem2d {
 
     void gauss(dvector& x, dvector& w, int N) throw (lapack_error);
+    void mappoints(dvector& x, dvector& w, double a, double b);
+    void mappoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double c, double d);
 
 }
 #endif	/* _QUADRATURE_H */
