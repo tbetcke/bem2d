@@ -158,8 +158,7 @@ private:
 };
 
 class AdaptedGauss2 {
-	// Gauss Quadrature Points for a function that has singularities at the left side and lower side
-	// of the box [0,1]x[0,1]
+	// Gauss Quadrature Points for a function that has singularities at the point 0
 public:
 	AdaptedGauss2(int N, int L, double sigma);
 
@@ -204,5 +203,51 @@ private:
 };
 
 
+	class AdaptedGauss3 {
+		// Gauss Quadrature Points for a function that has singularities at the point 0
+	public:
+		AdaptedGauss3(int N, int L, double sigma);
+		
+		inline dvector::const_iterator getpointsx() const {
+			return x.begin();
+		}
+		
+		inline dvector::const_iterator getpointsy() const {
+			return y.begin();
+		}
+		
+		inline dvector::const_iterator pointendx() const {
+			return x.end();
+		}
+		
+		inline dvector::const_iterator pointendy() const {
+			return y.end();
+		}
+		
+		
+		inline dvector::const_iterator getweights() const {
+			return w.begin();
+		}
+		
+		inline dvector::const_iterator weightend() const {
+			return w.end();
+		}
+		
+		inline int size() const {
+			return N; // Number of tensor Gauss points
+		}
+		
+		~AdaptedGauss3();
+		
+	private:
+		dvector x;
+		dvector y;
+		dvector w;
+		int N;
+		int L;
+		double sigma;
+	};
+	
+	
 }
 #endif /* QUADPOINTS_H_ */

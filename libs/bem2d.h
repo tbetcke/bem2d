@@ -8,7 +8,7 @@
 #include "bem2ddefs.h"
 #include "Point.h"
 #include "Element.h"
-#include "ConstBasis.h"
+#include "Basis.h"
 #include "QuadPoints.h"
 
 

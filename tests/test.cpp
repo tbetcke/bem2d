@@ -9,11 +9,12 @@ int main(int argc, char** argv){
 
 	bem2d::dvector x;
 	bem2d::dvector w;
-	int N=1;
+	int N=3;
 
-	bem2d::AdaptedGauss1 g(N,2,0.15);
+	bem2d::AdaptedGauss3 g(N,2,0.15);
 
 
+	
 	double result=0;
 	for (bem2d::dvector::const_iterator it=g.getpointsx();it!=g.pointendx();it++){
 		std::cout <<  *(it)<< " ";
@@ -35,7 +36,7 @@ int main(int argc, char** argv){
 
 	std::cout << std::endl;
 	std::cout<< result <<std::endl;
-
+	 
 
 	std::cout << std::endl;
 
