@@ -3,6 +3,9 @@
 
 #include <boost/utility.hpp>
 #include "Point.h"
+#include<boost/shared_ptr.hpp>
+#include <cstdlib>
+
 
 namespace bem2d {
 
@@ -25,16 +28,46 @@ namespace bem2d {
 
             return normalize(pn);
         }
+		
+		inline void setIndex(std::size_t ind){
+			index=ind;
+		}
+		
+		inline std::size_t getIndex() const {
+			return index;
+		}
 
+		inline void setNext(std::size_t ind){
+			next=ind;
+		}
+		
+		inline std::size_t getNext() const {
+			return next;
+		}
+		
+		inline void setPrev(std::size_t ind){
+			prev=ind;
+		}
+		
+		inline std::size_t getPrev() const {
+			return prev;
+		}
+		
 
         virtual ~Element();
     private:
+		std::size_t index;
+		std::size_t next;
+		std::size_t prev;
 
     };
+	
+	
+	typedef boost::shared_ptr<Element> pElement;
 
     class ConstElement : public Element {
     public:
-        ConstElement(const Point& pp1, const Point& pp2);
+        ConstElement(const Point& pp1, const Point& pp2, std::size_t index);
 
         inline const Point map(double t) const {
             return p1 + d*t;

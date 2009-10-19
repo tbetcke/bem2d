@@ -37,23 +37,15 @@ public:
 
 	QuadPoints1D rescale(double a, double b) const throw (interval_exception);
 
-	inline dvector::const_iterator getpoints() const {
-		return x.begin();
+	inline const dvector& getx() const {
+		return x;
 	}
 
-	inline dvector::const_iterator pointend() const {
-		return x.end();
+	inline const dvector& getw() const {
+		return w;
 	}
 
-	inline dvector::const_iterator getweights() const {
-		return w.begin();
-	}
-
-	inline dvector::const_iterator weightend() const {
-		return w.end();
-	}
-
-	inline int size() const {
+	inline const int size() const {
 		return N;
 	}
 
@@ -73,30 +65,18 @@ public:
 	QuadPoints2D rescale(double a, double b, double c, double d) const throw (interval_exception);
 	// Create Gauss Points in the rectangle [a,b]x[c,d]
 
-	inline dvector::const_iterator getpointsx() const {
-		return x.begin();
+	inline const dvector& getx() const {
+		return x;
 	}
-
-	inline dvector::const_iterator getpointsy() const {
-		return y.begin();
+	
+	inline const dvector& gety() const {
+		return y;
 	}
-
-	inline dvector::const_iterator pointendx() const {
-		return x.end();
+	
+	inline const dvector& getw() const {
+		return w;
 	}
-
-	inline dvector::const_iterator pointendy() const {
-		return y.end();
-	}
-
-
-	inline dvector::const_iterator getweights() const {
-		return w.begin();
-	}
-
-	inline dvector::const_iterator weightend() const {
-		return w.end();
-	}
+	
 
 	inline int size() const {
 		return N; // Number of tensor Gauss points
@@ -117,30 +97,18 @@ class AdaptedGauss1 {
 public:
 	AdaptedGauss1(int N, int L, double sigma);
 
-	inline dvector::const_iterator getpointsx() const {
-		return x.begin();
+	inline const dvector& getx() const {
+		return x;
 	}
-
-	inline dvector::const_iterator getpointsy() const {
-		return y.begin();
+	
+	inline const dvector& gety() const {
+		return y;
 	}
-
-	inline dvector::const_iterator pointendx() const {
-		return x.end();
+	
+	inline const dvector& getw() const {
+		return w;
 	}
-
-	inline dvector::const_iterator pointendy() const {
-		return y.end();
-	}
-
-
-	inline dvector::const_iterator getweights() const {
-		return w.begin();
-	}
-
-	inline dvector::const_iterator weightend() const {
-		return w.end();
-	}
+	
 
 	inline int size() const {
 		return N; // Number of tensor Gauss points
@@ -158,35 +126,22 @@ private:
 };
 
 class AdaptedGauss2 {
-	// Gauss Quadrature Points for a function that has singularities at the point 0
+	// Gauss Quadrature Points for a function that has singularities at the point (0,1)
 public:
 	AdaptedGauss2(int N, int L, double sigma);
 
-	inline dvector::const_iterator getpointsx() const {
-		return x.begin();
+	inline const dvector& getx() const {
+		return x;
 	}
-
-	inline dvector::const_iterator getpointsy() const {
-		return y.begin();
+	
+	inline const dvector& gety() const {
+		return y;
 	}
-
-	inline dvector::const_iterator pointendx() const {
-		return x.end();
+	
+	inline const dvector& getw() const {
+		return w;
 	}
-
-	inline dvector::const_iterator pointendy() const {
-		return y.end();
-	}
-
-
-	inline dvector::const_iterator getweights() const {
-		return w.begin();
-	}
-
-	inline dvector::const_iterator weightend() const {
-		return w.end();
-	}
-
+	
 	inline int size() const {
 		return N; // Number of tensor Gauss points
 	}
@@ -204,33 +159,20 @@ private:
 
 
 	class AdaptedGauss3 {
-		// Gauss Quadrature Points for a function that has singularities at the point 0
+		// Gauss Quadrature Points for a function that has singularities at the point (1,0)
 	public:
 		AdaptedGauss3(int N, int L, double sigma);
 		
-		inline dvector::const_iterator getpointsx() const {
-			return x.begin();
+		inline const dvector& getx() const {
+			return x;
 		}
 		
-		inline dvector::const_iterator getpointsy() const {
-			return y.begin();
+		inline const dvector& gety() const {
+			return y;
 		}
 		
-		inline dvector::const_iterator pointendx() const {
-			return x.end();
-		}
-		
-		inline dvector::const_iterator pointendy() const {
-			return y.end();
-		}
-		
-		
-		inline dvector::const_iterator getweights() const {
-			return w.begin();
-		}
-		
-		inline dvector::const_iterator weightend() const {
-			return w.end();
+		inline const dvector& getw() const {
+			return w;
 		}
 		
 		inline int size() const {

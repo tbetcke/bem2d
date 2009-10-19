@@ -13,6 +13,7 @@ namespace bem2d {
 
     typedef std::complex<double> complex;
     typedef std::vector<double> dvector;
+	typedef double freqtype;
 
     // External functions
 

@@ -100,17 +100,17 @@ namespace bem2d{
 		double a=sigma; double b=1;
 		
 		while (L>0){
-			QuadPoints2D q1=g2d.rescale(0,a,a,b);
+			QuadPoints2D q1=g2d.rescale(0,a,1-b,1-a);
 			x.insert(x.end(),q1.x.begin(),q1.x.end());
 			y.insert(y.end(),q1.y.begin(),q1.y.end());
 			w.insert(w.end(),q1.w.begin(),q1.w.end());
 			
-			QuadPoints2D q2=g2d.rescale(a,b,0,a);
+			QuadPoints2D q2=g2d.rescale(a,b,1-b,1-a);
 			x.insert(x.end(),q2.x.begin(),q2.x.end());
 			y.insert(y.end(),q2.y.begin(),q2.y.end());
 			w.insert(w.end(),q2.w.begin(),q2.w.end());
 			
-			QuadPoints2D q3=g2d.rescale(a,b,a,b);
+			QuadPoints2D q3=g2d.rescale(a,b,1-a,1);
 			x.insert(x.end(),q3.x.begin(),q3.x.end());
 			y.insert(y.end(),q3.y.begin(),q3.y.end());
 			w.insert(w.end(),q3.w.begin(),q3.w.end());

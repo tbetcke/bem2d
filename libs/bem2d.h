@@ -10,6 +10,9 @@
 #include "Element.h"
 #include "Basis.h"
 #include "QuadPoints.h"
+#include "geometry.h"
+#include "kernel.h"
+
 
 
 
