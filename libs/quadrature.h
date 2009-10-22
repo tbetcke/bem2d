@@ -76,7 +76,21 @@ namespace bem2d {
 	}
 
 	
+	template<typename T>
+	boost::shared_ptr<std::vector<complex> > discreterhs(const Geometry& geom, QuadOption ops, T& fun){
+		
+		boost::shared_ptr<std::vector<complex> > prhs(new std::vector<complex >);
+		int N=geom.getsize();
+		prhs->resize(N);
+		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.getflatmap();
+		Gauss1D g1d(ops.N);
+	
+		for (int i=0;i<N;i++) (*prhs)[i]=integrate((*bfuns)[i],fun, g1d);
+		return prhs;
+	}
+							
 	boost::shared_ptr<std::vector<complex> > discretekernel(const Geometry& geom,QuadOption ops, kernel& gl);
+
 	
 }
 #endif	/* _QUADRATURE_H */

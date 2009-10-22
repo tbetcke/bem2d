@@ -2,6 +2,20 @@
 #include "../libs/bem2d.h"
 
 
+class outwave {
+public:
+	outwave(bem2d::freqtype kvalue): k(kvalue), s(kvalue){}
+	bem2d::complex operator()(bem2d::Point x){
+		bem2d::Point n(0,0);
+		return s(n,x);
+	}
+	void setnormal(bem2d::Point p){}
+private:
+	bem2d::freqtype k;
+	bem2d::singlelayer s;
+};
+	
+
 int main(int argc, char** argv){
 	// File to test different things
 
@@ -59,6 +73,15 @@ int main(int argc, char** argv){
 		std::cout << std::endl;
 	}
 	
+	boost::shared_ptr<std::vector<bem2d::complex> > prhs;
+	outwave owave(1.0);
+	prhs=bem2d::discreterhs(geom,opts,owave);
+	
+	std::cout << std::endl;
+	
+	for (int i=0;i<N;i++){
+		std::cout << (*prhs)[i] << std::endl;
+	}
 	
 		/*
 	double result=0;
