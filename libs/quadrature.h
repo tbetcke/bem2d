@@ -16,9 +16,7 @@
 namespace bem2d {
 
 	
-	struct Option {
-		Option();
-		Option(int Nvalue, int Lvalue, double sigmavalue);
+	struct QuadOption {
 		int L;
 		int N;
 		double sigma;
@@ -33,7 +31,8 @@ namespace bem2d {
 
 	
 	template<typename T>
-	complex integrate(std::pair<pElement,pBasis> testfun, std::pair<pElement,pBasis>& basfun, kernel& g, T g2d){
+	complex integrate(std::pair<pElement,pBasis>& testfun, std::pair<pElement,pBasis>& basfun, kernel& g, T& g2d){
+		
 		pElement elem1=testfun.first;
 		pElement elem2=basfun.first;
 		pBasis fun1=testfun.second;
@@ -41,6 +40,7 @@ namespace bem2d {
 		const dvector x=g2d.getx();
 		const dvector y=g2d.gety();
 		const dvector w=g2d.getw();
+		std::size_t t1=elem1->getIndex(); std::size_t t2=elem2->getIndex();
 		
 		complex result=0;
 		for (int i=0;i<g2d.size();i++){
@@ -76,7 +76,7 @@ namespace bem2d {
 	}
 
 	
-	boost::shared_ptr<std::vector<complex> > discretekernel(Geometry& geom, Option& ops, kernel& gl);
+	boost::shared_ptr<std::vector<complex> > discretekernel(const Geometry& geom,QuadOption ops, kernel& gl);
 	
 }
 #endif	/* _QUADRATURE_H */

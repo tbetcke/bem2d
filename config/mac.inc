@@ -53,7 +53,7 @@ OPTFLAGS = -O3
 
 # Accelerate Framework
 
-LDFLAGS = -framework Accelerate -L/opt/local/lib
+  LDFLAGS = -framework Accelerate -L/opt/local/lib -L$(GSLLIB) $(GSL)
 
 # For MKL
 

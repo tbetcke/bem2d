@@ -4,6 +4,8 @@
 #include<vector>
 #include<map>
 #include<boost/shared_ptr.hpp>
+#include "Basis.h"
+#include "Element.h"
 
 namespace bem2d{
 
@@ -42,6 +44,10 @@ public:
 			}
 		}
 		return p;
+	}
+	
+	inline std::size_t getsize() const {
+		return size;
 	}
 		
 	

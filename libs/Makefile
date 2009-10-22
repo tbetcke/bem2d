@@ -7,7 +7,7 @@ else
 endif
 
 
-OBJECTS	= Point.o Element.o Basis.o quadrature.o QuadPoints.o kernel.o
+OBJECTS	= Point.o Element.o Basis.o quadrature.o QuadPoints.o kernel.o geometry.o
 
 all: $(OBJECTS)
 	ar rcs bem2d.a $(OBJECTS)

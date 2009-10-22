@@ -3,10 +3,10 @@
 namespace bem2d {
 	
 
-	Geometry::Geometry(std::vector<pElement>& elem): 
+	Geometry::Geometry(const std::vector<pElement>& elems): 
 	elements(elems),
 	size(0) {
-		basis_map.resize(elem.size());
+		elements_bases.resize(elems.size());
 	}
 	
 }

@@ -155,7 +155,6 @@ namespace bem2d{
 			a*=sigma; b*=sigma; L=L-1;
 		}
 		
-		
 	}
 	
 	AdaptedGauss3::~AdaptedGauss3(){}

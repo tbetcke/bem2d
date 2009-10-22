@@ -5,16 +5,6 @@
 
 namespace bem2d {
 	
-	Option::Option(){
-		N=3;
-		L=3;
-		sigma=0.15;
-	}
-	
-	Option::Option(int Nvalue, int Lvalue, double sigmavalue):
-	N(Nvalue),
-	L(Lvalue),
-	sigma(sigmavalue){}
 	
 	void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
 		// Points xa and weights w for N point Gaussian quadrature
@@ -117,7 +107,7 @@ namespace bem2d {
 	
 		
 	
-	boost::shared_ptr<std::vector<complex> > discretekernel(Geometry& geom, Option& opts, kernel& g){
+	boost::shared_ptr<std::vector<complex> > discretekernel(const Geometry& geom, QuadOption opts, kernel& g){
 		
 		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.getflatmap();
 		boost::shared_ptr<std::vector<complex> > pmatrix(new std::vector<complex >);
@@ -134,24 +124,31 @@ namespace bem2d {
 				std::pair<pElement,pBasis> pi((*bfuns)[i]);
 				std::pair<pElement,pBasis> pj((*bfuns)[j]);
 				std::size_t indi=pi.first->getIndex();
-				std::size_t indj=pi.first->getIndex();
-				if (i==j){
+				std::size_t indj=pj.first->getIndex();
+				//std::cout << indi << " " << indj << std::endl;
+				
+				
+				if (indi==indj){
 					// Identical elements
+					//std::cout << "Integrate Ident" << std::endl;
 					(*pmatrix)[i+N*j]=integrateident(pi,pj,g,g1);
 				}
-				else if (pi.first->getNext()==j){
+				else if (pi.first->getNext()==indj){
 					// (1,0) situation
+					//std::cout << "Integrate (1,0)" << std::endl;
 					(*pmatrix)[i+N*j]=integrate(pi,pj,g,g3);
 				}
-				else if (pi.first->getPrev()==j){
+				else if (pi.first->getPrev()==indj){
 					// (0,1) situation
+					//std::cout << "Integrate (0,1)" << std::endl;
 					(*pmatrix)[i+N*j]=integrate(pi,pj,g,g2);
 				}
 				else {
 					// Elements are not neighbors
+					//std::cout << "Integrate Remote" << std::endl;
 					(*pmatrix)[i+N*j]=integrate(pi,pj,g,g0);
 				}
-
+				//std::cout << (*pmatrix)[i+N*j] << std::endl;
 				
 			}
 		}
