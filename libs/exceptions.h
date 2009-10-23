@@ -19,6 +19,8 @@ namespace bem2d {
 
     };
 
+	class size_error {};
+	
 }
 
 

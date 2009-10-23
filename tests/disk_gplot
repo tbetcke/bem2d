@@ -1,0 +1,7 @@
+set pm3d map
+set hidden3d
+set size ratio -1
+set size square
+set palette gray
+splot 'disk'
+pause -1

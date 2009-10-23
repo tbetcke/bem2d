@@ -1,5 +1,5 @@
 #include "kernel.h"
-#include "gsl/gsl_sf_bessel.h"
+#include "mathroutines.h"
 
 namespace bem2d {
 
@@ -10,10 +10,8 @@ namespace bem2d {
 	complex singlelayer::operator()(Point x, Point y) const{
 		
 		double d=length(x-y);
-		double bj=gsl_sf_bessel_J0(k*d);
-		double by=gsl_sf_bessel_Y0(k*d);
-
-		return complex(0,1)/4.0*(bj+complex(0,1)*by);
+		complex i(0,1);
+		return i/4.0*(besselH0(k*d));
 		
 		
 	}
@@ -25,11 +23,9 @@ namespace bem2d {
 	complex doublelayer::operator()(Point x, Point y) const {
 		Point w=y-x;
 		double d=length(w);		
-		double bj=gsl_sf_bessel_J1(k*d);
-		double by=gsl_sf_bessel_Y1(k*d);
 		complex i(0,1);
 		
-		return -i*k/4.0*((bj+i*by)/d*(n2[0]*w.x+n2[1]*w.y));
+		return -i*k/4.0*(besselH1(k*d)/d*(n2[0]*w.x+n2[1]*w.y));
 	}
 
 	
@@ -41,10 +37,8 @@ namespace bem2d {
 	complex conjdoublelayer::operator()(Point x, Point y) const {
 		Point w=x-y;
 		double d=length(w);		
-		double bj=gsl_sf_bessel_J1(k*d);
-		double by=gsl_sf_bessel_Y1(k*d);
 		complex i(0,1);
 		
-		return -i*k/4.0*((bj+i*by)/d*(n1[0]*w.x+n1[1]*w.y));
+		return -i*k/4.0*(besselH1(k*d)/d*(n1[0]*w.x+n1[1]*w.y));
 	}
 }

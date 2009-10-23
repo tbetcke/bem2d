@@ -55,7 +55,9 @@ namespace bem2d {
 		return result;
 				
 	}
-	
+
+	void evalkernel(std::pair<pElement,pBasis>& basfun, std::vector<Point>& points, 
+					cvector& vals, complex alpha, kernel& g, Gauss1D& g1d) throw (size_error);
 	
 	template<typename T>
 	complex integrate(std::pair<pElement,pBasis> testfun, T& fun, Gauss1D& g1d){
@@ -74,7 +76,6 @@ namespace bem2d {
 		}
 		return result;
 	}
-
 	
 	template<typename T>
 	boost::shared_ptr<std::vector<complex> > discreterhs(const Geometry& geom, QuadOption ops, T& fun){

@@ -81,14 +81,14 @@ namespace bem2d {
 		complex result=0;
 		for (int i=0;i<g2d.size();i++){
 			g.setnormal(elem1->normal(x[i]),elem2->normal(y[i]));
-
+			
 			complex f1=std::conj((*fun1)(x[i]));
 			complex f2=(*fun2)((1-y[i])*x[i]);
 			Point xp=elem1->map(x[i]); Point yp=elem2->map((1-y[i])*x[i]);
 			complex gvalue=g(xp,yp);
 			double s1=length(elem1->deriv(x[i])); double s2=length(elem2->deriv((1-y[i])*x[i]));
 			result+= x[i]*gvalue*f1*f2*s1*s2*w[i];
-
+			
 			double tau=1-x[i];
 			double z=1-x[i]+y[i]*x[i];
 			f1=std::conj((*fun1)(tau));			
@@ -105,7 +105,28 @@ namespace bem2d {
 		
 	}
 	
+	void evalkernel(std::pair<pElement,pBasis>& basfun, std::vector<Point>& points, 
+					cvector& vals, complex alpha, kernel& g, Gauss1D& g1d) throw (size_error) {
+		pElement elem=basfun.first;
+		pBasis bf=basfun.second;
+		const dvector x=g1d.getx();
+		const dvector w=g1d.getw();
+		if (points.size()!=vals.size()) throw size_error();
+		int N=points.size();
 		
+		for (int j=0;j<N;j++){
+			for (int i=0;i<g1d.size();i++){
+				g.setnormal(elem->normal(x[i]),elem->normal(x[i]));
+				complex basval=(*bf)(x[i]);
+				Point xp=elem->map(x[i]);
+				double s=length(elem->deriv(x[i]));
+				vals[j]+=alpha*g(points[j],xp)*s*basval*w[i];
+			}
+		}
+		
+		
+	}
+	
 	
 	boost::shared_ptr<std::vector<complex> > discretekernel(const Geometry& geom, QuadOption opts, kernel& g){
 		
@@ -156,8 +177,8 @@ namespace bem2d {
 		
 	}
 	
-
-		
+	
+	
 	
 	
 }

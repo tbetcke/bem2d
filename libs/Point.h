@@ -5,8 +5,8 @@
 namespace bem2d {
 
     struct Point {
-        const double x; // x coordinate
-        const double y; // y coordinate
+        double x; // x coordinate
+        double y; // y coordinate
 
         Point(double xx, double yy);
         Point();

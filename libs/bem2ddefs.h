@@ -3,6 +3,7 @@
 
 #include<complex>
 #include<vector>
+#include "boost/shared_ptr.hpp"
 
 // Typedefs and definitions of external functions
 
@@ -13,8 +14,11 @@ namespace bem2d {
 
     typedef std::complex<double> complex;
     typedef std::vector<double> dvector;
+	typedef std::vector<complex> cvector;
 	typedef double freqtype;
-
+	typedef boost::shared_ptr<cvector> pcvector;
+	
+	
     // External functions
 
     extern "C" {

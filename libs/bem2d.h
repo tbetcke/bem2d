@@ -12,8 +12,8 @@
 #include "QuadPoints.h"
 #include "geometry.h"
 #include "kernel.h"
-
-
+#include "mathroutines.h"
+#include "outputroutines.h"
 
 
 #endif // _BEM2D_H
