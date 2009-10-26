@@ -114,6 +114,7 @@ namespace bem2d {
 		if (points.size()!=vals.size()) throw size_error();
 		int N=points.size();
 		
+#pragma omp parallel for		
 		for (int j=0;j<N;j++){
 			for (int i=0;i<g1d.size();i++){
 				g.setnormal(elem->normal(x[i]),elem->normal(x[i]));
@@ -140,6 +141,7 @@ namespace bem2d {
 		AdaptedGauss2 g2(opts.N,opts.L,opts.sigma);
 		AdaptedGauss3 g3(opts.N,opts.L,opts.sigma);
 		
+#pragma omp parallel for
 		for (int j=0;j<N;j++){
 			for (int i=0;i<N;i++){
 				std::pair<pElement,pBasis> pi((*bfuns)[i]);

@@ -9,7 +9,7 @@ SRCDIR	= libs
 ############################################
 
 # GNU Scientific Library
-GSLINC	= /usr/include/gsl
+GSLINC	= /opt/local/include/gsl
  
 # ATLAS Include
 ATLASINC = /usr/include/atlas
@@ -19,7 +19,7 @@ ATLASINC = /usr/include/atlas
 ############################################
 
 # GNU Scientific Library
-GSLLIB	= /usr/lib64
+GSLLIB	= /opt/local/lib
  
 # ATLAS
 ATLASLIB = /usr/lib64/atlas
@@ -43,13 +43,17 @@ BLAS   = -lptf77blas -lptcblas -latlas -lpthread -lgfortran
 # Compiler and Flags
 ############################################
 CPP	= g++
-CFLAGS  = -I$(ATLASINC)
+  CFLAGS  = -I$(GSLINC) -I/opt/local/include
 DEBUGFLAGS = -g
 OPTFLAGS = -O3
 
 # For open source atlas
 
-LDFLAGS	= -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS)
+# LDFLAGS	= -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS)
+
+# Accelerate Framework
+
+  LDFLAGS = -framework Accelerate -L/opt/local/lib -L$(GSLLIB) $(GSL)
 
 # For MKL
 

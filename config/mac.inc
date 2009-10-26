@@ -37,13 +37,15 @@ LAPACK = -llapack
 # Blas
 BLAS   = -lptf77blas -lptcblas -latlas -lpthread -lgfortran
 
+# OpenMP
+OMP= -lgomp
 
 
 ############################################
 # Compiler and Flags
 ############################################
 CPP	= g++
-  CFLAGS  = -I$(GSLINC) -I/opt/local/include
+  CFLAGS  = -I$(GSLINC) -I/opt/local/include -fopenmp
 DEBUGFLAGS = -g
 OPTFLAGS = -O3
 

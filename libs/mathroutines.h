@@ -9,9 +9,40 @@
 
 
 namespace bem2d {
+		
+	
+// Special Functions
 	
 	complex besselH0(double x);
 	complex besselH1(double x);
+	
+// ----------------------------
+	
+	
+// Definition of matrix structures
+	
+	struct matrix {
+		matrix();
+		matrix(int n); 
+		pcvector data;
+		int dim;
+	};
+	
+	struct identity: public matrix {
+		identity(int n);
+	};
+	
+	matrix operator+(const matrix& lhs, const matrix& rhs) throw (array_mismatch);
+	matrix operator-(const matrix& lhs, const matrix& rhs) throw (array_mismatch);
+	
+	matrix operator*(const matrix& lhs, complex& alpha);
+	matrix operator*(const complex& alpha, const matrix& rhs);
+	matrix operator*(const matrix& lhs, const double& alpha);
+	matrix operator*(const double& alpha, const matrix& rhs);
+			
+	matrix operator*(const matrix& lhs, const matrix& rhs) throw (array_mismatch);
+	
+	
 	
 	void abrange(dvector& xx, double a, double b, int n);
 	
