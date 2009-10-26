@@ -37,19 +37,22 @@ LAPACK = -llapack
 # Blas
 BLAS   = -lptf77blas -lptcblas -latlas -lpthread -lgfortran
 
+# OpenMP
+
+OMP= -lgomp
 
 
 ############################################
 # Compiler and Flags
 ############################################
 CPP	= g++
-CFLAGS  = -I$(ATLASINC)
+CFLAGS  = -I$(ATLASINC) -fopenmp
 DEBUGFLAGS = -g
 OPTFLAGS = -O3
 
 # For open source atlas
 
-LDFLAGS	= -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS)
+LDFLAGS	= -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS) $(OMP)
 
 # For MKL
 

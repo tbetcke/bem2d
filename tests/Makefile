@@ -6,8 +6,6 @@ else
    CFLAGS += $(OPTFLAGS)
 endif
 
-LDFLAGS += -lboost_unit_test_framework-mt
-
 #OBJECTS	= UnitTest.o testPoint.o testConstElement.o
 
 all: $(OBJECTS)

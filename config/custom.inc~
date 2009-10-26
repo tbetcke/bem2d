@@ -12,17 +12,17 @@ SRCDIR	= libs
 GSLINC	= /usr/include/gsl
  
 # ATLAS Include
-ATLASINC = /usr/include/atlas
+ATLASINC = /usr/local/atlas/include
 
 ############################################
 #  Paths to Libraries
 ############################################
 
 # GNU Scientific Library
-GSLLIB	= /usr/lib64
+GSLLIB	= /usr/local/lib
  
 # ATLAS
-ATLASLIB = /usr/lib64/atlas
+ATLASLIB = /usr/local/atlas/lib
 
 ############################################
 # Libraries
