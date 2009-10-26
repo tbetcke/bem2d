@@ -99,33 +99,6 @@ namespace bem2d {
 	}
 	
 	
-	void abrange(dvector& xx, double a, double b, int n){
-		xx.resize(n);
-		for (int j = 0; j < n; j++) xx[j] = a + (1.0 / (n - 1)) * j * (b - a);
-	}
-
-	boost::shared_ptr<std::vector<Point > > meshgrid(double ax, double bx,
-												double ay, double by, int xpts, int ypts){
-		
-		dvector xx;
-		dvector yy;
-		
-		abrange(xx,ax,bx,xpts);
-		abrange(yy,ay,by,ypts);
-		
-		boost::shared_ptr<std::vector<Point > > pvec(new std::vector<Point>);
-		pvec->reserve(xpts*ypts);
-		
-        // Create the grid
-		
-        for (int i = 0; i < xpts; i++) {
-            for (int j = 0; j < ypts; j++) {
-				pvec->push_back(Point(xx[i],yy[j]));
-            }
-        }
-		
-		return pvec;
-    }
 	
 	void solve_system(pcvector pmatrix, pcvector prhs) throw (lapack_error){
 		

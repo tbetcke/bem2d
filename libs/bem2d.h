@@ -14,6 +14,9 @@
 #include "kernel.h"
 #include "mathroutines.h"
 #include "outputroutines.h"
+#include "soundsoftscattering.h"
+#include "Outputhandler.h"
+
 
 
 #endif // _BEM2D_H

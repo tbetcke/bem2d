@@ -56,6 +56,8 @@ private:
 	basis_map elements_bases;
 	int size; // Number of basis functions
 };
+	
+	typedef boost::shared_ptr<Geometry> pGeometry;
 
 }
 

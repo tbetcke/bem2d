@@ -10,6 +10,7 @@ namespace bem2d {
 
 	class kernel: private boost::noncopyable {
 	public:
+		virtual ~kernel(){};
 		inline void setnormal(Point normal1, Point normal2){
 			n1[0]=normal1.x; n1[1]=normal1.y;
 			n2[0]=normal2.x; n2[1]=normal2.y;
