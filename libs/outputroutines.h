@@ -14,7 +14,7 @@ namespace bem2d {
 	boost::shared_ptr<std::vector<Point > > meshgrid(double ax, double bx,
 													 double ay, double by, int xpts, int ypts);	
 	
-	void gplotout(std::string name, std::vector<Point>& points, dvector& z,
+	void gplotout(std::string name, const std::vector<Point>& points, const dvector& z,
 				  int xpts, int ypts);
 	
 }

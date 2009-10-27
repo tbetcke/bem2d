@@ -3,18 +3,6 @@
 #include<cmath>
 
 
-class outwave {
-public:
-	outwave(bem2d::freqtype kvalue): k(kvalue), s(kvalue){}
-	bem2d::complex operator()(bem2d::Point x){
-		bem2d::Point n(0,0);
-		return s(n,x);
-	}
-	void setnormal(bem2d::Point p){}
-private:
-	bem2d::freqtype k;
-	bem2d::singlelayer s;
-};
 
 class planewave {
 public:
@@ -33,8 +21,7 @@ int main(int argc, char** argv){
 	// File to test different things
 	
 	
-	
-	int n=1000; double k=50;
+	int n=4000;
 	std::vector<bem2d::pElement> elements(n);
 	std::vector<boost::shared_ptr<bem2d::Point> > points(n);
 	
@@ -50,11 +37,13 @@ int main(int argc, char** argv){
 	}
 	elements[0]->setNext(1); elements[n-1]->setNext(0);
 	
-	bem2d::Geometry geom(elements);
+	bem2d::pGeometry pgeom(new bem2d::Geometry(elements));
 	bem2d::pBasis b(new bem2d::ConstBasis);
-	geom.addBasis(b);
-	std::cout << geom.getsize() << std::endl; 
+	pgeom->addBasis(b);
+	std::cout << pgeom->getsize() << std::endl; 
 	
+	
+	/*
 	boost::shared_ptr<std::vector<bem2d::complex> > pm;
 	bem2d::doublelayer g(k);
 	bem2d::QuadOption opts={5,3,0.15};
@@ -104,13 +93,31 @@ int main(int argc, char** argv){
 	}
 	
 	// Extract real part from vals array
+	*/
 	
-	for (int i=0;i<vals.size();i++) realvals[i]=vals[i].real();
+	bem2d::freqtype k=1.0;
+	bem2d::Soundsoftscattering soundsoft(pgeom,k);
+	bem2d::pBem2dfun incoming(new bem2d::PlaneWave(bem2d::Point(1,0),k));
+	bem2d::pBem2dfun poutwave(new bem2d::Outwave(k));
+	soundsoft.setincoming(poutwave);
+	
+	soundsoft.discretize();
+	
+	std::cout << "Solve system" << std::endl;
 
+	soundsoft.solve();
+
+	std::cout << "System solved" << std::endl;
 	
-	// Write solution to disk
+	int xpts=200; int ypts=200;
+	boost::shared_ptr<std::vector<bem2d::Point> > pvec=bem2d::meshgrid(-4.0, 4.0,-4.0, 4.0, xpts, ypts);
+	bem2d::pOutputhandler pout(new bem2d::Gplotoutput(xpts,ypts,"data"));
+	soundsoft.setOutput(pout);
+	soundsoft.plotFull(*pvec);
 	
-	bem2d::gplotout("disk", *pvec, realvals, xpts, ypts);
+	// for (int i=0;i<psol->size();i++) std::cout << (*psol)[i] << std::endl;
+	// std::cout << std::endl;
+	
 	
 
 	/*

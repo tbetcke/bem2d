@@ -25,7 +25,7 @@ namespace bem2d {
 		double d=length(w);		
 		complex i(0,1);
 		
-		return -i*k/4.0*(besselH1(k*d)/d*(n2[0]*w.x+n2[1]*w.y));
+		return -i*k/4.0*(besselH1(k*d)/d*(n2.x*w.x+n2.y*w.y));
 	}
 
 	
@@ -39,6 +39,6 @@ namespace bem2d {
 		double d=length(w);		
 		complex i(0,1);
 		
-		return -i*k/4.0*(besselH1(k*d)/d*(n1[0]*w.x+n1[1]*w.y));
+		return -i*k/4.0*(besselH1(k*d)/d*(n1.x*w.x+n1.y*w.y));
 	}
 }

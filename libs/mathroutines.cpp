@@ -34,7 +34,7 @@ namespace bem2d {
 	
 	};
 	
-	matrix::matrix(int n): dim(n){
+	matrix::matrix(std::size_t n): dim(n){
 		data=pcvector(new cvector);
 		data->resize(n*n);
 	}

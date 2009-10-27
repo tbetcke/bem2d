@@ -26,7 +26,7 @@ namespace bem2d {
 		matrix();
 		explicit matrix(std::size_t n); 
 		pcvector data;
-		std::size_t n;
+		std::size_t dim;
 	};
 	
 	struct identity: public matrix {

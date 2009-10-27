@@ -34,7 +34,7 @@ namespace bem2d {
     }
 	
 	
-	void gplotout(std::string name, std::vector<Point>& points, dvector& z,
+	void gplotout(std::string name, const std::vector<Point>& points, const dvector& z,
 				  int xpts, int ypts){
 		
 		std::ofstream out(name.c_str());

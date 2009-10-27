@@ -12,6 +12,7 @@
 #include "Point.h"
 #include "geometry.h"
 #include "boost/shared_ptr.hpp"
+#include "Bem2dfun.h"
 
 namespace bem2d {
 
@@ -55,40 +56,14 @@ namespace bem2d {
 		return result;
 				
 	}
+	
+	complex integrate(std::pair<pElement,pBasis> testfun, Bem2dfun& fun, Gauss1D& g1d);
+	boost::shared_ptr<std::vector<complex> > dotprodbasfuns(const Geometry& geom, QuadOption ops, Bem2dfun& fun);
+	
 
-	void evalkernel(std::pair<pElement,pBasis>& basfun, std::vector<Point>& points, 
+	void evalkernel(std::pair<pElement,pBasis>& basfun, const std::vector<Point>& points, 
 					cvector& vals, complex alpha, kernel& g, Gauss1D& g1d) throw (size_error);
 	
-	template<typename T>
-	complex integrate(std::pair<pElement,pBasis> testfun, T& fun, Gauss1D& g1d){
-		pElement elem=testfun.first;
-		pBasis tf=testfun.second;
-		const dvector x=g1d.getx();
-		const dvector w=g1d.getw();
-		
-		complex result=0;
-		for (int i=0;i<g1d.size();i++){
-			fun.setnormal(elem->normal(x[i]));
-			complex tfval=std::conj((*tf)(x[i]));
-			Point xp=elem->map(x[i]);
-			double s=length(elem->deriv(x[i]));
-			result+=fun(xp)*s*tfval*w[i];
-		}
-		return result;
-	}
-	
-	template<typename T>
-	boost::shared_ptr<std::vector<complex> > discreterhs(const Geometry& geom, QuadOption ops, T& fun){
-		
-		boost::shared_ptr<std::vector<complex> > prhs(new std::vector<complex >);
-		int N=geom.getsize();
-		prhs->resize(N);
-		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.getflatmap();
-		Gauss1D g1d(ops.N);
-	
-		for (int i=0;i<N;i++) (*prhs)[i]=integrate((*bfuns)[i],fun, g1d);
-		return prhs;
-	}
 							
 	boost::shared_ptr<std::vector<complex> > discretekernel(const Geometry& geom,QuadOption ops, kernel& gl);
 

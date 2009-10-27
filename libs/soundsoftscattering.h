@@ -3,20 +3,21 @@
 
 #include "bem2ddefs.h"
 #include "Geometry.h"
-#include "Incidentfun.h"
+#include "Bem2dfun.h"
 #include <vector>
 #include "Outputhandler.h"
 #include "quadrature.h"
+#include "mathroutines.h"
 
 namespace bem2d {
 	
 	class Soundsoftscattering {
 	public:
 		Soundsoftscattering(pGeometry geom, freqtype kvalue);
-		~Soundsoftscattering();
+		virtual ~Soundsoftscattering();
 	
-		void setincoming(pIncidentfun fun);
-		void setincoming(pIncidentfun fun, pIncidentfun normalderiv);
+		void setincoming(pBem2dfun fun);
+		void setincoming(pBem2dfun fun, pBem2dfun normalderiv);
 		
 		
 		void setquadoption(int L, int N, double sigma);
@@ -24,23 +25,28 @@ namespace bem2d {
 		
 		void solve();
 		
+		pcvector evalincident(const std::vector<Point>& points);
+		pcvector evalsol(const std::vector<Point>& points);
+		
 		void setOutput(pOutputhandler output);
-		void plotIncident(std::vector<Point> points);
-		void plotScattered(std::vector<Point> points);
-		void plotFull(std::vector<Point> points);
+		void plotIncident(const std::vector<Point>& points);
+		void plotScattered(const std::vector<Point>& points);
+		void plotFull(const std::vector<Point>& points);
+		void plotAll(const std::vector<Point>& points);
 		
 	private:
 		pGeometry pgeom;
 		freqtype k;
 		
-		pIncidentfun incoming;
-		pIncidentfun incomingnormal;
+		pBem2dfun incoming;
+		pBem2dfun incomingnormal;
 		
 		pOutputhandler pout;
 		
 		QuadOption quadopts;
 		matrix A;
 		pcvector prhs;
+		pcvector psol;
 		
 		
 	};

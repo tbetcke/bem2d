@@ -1,24 +1,25 @@
-#ifndef _INCIDENTFUN_H_
-#define _INCIDENTFUN_H_
+#ifndef _BEM2DFUN_H_
+#define _BEM2DFUN_H_
 
 #include "bem2ddefs.h"
 #include "Point.h"
 #include "boost/shared_ptr.hpp"
 #include <complex>
+#include "kernel.h"
 
 namespace bem2d {
 	
-	class Incidentfun {
+	class Bem2dfun {
 	public:
 		
-		virtual ~Incidentfun() {};
+		virtual ~Bem2dfun();
 		virtual complex operator()(Point p) const=0;
 		void setnormal(Point normal);
 	protected:
 		Point n;
 	};
 	
-	class PlaneWave: public Incidentfun {
+	class PlaneWave: public Bem2dfun {
 	public:
 		PlaneWave(Point direction, freqtype kvalue);
 		
@@ -31,7 +32,7 @@ namespace bem2d {
 		freqtype k;
 	};
 	
-	class NormalPlaneWave: public Incidentfun {
+	class NormalPlaneWave: public Bem2dfun {
 	public:
 		NormalPlaneWave(Point direction, freqtype kvalue);
 		
@@ -45,9 +46,23 @@ namespace bem2d {
 		freqtype k;
 	};
 		
+	class Outwave: public Bem2dfun {
+	public:
+		Outwave(freqtype kvalue);
+		complex operator()(Point x) const;
+	private:
+		freqtype k;
+		singlelayer s;
+	};
 	
-	
-	typedef boost::shared_ptr<Incidentfun> pIncidentfun;
+	class Idfun: public Bem2dfun {
+	public:
+		inline complex operator()(Point p) const {
+			return 1.0;
+		}
+	};
+		
+	typedef boost::shared_ptr<Bem2dfun> pBem2dfun;
 }
 	
 #endif // _INCIDENTFUN_H_

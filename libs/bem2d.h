@@ -16,6 +16,7 @@
 #include "outputroutines.h"
 #include "soundsoftscattering.h"
 #include "Outputhandler.h"
+#include "Bem2dfun.h"
 
 
 
