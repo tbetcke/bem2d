@@ -2,7 +2,7 @@
 #define _SOUNDSOFTSCATTERING_H_
 
 #include "bem2ddefs.h"
-#include "Geometry.h"
+#include "geometry.h"
 #include "Bem2dfun.h"
 #include <vector>
 #include "Outputhandler.h"

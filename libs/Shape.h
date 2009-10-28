@@ -3,7 +3,7 @@
 
 #include<vector>
 #include "Element.h"
-#include "Geometry.h"
+#include "geometry.h"
 #include <boost/shared_ptr.hpp>
 
 namespace bem2d {
