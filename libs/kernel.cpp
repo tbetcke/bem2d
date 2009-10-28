@@ -7,6 +7,10 @@ namespace bem2d {
 		k=kvalue;
 	}
 	
+	singlelayer::singlelayer(const singlelayer& s){
+		k=s.getk();
+	}
+	
 	complex singlelayer::operator()(Point x, Point y) const{
 		
 		double d=length(x-y);
@@ -19,6 +23,11 @@ namespace bem2d {
 	doublelayer::doublelayer(freqtype kvalue){
 		k=kvalue;
 	}
+
+	doublelayer::doublelayer(const doublelayer& d){
+		k=d.getk();
+	}
+	
 	
 	complex doublelayer::operator()(Point x, Point y) const {
 		Point w=y-x;
@@ -33,6 +42,11 @@ namespace bem2d {
 	conjdoublelayer::conjdoublelayer(freqtype kvalue){
 		k=kvalue;
 	}
+
+	conjdoublelayer::conjdoublelayer(const conjdoublelayer& cd){
+		k=cd.getk();
+	}
+	
 	
 	complex conjdoublelayer::operator()(Point x, Point y) const {
 		Point w=x-y;

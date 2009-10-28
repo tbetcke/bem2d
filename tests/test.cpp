@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 	// File to test different things
 	
 	
-	int n=4000;
+	int n=1000;
 	std::vector<bem2d::pElement> elements(n);
 	std::vector<boost::shared_ptr<bem2d::Point> > points(n);
 	
@@ -43,63 +43,12 @@ int main(int argc, char** argv){
 	std::cout << pgeom->getsize() << std::endl; 
 	
 	
-	/*
-	boost::shared_ptr<std::vector<bem2d::complex> > pm;
-	bem2d::doublelayer g(k);
-	bem2d::QuadOption opts={5,3,0.15};
-	pm=bem2d::discretekernel(geom,opts,g);
-	
-	
-	boost::shared_ptr<std::vector<bem2d::complex> > prhs;
-	planewave pwave(k);
-	prhs=bem2d::discreterhs(geom,opts,pwave);
-
-	// Update matrix and right-hand side
-	
-	int N=geom.getsize();
-	for (int i=0;i<N;i++){
-		for (int j=0;j<N;j++){
-			if (i==j){ 
-				(*pm)[i*N+j]=1.0+2.0*(*pm)[i*N+j];
-			}
-			else {
-				(*pm)[i*N+j]*=2.0;
-			}
-		}
-		(*prhs)[i]*=2;
-	}
-	
-	
-	bem2d::solve_system(pm,prhs);
-	
-	
-	 
-	 
-	// Now evaluate the solution on a grid
-	
-	int xpts=200; int ypts=200;
-	bem2d::dvector x,y;
-	boost::shared_ptr<std::vector<bem2d::Point> > pvec=bem2d::meshgrid(-2.0, 2.0,-2.0, 2.0, xpts, ypts);
-
-	boost::shared_ptr<bem2d::Geometry::flat_basis_map> bfuns=geom.getflatmap();
-	
-	bem2d::cvector vals(xpts*ypts);
-	bem2d::dvector realvals(xpts*ypts);
-	bem2d::Gauss1D g1d(opts.N);
-	
-	
-	for (int i=0;i<N;i++) {
-		evalkernel((*bfuns)[i], *pvec, vals, (*prhs)[i], g,g1d);
-	}
-	
-	// Extract real part from vals array
-	*/
 	
 	bem2d::freqtype k=1.0;
-	bem2d::Soundsoftscattering soundsoft(pgeom,k);
-	bem2d::pBem2dfun incoming(new bem2d::PlaneWave(bem2d::Point(1,0),k));
-	bem2d::pBem2dfun poutwave(new bem2d::Outwave(k));
-	soundsoft.setincoming(poutwave);
+	bem2d::PlaneWave pw(bem2d::Point(1,0),k);
+	bem2d::Outwave owave(k);
+	bem2d::Soundsoftscattering<bem2d::Outwave> soundsoft(pgeom,k,owave);
+	//bem2d::pBem2dfun poutwave(new bem2d::Outwave(k));
 	
 	soundsoft.discretize();
 	
@@ -110,10 +59,9 @@ int main(int argc, char** argv){
 	std::cout << "System solved" << std::endl;
 	
 	int xpts=200; int ypts=200;
-	boost::shared_ptr<std::vector<bem2d::Point> > pvec=bem2d::meshgrid(-4.0, 4.0,-4.0, 4.0, xpts, ypts);
-	bem2d::pOutputhandler pout(new bem2d::Gplotoutput(xpts,ypts,"data"));
+	bem2d::pOutputhandler pout(new bem2d::Gplotoutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.setOutput(pout);
-	soundsoft.plotFull(*pvec);
+	soundsoft.writeAll();
 	
 	// for (int i=0;i<psol->size();i++) std::cout << (*psol)[i] << std::endl;
 	// std::cout << std::endl;

@@ -17,6 +17,7 @@ namespace bem2d {
 	typedef std::vector<complex> cvector;
 	typedef double freqtype;
 	typedef boost::shared_ptr<cvector> pcvector;
+	typedef boost::shared_ptr<dvector> pdvector;
 	
 	
     // External functions

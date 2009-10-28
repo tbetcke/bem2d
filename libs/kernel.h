@@ -8,43 +8,53 @@
 
 namespace bem2d {
 
-	class kernel: private boost::noncopyable {
+	class singlelayer {
 	public:
-		virtual ~kernel(){};
+		singlelayer(freqtype kvalue);
+		singlelayer(const singlelayer& s);
+		complex operator ()(Point x, Point y) const;
 		inline void setnormal(Point normal1, Point normal2){
 			n1=normal1; n2=normal2;		
 		}
-							
-		virtual complex operator()(Point x, Point y) const=0;
-		
-	protected:
-		Point n1;
-		Point n2;
-	};
-	
-	class singlelayer: public kernel {
-	public:
-		singlelayer(freqtype kvalue);
-		complex operator ()(Point x, Point y) const;
+		inline freqtype getk() const{
+			return k;
+		}
 		
 	private:
 		freqtype k;
+		Point n1; Point n2;
 	};
 
-	class doublelayer: public kernel {
+	class doublelayer {
 	public:
 		doublelayer(freqtype kvalue);
+		doublelayer(const doublelayer& d);
 		complex operator ()(Point x, Point y) const;
+		inline void setnormal(Point normal1, Point normal2){
+			n1=normal1; n2=normal2;		
+		}
+		inline freqtype getk() const{
+			return k;
+		}
 	private:
 		freqtype k;
+		Point n1; Point n2;
 	};
 	
-	class conjdoublelayer: public kernel {
+	class conjdoublelayer {
 	public:
 		conjdoublelayer(freqtype kvalue);
+		conjdoublelayer(const conjdoublelayer& d);
 		complex operator ()(Point x, Point y) const;
+		inline void setnormal(Point normal1, Point normal2){
+			n1=normal1; n2=normal2;		
+		}
+		inline freqtype getk() const{
+			return k;
+		}
 	private:
 		freqtype k;
+		Point n1; Point n2;
 	};
 	
 }

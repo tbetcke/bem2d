@@ -55,9 +55,10 @@ namespace bem2d {
 		
 		out2 << "set pm3d map\n";
 		out2 << "set hidden3d\n";
+		out2 << "set palette rgbformulae 33,13,10\n";
 		out2 << "set size ratio -1\n";
 		out2 << "set size square\n";
-		out2 << "set palette gray\n";
+		out2 << "set cbrange [-1:1]\n";
 		out2 << "splot \'" +  name + "\'\n";
 		out2 << "pause -1\n";
 		out2.close();
