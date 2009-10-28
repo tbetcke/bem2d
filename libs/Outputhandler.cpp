@@ -31,6 +31,7 @@ namespace bem2d{
 		xpts=xptsvalue;
 		ypts=yptsvalue;
 		name=fname;
+		setreal();
 		mesh=*(meshgrid(ax,bx,ay,by,xpts,ypts));
 	}
 	

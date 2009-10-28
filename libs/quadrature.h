@@ -147,6 +147,34 @@ namespace bem2d {
 	}
 	
 	template<typename kernel>
+	void evalkernel(const Geometry::flat_basis_map& basfuns, const std::vector<Point>& points, 
+					cvector& vals, const cvector& alpha, kernel g, const Gauss1D& g1d) throw (size_error) {
+
+		const dvector x=g1d.getx();
+		const dvector w=g1d.getw();
+		if (points.size()!=vals.size()) throw size_error();
+		int N=points.size();
+		
+#pragma omp parallel for		
+		for (int j=0;j<N;j++){
+			for (int itbas=0;itbas<basfuns.size();itbas++){
+				pElement elem=basfuns[itbas].first;
+				pBasis bf=basfuns[itbas].second;
+				kernel bg(g);
+				for (int i=0;i<g1d.size();i++){
+					bg.setnormal(elem->normal(x[i]),elem->normal(x[i]));
+					complex basval=(*bf)(x[i]);
+					Point xp=elem->map(x[i]);
+					double s=length(elem->deriv(x[i]));
+					vals[j]+=alpha[itbas]*bg(points[j],xp)*s*basval*w[i];
+				}
+			}
+		}		
+		
+	}
+	
+	
+	template<typename kernel>
 	boost::shared_ptr<std::vector<complex> > discretekernel(const Geometry& geom, QuadOption opts, kernel g){
 		
 		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.getflatmap();

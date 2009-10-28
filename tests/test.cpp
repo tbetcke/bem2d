@@ -44,10 +44,10 @@ int main(int argc, char** argv){
 	
 	
 	
-	bem2d::freqtype k=1.0;
+	bem2d::freqtype k=50;
 	bem2d::PlaneWave pw(bem2d::Point(1,0),k);
 	bem2d::Outwave owave(k);
-	bem2d::Soundsoftscattering<bem2d::Outwave> soundsoft(pgeom,k,owave);
+	bem2d::Soundsoftscattering<bem2d::PlaneWave> soundsoft(pgeom,k,pw);
 	//bem2d::pBem2dfun poutwave(new bem2d::Outwave(k));
 	
 	soundsoft.discretize();
@@ -58,10 +58,20 @@ int main(int argc, char** argv){
 
 	std::cout << "System solved" << std::endl;
 	
-	int xpts=200; int ypts=200;
+	int xpts=400; int ypts=400;
 	bem2d::pOutputhandler pout(new bem2d::Gplotoutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.setOutput(pout);
 	soundsoft.writeAll();
+	
+	/*
+	bem2d::singlelayer sl(1.0);
+	std::cout << sl(bem2d::Point(0,0),bem2d::Point(-2,-2)) << std::endl;
+	
+	std::vector<bem2d::Point> pz(1); pz[0]=bem2d::Point(-2,-2);
+	bem2d::pcvector fvals=soundsoft.evalsol(pz);
+	
+	std::cout << (*fvals)[0] << std::endl;
+	*/
 	
 	// for (int i=0;i<psol->size();i++) std::cout << (*psol)[i] << std::endl;
 	// std::cout << std::endl;

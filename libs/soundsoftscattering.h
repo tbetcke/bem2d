@@ -74,13 +74,12 @@ namespace bem2d {
 		bem2d::doublelayer dl(k);
 		A.data=discretekernel(*pgeom,quadopts,dl);
 		pcvector pident=dotprodbasfuns(*pgeom,quadopts,Idfun());
+		cblas_zdscal(A.dim*A.dim,2.0,&(*A.data)[0],1);
 		
 		for (int i=0;i<A.dim;i++) (*A.data)[A.dim*i+i]+=(*pident)[i];
 		
-		
 		prhs=bem2d::dotprodbasfuns(*pgeom,quadopts,incoming);
 		cblas_zdscal(A.dim,-2.0,&(*prhs)[0],1);
-		
 		
 	}
 	
@@ -93,7 +92,8 @@ namespace bem2d {
 	template<typename T>
 	pcvector Soundsoftscattering<T>::evalincident(const std::vector<Point>& points){
 		pcvector pz(new cvector(points.size()));
-		for (std::size_t i=0;i<points.size();i++) (*pz)[i]=incoming(points[i]);
+#pragma omp for
+		for (int i=0;i<points.size();i++) (*pz)[i]=incoming(points[i]);
 		return pz;
 	}
 	
@@ -105,9 +105,12 @@ namespace bem2d {
 		
 		bem2d::Gauss1D g1d(quadopts.N);
 		
+		/*
 		for (int i=0;i<A.dim;i++) {
 			evalkernel((*bfuns)[i], points, *result, (*psol)[i], dl,g1d);
 		}
+		 */
+		evalkernel(*bfuns,points,*result,*psol,dl,g1d);
 		return result;
 	}
 	
