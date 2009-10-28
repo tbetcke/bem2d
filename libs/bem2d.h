@@ -17,6 +17,7 @@
 #include "soundsoftscattering.h"
 #include "Outputhandler.h"
 #include "Bem2dfun.h"
+#include "Shape.h"
 
 
 
