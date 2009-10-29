@@ -82,6 +82,32 @@ namespace bem2d {
         const Point d; // End point - Start Point
 
     };
+	
+	template<typename T>
+	class AnalyticCurveElement: public Element {
+	public:
+		AnalyticCurveElement(double t1, double t2, const T& curveobj, std::size_t index);
+		
+		inline const Point map(double t) const {
+			return curve.map(tstart+t*(tend-tstart));
+		}
+		inline const Point deriv(double t) const {
+			return (tend-tstart)*curve.deriv(tstart+t*(tend-tstart));
+		}
+		
+	private:
+		T curve;
+		double tstart;
+		double tend;
+	};
+	
+	template<typename T>
+	AnalyticCurveElement<T>::AnalyticCurveElement(double t1, double t2, const T& curveobj, std::size_t index):
+	tstart(t1),
+	tend(t2),
+	curve(curveobj){
+		setIndex(index);
+	}
 
 }
 #endif	/* _ELEMENT_H */

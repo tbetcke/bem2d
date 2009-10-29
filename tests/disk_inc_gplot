@@ -1,8 +1,0 @@
-set pm3d map
-set hidden3d
-set palette rgbformulae 33,13,10
-set size ratio -1
-set size square
-set cbrange [-1:1]
-splot 'disk_inc'
-pause -1

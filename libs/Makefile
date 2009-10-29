@@ -8,7 +8,8 @@ endif
 
 
 OBJECTS	= Point.o Element.o Basis.o quadrature.o QuadPoints.o kernel.o geometry.o \
-		  soundsoftscattering.o mathroutines.o outputroutines.o Outputhandler.o Bem2dfun.o
+		  soundsoftscattering.o mathroutines.o outputroutines.o Outputhandler.o Bem2dfun.o \
+		  Shape.o Curve.o
 
 all: $(OBJECTS)
 	ar rcs bem2d.a $(OBJECTS)

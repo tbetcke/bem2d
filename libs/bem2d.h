@@ -18,6 +18,7 @@
 #include "Outputhandler.h"
 #include "Bem2dfun.h"
 #include "Shape.h"
+#include "Curve.h"
 
 
 

@@ -19,6 +19,10 @@ namespace bem2d {
 	typedef boost::shared_ptr<cvector> pcvector;
 	typedef boost::shared_ptr<dvector> pdvector;
 	
+	// Constants
+	
+	const double PI=3.14159265358979323846;
+	
 	
     // External functions
 

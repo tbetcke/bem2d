@@ -7,5 +7,6 @@ namespace bem2d {
 	ConstBasis::ConstBasis(){
 	};
 
+	LegendrePolBasis::LegendrePolBasis(int degree): deg(degree){};
 
 }
