@@ -53,7 +53,7 @@ namespace bem2d {
 	Soundsoftscattering<T>::Soundsoftscattering(pGeometry geom, freqtype kvalue, T fun): pgeom(geom), 
 	k(kvalue), A(geom->getsize()), incoming(fun) {
 		quadopts.L=3;
-		quadopts.N=3;
+		quadopts.N=5;
 		quadopts.sigma=0.15;
 	}
 	

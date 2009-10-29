@@ -19,6 +19,8 @@
 #include "Bem2dfun.h"
 #include "Shape.h"
 #include "Curve.h"
+#include "Basis.h"
+#include "Basistypes.h"
 
 
 

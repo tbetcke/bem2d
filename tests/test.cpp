@@ -39,18 +39,20 @@ int main(int argc, char** argv){
 	bem2d::pGeometry pgeom=circle.getGeometry();
 	*/
 	
-	 
-	bem2d::pBasis b0(new bem2d::LegendrePolBasis(0));
-	bem2d::pBasis b1(new bem2d::LegendrePolBasis(1));
-	bem2d::pBasis b2(new bem2d::LegendrePolBasis(2));
+	/* 
+	bem2d::pBasis b0(new bem2d::PolBasis(0));
+	bem2d::pBasis b1(new bem2d::PolBasis(1));
+	bem2d::pBasis b2(new bem2d::PolBasis(2));
 	pgeom->addBasis(b0);
 	pgeom->addBasis(b1);
 	pgeom->addBasis(b2);
+	 */
+	bem2d::freqtype k=5;
+	bem2d::PolBasis::addBasis(0,pgeom);
 	std::cout << pgeom->getsize() << std::endl; 
 	
 	
 	
-	bem2d::freqtype k=10;
 	bem2d::PlaneWave pw(bem2d::Point(1,0),k);
 	bem2d::Outwave owave(k);
 	bem2d::Soundsoftscattering<bem2d::PlaneWave> soundsoft(pgeom,k,pw);
