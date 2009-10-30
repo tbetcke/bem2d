@@ -21,23 +21,23 @@ int main(int argc, char** argv){
 	// File to test different things
 	
 	
-	int n=1000;
+	int n=500;
 	
 	//bem2d::diskshape_piecewise_const disk(n,1.0);
 		
-	
+	/*
 	bem2d::trefoil tobj;
 	bem2d::analytic_curve<bem2d::trefoil> trefoil(n,tobj);
 	
 	bem2d::pGeometry pgeom=trefoil.getGeometry();
+	*/
 	
 	
-	/*
 	bem2d::circle cobj;
 	bem2d::analytic_curve<bem2d::circle> circle(n,cobj);
 	
 	bem2d::pGeometry pgeom=circle.getGeometry();
-	*/
+	
 	
 	/* 
 	bem2d::pBasis b0(new bem2d::PolBasis(0));
@@ -47,16 +47,18 @@ int main(int argc, char** argv){
 	pgeom->addBasis(b1);
 	pgeom->addBasis(b2);
 	 */
-	bem2d::freqtype k=5;
-	bem2d::PolBasis::addBasis(0,pgeom);
+	bem2d::freqtype k=20;
+	bem2d::WavePolBasis::addBasis(2,k,pgeom);
 	std::cout << pgeom->getsize() << std::endl; 
 	
 	
 	
 	bem2d::PlaneWave pw(bem2d::Point(1,0),k);
-	bem2d::Outwave owave(k);
-	bem2d::Soundsoftscattering<bem2d::PlaneWave> soundsoft(pgeom,k,pw);
-	//bem2d::pBem2dfun poutwave(new bem2d::Outwave(k));
+	bem2d::CombinedPlaneWave cpw(bem2d::Point(1,0),k);
+
+	//bem2d::Outwave owave(k);
+	
+	bem2d::Soundsoftscattering<bem2d::PlaneWave,bem2d::CombinedPlaneWave> soundsoft(pgeom,k,pw,cpw);
 	
 	soundsoft.discretize();
 	
@@ -68,7 +70,7 @@ int main(int argc, char** argv){
 	
 	
 	int xpts=200; int ypts=200;
-	bem2d::pOutputhandler pout(new bem2d::Gplotoutput(xpts,ypts,-4,4,-4,4,"trefoil"));
+	bem2d::pOutputhandler pout(new bem2d::Gplotoutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.setOutput(pout);
 	soundsoft.writeAll();
 	

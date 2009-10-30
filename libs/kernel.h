@@ -57,6 +57,25 @@ namespace bem2d {
 		Point n1; Point n2;
 	};
 	
+	class combinedsingleconjdouble {
+	public:
+		combinedsingleconjdouble(freqtype kvalue, double etavalue);
+		combinedsingleconjdouble(freqtype kvalue);
+		combinedsingleconjdouble(const combinedsingleconjdouble& scdl);
+		complex operator()(Point x, Point y) const;
+		inline void setnormal(Point normal1, Point normal2){
+			n1=normal1; n2=normal2;
+		}
+		inline freqtype getk() const{
+			return k;
+		}
+	private:
+		freqtype k;
+		Point n1; Point n2;
+		double eta;
+	};
+	
+	
 }
 
 

@@ -11,6 +11,17 @@ namespace bem2d {
 	
 	NormalPlaneWave::NormalPlaneWave(const NormalPlaneWave& np):
 	dir(np.getdir()), k(np.getk()){}
+
+	CombinedPlaneWave::CombinedPlaneWave(Point direction, freqtype kvalue, double etavalue):
+	dir(direction), k(kvalue), eta(etavalue) {}
+	
+	CombinedPlaneWave::CombinedPlaneWave(Point direction, freqtype kvalue):
+	dir(direction), k(kvalue), eta(kvalue) {}
+	
+	
+	CombinedPlaneWave::CombinedPlaneWave(const CombinedPlaneWave& np):
+	dir(np.getdir()), k(np.getk()), eta(np.eta){}
+	
 	
 	Outwave::Outwave(freqtype kvalue): k(kvalue), s(kvalue){}
 	

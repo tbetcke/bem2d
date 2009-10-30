@@ -55,4 +55,24 @@ namespace bem2d {
 		
 		return -i*k/4.0*(besselH1(k*d)/d*(n1.x*w.x+n1.y*w.y));
 	}
+	
+	combinedsingleconjdouble::combinedsingleconjdouble(freqtype kvalue, double etavalue):
+	k(kvalue),
+	eta(etavalue)
+	{}
+	
+	combinedsingleconjdouble::combinedsingleconjdouble(freqtype kvalue): k(kvalue), eta(kvalue){}
+	
+	combinedsingleconjdouble::combinedsingleconjdouble(const combinedsingleconjdouble& scdl):
+	k(scdl.k), eta(scdl.eta){}
+	
+	complex combinedsingleconjdouble::operator()(Point x, Point y) const{
+		Point w=x-y;
+		double d=length(w);
+		complex i(0,1);
+		complex slayer=i/4.0*(besselH0(k*d));
+		complex cdlayer=-i*k/4.0*(besselH1(k*d)/d*(n1.x*w.x+n1.y*w.y));
+		return cdlayer+i*eta*slayer;
+	}
+	
 }
