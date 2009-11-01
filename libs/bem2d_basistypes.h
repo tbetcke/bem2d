@@ -3,7 +3,6 @@
 
 #include<cstdlib>
 #include <complex>
-#include "boost/shared_ptr.hpp"
 #include "gsl/gsl_sf_legendre.h"
 #include "bem2d_defs.h"
 #include "bem2d_basis.h"
@@ -22,9 +21,11 @@ namespace bem2d{
 		
 	};
 	
+	typedef boost::shared_ptr<ConstBasis> pConstBasis;
+	
 	class PolBasis: public Basis {
 	public:
-		static void addBasis(int deg, pGeometry pgeom);			
+		static void AddBasis(int deg, pGeometry pgeom);			
 		PolBasis(int degree);
 		inline complex operator()(double t){
 			double result=1;
@@ -35,9 +36,11 @@ namespace bem2d{
 		int degree_;
 	};
 	
+	typedef boost::shared_ptr<PolBasis> pPolBasis;
+	
 	class WaveBasis: public Basis {
 	public:
-		static void addBasis(freqtype k, pGeometry pgeom);
+		static void AddBasis(freqtype k, pGeometry pgeom);
 		WaveBasis(double direction, freqtype k);
 		inline complex operator()(double t){
 			return std::exp(complex(0,1)*k_*direction_*t);
@@ -46,10 +49,12 @@ namespace bem2d{
 		double direction_;
 		freqtype k_;
 	};
+	
+	typedef boost::shared_ptr<WaveBasis> pWaveBasis;
 
 	class WavePolBasis: public Basis {
 	public:
-		static void addBasis(int degree, freqtype k, pGeometry pgeom);
+		static void AddBasis(int degree, freqtype k, pGeometry pgeom);
 		WavePolBasis(int degree, double direction, freqtype k);
 		inline complex operator()(double t){
 			double result=1;
@@ -62,6 +67,7 @@ namespace bem2d{
 		int degree_;
 	};
 	
+	typedef boost::shared_ptr<WavePolBasis> pWavePolBasis;
 			
 		
 }

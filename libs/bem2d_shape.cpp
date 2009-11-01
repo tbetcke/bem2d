@@ -3,24 +3,24 @@
 
 namespace bem2d {
 
-	diskshape_piecewise_const::diskshape_piecewise_const(int n,double radius): elements(n), points(n){
+	DiskShapePiecewiseConst::DiskShapePiecewiseConst(int n,double radius): elements_(n), points_(n){
 	
 		double angle=2*PI/n;
-		for (int i=0;i<n;i++) points[i]=boost::shared_ptr<bem2d::Point>(new bem2d::Point(radius*cos(i*angle),radius*sin(i*angle)));
+		for (int i=0;i<n;i++) points_[i]=boost::shared_ptr<bem2d::Point>(new bem2d::Point(radius*cos(i*angle),radius*sin(i*angle)));
 		for (int i=0;i<n-1;i++) {
-			elements[i]=bem2d::pElement(new bem2d::ConstElement(*(points[i]),*(points[i+1]),i));
+			elements_[i]=bem2d::pElement(new bem2d::ConstElement(*(points_[i]),*(points_[i+1]),i));
 		}
-		elements[n-1]=bem2d::pElement(new bem2d::ConstElement(*(points[n-1]),*(points[0]),n-1));
+		elements_[n-1]=bem2d::pElement(new bem2d::ConstElement(*(points_[n-1]),*(points_[0]),n-1));
 		for (int i=1;i<n-1;i++) {
-			elements[i]->set_next(i+1);
-			elements[i]->set_prev(i-1);
+			elements_[i]->set_next(i+1);
+			elements_[i]->set_prev(i-1);
 		}
-		elements[0]->set_next(1); elements[n-1]->set_next(0);
+		elements_[0]->set_next(1); elements_[n-1]->set_next(0);
 		
 	}
 	
-	pGeometry diskshape_piecewise_const::getGeometry(){
-		return bem2d::pGeometry(new bem2d::Geometry(elements));
+	pGeometry DiskShapePiecewiseConst::GetGeometry(){
+		return bem2d::pGeometry(new bem2d::Geometry(elements_));
 	}
 	
 }

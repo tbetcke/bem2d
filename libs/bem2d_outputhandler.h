@@ -9,43 +9,40 @@
 
 namespace bem2d {
 	
-	class Outputhandler {
+	class OutputHandler {
 	public:
-		virtual ~Outputhandler(){};
-		virtual void writeIncident(const cvector& vals){};
-		virtual void writeScattered(const cvector& vals){};
-		virtual void writeFull(const cvector& vals){};
-		virtual void writeAll(const cvector& valsincident, const cvector& valsscattered, const cvector& valsfull){};
-		inline const std::vector<Point>& getmesh() const {
-			return mesh;
+		virtual ~OutputHandler(){};
+		virtual void WriteIncident(const cvector& vals){};
+		virtual void WriteScattered(const cvector& vals){};
+		virtual void WriteFull(const cvector& vals){};
+		virtual void WriteAll(const cvector& valsincident, const cvector& valsscattered, const cvector& valsfull){};
+		inline const std::vector<Point>& mesh() const {
+			return mesh_;
 		}
-		inline void setreal(){
-			real=true;
-		}
-		inline void setimag(){
-			real=false;
+		inline void set_real(bool real){
+			real_=real;
 		}
 		
 	protected:
-		pdvector realdata(const cvector& vals);
-		pdvector imagdata(const cvector& vals);
-		pdvector turntorealimag(const cvector& vals);
-		std::vector<Point> mesh;
-		bool real;
+		pdvector RealData(const cvector& vals);
+		pdvector ImagData(const cvector& vals);
+		pdvector TurnToRealImag(const cvector& vals);
+		std::vector<Point> mesh_;
+		bool real_;
 	};
 
-	typedef boost::shared_ptr<Outputhandler> pOutputhandler;
+	typedef boost::shared_ptr<OutputHandler> pOutputHandler;
 	
-	class Gplotoutput: public Outputhandler {
+	class GplotOutput: public OutputHandler {
 	public:
-		Gplotoutput(int xptsvalue, int yptsvalue, int ax, int bx, int ay, int by, std::string fname);
-		void writeIncident(const cvector& vals);
-		void writeScattered(const cvector& vals);
-		void writeFull(const cvector& vals);
-		void writeAll(const cvector& valsincident, const cvector& valsscattered, const cvector& valsfull);		
+		GplotOutput(int xpts, int ypts, int ax, int bx, int ay, int by, std::string name);
+		void WriteIncident(const cvector& vals);
+		void WriteScattered(const cvector& vals);
+		void WriteFull(const cvector& vals);
+		void WriteAll(const cvector& valsincident, const cvector& valsscattered, const cvector& valsfull);		
 	private:
-		std::string name;
-		int xpts; int ypts;
+		std::string name_;
+		int xpts_; int ypts_;
 	};
 	
 }

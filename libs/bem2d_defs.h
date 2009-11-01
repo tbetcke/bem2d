@@ -5,10 +5,11 @@
 #include<vector>
 #include "boost/shared_ptr.hpp"
 
-// Typedefs and definitions of external functions
+// Some global typedefs, constants and external fct. definitions
 
 namespace bem2d {
 
+	
 
     // Type definitions
 
@@ -16,8 +17,13 @@ namespace bem2d {
     typedef std::vector<double> dvector;
 	typedef std::vector<complex> cvector;
 	typedef double freqtype;
+
+	
 	typedef boost::shared_ptr<cvector> pcvector;
 	typedef boost::shared_ptr<dvector> pdvector;
+	
+	
+	
 	
 	// Constants
 	

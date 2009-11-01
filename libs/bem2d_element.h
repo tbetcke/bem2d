@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 #include "boost/utility.hpp"
-#include<boost/shared_ptr.hpp>
+#include "bem2d_defs.h"
 #include "bem2d_point.h"
 
 
@@ -82,7 +82,7 @@ namespace bem2d {
         const Point d_; // End point - Start Point
 
     };
-	
+		
 	template<typename T>
 	class AnalyticCurveElement: public Element {
 	public:
@@ -100,6 +100,7 @@ namespace bem2d {
 		double tstart_;
 		double tend_;
 	};
+	
 	
 	template<typename T>
 	AnalyticCurveElement<T>::AnalyticCurveElement(double t1, double t2, const T& curve, std::size_t index):

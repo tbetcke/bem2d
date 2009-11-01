@@ -5,7 +5,7 @@
 namespace bem2d {
 	
 
-	complex besselH0(double x) {
+	complex BesselH0(double x) {
         double fr, fi;
 		
         // Evaluate Bessel function
@@ -16,7 +16,7 @@ namespace bem2d {
 		
     }
 	
-    complex besselH1(double x) {
+    complex BesselH1(double x) {
         double fr, fi;
 		
         // Evaluate Bessel function
@@ -28,24 +28,24 @@ namespace bem2d {
     }
 	
 	
-	matrix::matrix(): dim(0){
+	Matrix::Matrix(): dim(0){
 		data=pcvector(new cvector);
 	
 	};
 	
-	matrix::matrix(std::size_t n): dim(n){
+	Matrix::Matrix(std::size_t n): dim(n){
 		data=pcvector(new cvector);
 		data->resize(n*n);
 	}
 	
-	identity::identity(int n): matrix(n){
+	Identity::Identity(int n): Matrix(n){
 		for (int i=0;i<n;i++) (*data)[n*i+i]=1.0;
 	}
 	
 	
-	matrix operator+(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch){
+	Matrix operator+(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch){
 		if (lhs.dim!=rhs.dim) throw ArrayMismatch();
-		matrix result(lhs.dim);
+		Matrix result(lhs.dim);
 		*result.data=*rhs.data;
 		complex alpha=1.0;
 		cblas_zaxpy(lhs.dim*lhs.dim,&alpha,&(*lhs.data)[0],1,&(*result.data)[0],1);
@@ -53,9 +53,9 @@ namespace bem2d {
 		
 	}
 	
-	matrix operator-(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch){
+	Matrix operator-(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch){
 		if (lhs.dim!=rhs.dim) throw ArrayMismatch();
-		matrix result(lhs.dim);
+		Matrix result(lhs.dim);
 		*result.data=*lhs.data;
 		complex alpha=-1.0;
 		cblas_zaxpy(lhs.dim*lhs.dim,&alpha,&(*rhs.data)[0],1,&(*result.data)[0],1);
@@ -64,31 +64,31 @@ namespace bem2d {
 	}
 	
 	
-	matrix operator*(const matrix& lhs, const complex& alpha){
-		matrix result(lhs.dim);
+	Matrix operator*(const Matrix& lhs, const complex& alpha){
+		Matrix result(lhs.dim);
 		*result.data=*lhs.data;
 		cblas_zscal(lhs.dim*lhs.dim,&alpha,&(*result.data)[0],1);
 		return result;
 	}
 	
-	matrix operator*(const complex& alpha, const matrix& rhs){
+	Matrix operator*(const complex& alpha, const Matrix& rhs){
 		return rhs*alpha;
 	}
 	
-	matrix operator*(const matrix& lhs, const double& alpha){
-		matrix result(lhs.dim);
+	Matrix operator*(const Matrix& lhs, const double& alpha){
+		Matrix result(lhs.dim);
 		*result.data=*lhs.data;
 		cblas_zdscal(lhs.dim*lhs.dim,alpha,&(*result.data)[0],1);
 		return result;
 	}
 				
-	matrix operator*(const double& alpha, const matrix& rhs){
+	Matrix operator*(const double& alpha, const Matrix& rhs){
 		return rhs*alpha;
 	}
 	
-	matrix operator*(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch){
+	Matrix operator*(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch){
 		if (lhs.dim!=rhs.dim) throw ArrayMismatch();
-		matrix result(lhs.dim);
+		Matrix result(lhs.dim);
 		complex alpha=1.0;
 		complex beta=0.0;
 		cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,lhs.dim,rhs.dim,lhs.dim,&alpha,&(*lhs.data)[0],lhs.dim,&(*rhs.data)[0],
@@ -99,7 +99,7 @@ namespace bem2d {
 	
 	
 	
-	void solve_system(pcvector pmatrix, pcvector prhs) throw (LapackError){
+	void SolveSystem(pcvector pmatrix, pcvector prhs) throw (LapackError){
 		
 		int N=prhs->size();
 		int info;

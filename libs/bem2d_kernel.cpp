@@ -13,7 +13,7 @@ namespace bem2d {
 		
 		double d=length(x-y);
 		complex i(0,1);
-		return i/4.0*(besselH0(k_*d));
+		return i/4.0*(BesselH0(k_*d));
 		
 		
 	}
@@ -30,7 +30,7 @@ namespace bem2d {
 		double d=length(w);		
 		complex i(0,1);
 		
-		return -i*k_/4.0*(besselH1(k_*d)/d*(n2_.x*w.x+n2_.y*w.y));
+		return -i*k_/4.0*(BesselH1(k_*d)/d*(n2_.x*w.x+n2_.y*w.y));
 	}
 
 	
@@ -47,7 +47,7 @@ namespace bem2d {
 		double d=length(w);		
 		complex i(0,1);
 		
-		return -i*k_/4.0*(besselH1(k_*d)/d*(n1_.x*w.x+n1_.y*w.y));
+		return -i*k_/4.0*(BesselH1(k_*d)/d*(n1_.x*w.x+n1_.y*w.y));
 	}
 	
 	CombinedSingleConjDouble::CombinedSingleConjDouble(freqtype k, double eta):
@@ -64,8 +64,8 @@ namespace bem2d {
 		Point w=x-y;
 		double d=length(w);
 		complex i(0,1);
-		complex slayer=i/4.0*(besselH0(k_*d));
-		complex cdlayer=-i*k_/4.0*(besselH1(k_*d)/d*(n1_.x*w.x+n1_.y*w.y));
+		complex slayer=i/4.0*(BesselH0(k_*d));
+		complex cdlayer=-i*k_/4.0*(BesselH1(k_*d)/d*(n1_.x*w.x+n1_.y*w.y));
 		return cdlayer+i*eta_*slayer;
 	}
 	

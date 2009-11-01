@@ -4,19 +4,19 @@
 namespace bem2d {
 	
 	
-	void abrange(dvector& xx, double a, double b, int n){
+	void Abrange(dvector& xx, double a, double b, int n){
 		xx.resize(n);
 		for (int j = 0; j < n; j++) xx[j] = a + (1.0 / (n - 1)) * j * (b - a);
 	}
 	
-	boost::shared_ptr<std::vector<Point > > meshgrid(double ax, double bx,
+	boost::shared_ptr<std::vector<Point > > MeshGrid(double ax, double bx,
 													 double ay, double by, int xpts, int ypts){
 		
 		dvector xx;
 		dvector yy;
 		
-		abrange(xx,ax,bx,xpts);
-		abrange(yy,ay,by,ypts);
+		Abrange(xx,ax,bx,xpts);
+		Abrange(yy,ay,by,ypts);
 		
 		boost::shared_ptr<std::vector<Point > > pvec(new std::vector<Point>);
 		pvec->reserve(xpts*ypts);
@@ -33,7 +33,7 @@ namespace bem2d {
     }
 	
 	
-	void gplotout(std::string name, const std::vector<Point>& points, const dvector& z,
+	void GplotOut(std::string name, const std::vector<Point>& points, const dvector& z,
 				  int xpts, int ypts){
 		
 		std::ofstream out(name.c_str());

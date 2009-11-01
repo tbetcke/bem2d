@@ -3,33 +3,33 @@
 namespace bem2d {
 
 	
-	PlaneWave::PlaneWave(Point direction, freqtype kvalue): dir(direction), k(kvalue){}
-	PlaneWave::PlaneWave(const PlaneWave& p): k(p.getk()), dir(p.getdir()){}
+	PlaneWave::PlaneWave(Point direction, freqtype k): direction_(direction), k_(k){}
+	PlaneWave::PlaneWave(const PlaneWave& p): k_(p.k_), direction_(p.direction_){}
 	
-	NormalPlaneWave::NormalPlaneWave(Point direction, freqtype kvalue):
-	dir(direction), k(kvalue) {}
+	NormalPlaneWave::NormalPlaneWave(Point direction, freqtype k):
+	direction_(direction), k_(k) {}
 	
 	NormalPlaneWave::NormalPlaneWave(const NormalPlaneWave& np):
-	dir(np.getdir()), k(np.getk()){}
+	direction_(np.direction_), k_(np.k_){}
 
-	CombinedPlaneWave::CombinedPlaneWave(Point direction, freqtype kvalue, double etavalue):
-	dir(direction), k(kvalue), eta(etavalue) {}
+	CombinedPlaneWave::CombinedPlaneWave(Point direction, freqtype k, double eta):
+	direction_(direction), k_(k), eta_(eta) {}
 	
-	CombinedPlaneWave::CombinedPlaneWave(Point direction, freqtype kvalue):
-	dir(direction), k(kvalue), eta(kvalue) {}
+	CombinedPlaneWave::CombinedPlaneWave(Point direction, freqtype k):
+	direction_(direction), k_(k), eta_(k) {}
 	
 	
 	CombinedPlaneWave::CombinedPlaneWave(const CombinedPlaneWave& np):
-	dir(np.getdir()), k(np.getk()), eta(np.eta){}
+	direction_(np.direction_), k_(np.k_), eta_(np.eta_){}
 	
 	
-	Outwave::Outwave(freqtype kvalue): k(kvalue), s(kvalue){}
+	OutWave::OutWave(freqtype k): k_(k), s_(k){}
 	
-	Outwave::Outwave(const Outwave& owave): k(owave.getk()), s(owave.getk()){};
+	OutWave::OutWave(const OutWave& owave): k_(owave.k_), s_(owave.k_){};
 	
-	complex Outwave::operator()(Point p) const{
+	complex OutWave::operator()(Point p) const{
 		Point zero(0,0);
-		return s(zero,p);
+		return s_(zero,p);
 	}
 	
 }

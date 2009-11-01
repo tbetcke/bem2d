@@ -13,104 +13,104 @@ namespace bem2d {
 	class PlaneWave {
 	public:
 		PlaneWave(){};
-		PlaneWave(Point direction, freqtype kvalue);
+		PlaneWave(Point direction, freqtype k);
 		PlaneWave(const PlaneWave& p);
 		
 		inline complex operator()(Point p) const {
 			complex i(0,1);
-			return std::exp(k*i*(dir.x*p.x+dir.y*p.y));
+			return std::exp(k_*i*(direction_.x*p.x+direction_.y*p.y));
 		}				
-		void setnormal(Point normal){};
-		inline freqtype getk() const{
-			return k;
+		void SetNormal(Point normal){};
+		inline freqtype k() const{
+			return k_;
 		}
-		inline Point getdir() const{
-			return dir;
+		inline Point direction() const{
+			return direction_;
 		}
 	private:
-		Point dir;
-		freqtype k;
+		Point direction_;
+		freqtype k_;
 	};
 	
 	class NormalPlaneWave {
 	public:
 		NormalPlaneWave(){};
-		NormalPlaneWave(Point direction, freqtype kvalue);
+		NormalPlaneWave(Point direction, freqtype k);
 		NormalPlaneWave(const NormalPlaneWave& np);
 		
 		inline complex operator()(Point p) const {
 			complex i(0,1);
-			complex f=std::exp(k*i*(dir.x*p.x+dir.y*p.y));
-			return i*k*f*(n.x*dir.x+n.y*dir.y);
+			complex f=std::exp(k_*i*(direction_.x*p.x+direction_.y*p.y));
+			return i*k_*f*(n_.x*direction_.x+n_.y*direction_.y);
 		}
-		inline void setnormal(Point normal){
-			n=normal;
+		inline void SetNormal(Point normal){
+			n_=normal;
 		}
-		inline freqtype getk() const{
-			return k;
+		inline freqtype k() const{
+			return k_;
 		}
-		inline Point getdir() const{
-			return dir;
+		inline Point direction() const{
+			return direction_;
 		}
 	private:
-		Point dir;
-		freqtype k;
-		Point n;
+		Point direction_;
+		freqtype k_;
+		Point n_;
 	};
 	
 	class CombinedPlaneWave {
 	public:
-		CombinedPlaneWave(Point direction, freqtype kvalue, double etavalue);
-		CombinedPlaneWave(Point direction, freqtype kvalue);
+		CombinedPlaneWave(Point direction, freqtype k, double eta);
+		CombinedPlaneWave(Point direction, freqtype k);
 		CombinedPlaneWave(const CombinedPlaneWave& np);
 		
 		inline complex operator()(Point p) const {
 			complex i(0,1);
-			complex f=std::exp(k*i*(dir.x*p.x+dir.y*p.y));
-			return i*k*f*(n.x*dir.x+n.y*dir.y)+i*eta*f;
+			complex f=std::exp(k_*i*(direction_.x*p.x+direction_.y*p.y));
+			return i*k_*f*(n_.x*direction_.x+n_.y*direction_.y)+i*eta_*f;
 		}
-		inline void setnormal(Point normal){
-			n=normal;
+		inline void SetNormal(Point normal){
+			n_=normal;
 		}
-		inline freqtype getk() const{
-			return k;
+		inline freqtype k() const{
+			return k_;
 		}
-		inline Point getdir() const{
-			return dir;
+		inline Point direction() const{
+			return direction_;
 		}
-		inline double geteta() const{
-			return eta;
+		inline double eta() const{
+			return eta_;
 		}
 	private:
-		Point dir;
-		freqtype k;
-		Point n;
-		double eta;
+		Point direction_;
+		freqtype k_;
+		Point n_;
+		double eta_;
 	};
 	
 	
 	
 		
-	class Outwave {
+	class OutWave {
 	public:
-		Outwave(freqtype kvalue);
-		Outwave(const Outwave& owave);
+		OutWave(freqtype k);
+		OutWave(const OutWave& owave);
 		complex operator()(Point x) const;
-		void setnormal(Point normal){};
-		inline freqtype getk() const{
-			return k;
+		void SetNormal(Point normal){};
+		inline freqtype k() const{
+			return k_;
 		}
 	private:
-		freqtype k;
-		SingleLayer s;
+		freqtype k_;
+		SingleLayer s_;
 	};
 	
-	class Idfun {
+	class IdFun {
 	public:
 		inline complex operator()(Point p) const {
 			return 1.0;
 		}
-		void setnormal(Point normal){};
+		void SetNormal(Point normal){};
 	};
 		
 }

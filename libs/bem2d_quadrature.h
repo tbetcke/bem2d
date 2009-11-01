@@ -100,7 +100,7 @@ namespace bem2d {
 		
 		complex result=0;
 		for (int i=0;i<g1d.Size();i++){
-			fun.setnormal(elem->Normal(x[i]));
+			fun.SetNormal(elem->Normal(x[i]));
 			complex tfval=std::conj((*tf)(x[i]));
 			Point xp=elem->Map(x[i]);
 			double s=length(elem->Deriv(x[i]));

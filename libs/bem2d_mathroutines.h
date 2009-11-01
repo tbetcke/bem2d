@@ -14,36 +14,36 @@ namespace bem2d {
 	
 // Special Functions
 	
-	complex besselH0(double x);
-	complex besselH1(double x);
+	complex BesselH0(double x);
+	complex BesselH1(double x);
 	
 // ----------------------------
 	
 	
 // Definition of matrix structures
 	
-	struct matrix {
-		matrix();
-		explicit matrix(std::size_t n); 
+	struct Matrix {
+		Matrix();
+		explicit Matrix(std::size_t n); 
 		pcvector data;
 		std::size_t dim;
 	};
 	
-	struct identity: public matrix {
-		identity(int n);
+	struct Identity: public Matrix {
+		Identity(int n);
 	};
 	
-	matrix operator+(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch);
-	matrix operator-(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch);
+	Matrix operator+(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
+	Matrix operator-(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
 	
-	matrix operator*(const matrix& lhs, complex& alpha);
-	matrix operator*(const complex& alpha, const matrix& rhs);
-	matrix operator*(const matrix& lhs, const double& alpha);
-	matrix operator*(const double& alpha, const matrix& rhs);
+	Matrix operator*(const Matrix& lhs, complex& alpha);
+	Matrix operator*(const complex& alpha, const Matrix& rhs);
+	Matrix operator*(const Matrix& lhs, const double& alpha);
+	Matrix operator*(const double& alpha, const Matrix& rhs);
 			
-	matrix operator*(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch);
+	Matrix operator*(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
 	
-	void solve_system(pcvector pmatrix, pcvector prhs) throw (LapackError);
+	void SolveSystem(pcvector pmatrix, pcvector prhs) throw (LapackError);
 	
 	
 }

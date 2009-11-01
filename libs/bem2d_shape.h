@@ -10,44 +10,44 @@
 
 namespace bem2d {
 	
-	class diskshape_piecewise_const {
+	class DiskShapePiecewiseConst {
 	public:
-		diskshape_piecewise_const(int n,double radius);
-		pGeometry getGeometry();
+		DiskShapePiecewiseConst(int n,double radius);
+		pGeometry GetGeometry();
 	private:
-		std::vector<bem2d::pElement> elements;
-		std::vector<boost::shared_ptr<bem2d::Point> > points;
+		std::vector<bem2d::pElement> elements_;
+		std::vector<boost::shared_ptr<bem2d::Point> > points_;
 
 		
 	};
 	
 	template<typename T>
-	class analytic_curve {
+	class AnalyticCurve {
 	public:
-		analytic_curve(int n, const T& curve);
-		pGeometry getGeometry();
+		AnalyticCurve(int n, const T& curve);
+		pGeometry GetGeometry();
 	private:
-		std::vector<bem2d::pElement> elements;
+		std::vector<bem2d::pElement> elements_;
 	};
 	
 	template<typename T>
-	analytic_curve<T>::analytic_curve(int n, const T& curve): elements(n){
+	AnalyticCurve<T>::AnalyticCurve(int n, const T& curve): elements_(n){
 		
 		double h=1.0/n;
 		for (int i=0;i<n-1;i++){
-			elements[i]=pElement(new AnalyticCurveElement<T>(i*h, (i+1)*h,curve,i));
+			elements_[i]=pElement(new AnalyticCurveElement<T>(i*h, (i+1)*h,curve,i));
 		}
-		elements[n-1]=pElement(new AnalyticCurveElement<T>((n-1)*h, 1,curve,n-1));
+		elements_[n-1]=pElement(new AnalyticCurveElement<T>((n-1)*h, 1,curve,n-1));
 		for (int i=1;i<n-1;i++) {
-			elements[i]->set_next(i+1);
-			elements[i]->set_prev(i-1);
+			elements_[i]->set_next(i+1);
+			elements_[i]->set_prev(i-1);
 		}
-		elements[0]->set_next(1); elements[n-1]->set_next(0);
+		elements_[0]->set_next(1); elements_[n-1]->set_next(0);
 	}
 	
 	template<typename T>
-	pGeometry analytic_curve<T>::getGeometry(){
-		return pGeometry(new bem2d::Geometry(elements));
+	pGeometry AnalyticCurve<T>::GetGeometry(){
+		return pGeometry(new bem2d::Geometry(elements_));
 	}
 		
 		

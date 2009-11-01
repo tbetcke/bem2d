@@ -4,52 +4,52 @@
 
 namespace bem2d{
 
-	pdvector Outputhandler::realdata(const cvector& vals){
+	pdvector OutputHandler::RealData(const cvector& vals){
 		pdvector result(new dvector(vals.size()));
 		for (int i=0;i<vals.size();i++) (*result)[i]=vals[i].real();
 		return result;
 	}
 	
-	pdvector Outputhandler::imagdata(const cvector& vals){
+	pdvector OutputHandler::ImagData(const cvector& vals){
 		pdvector result(new dvector(vals.size()));
 		for (int i=0;i<vals.size();i++) (*result)[i]=vals[i].imag();
 		return result;
 	}
 	
-	pdvector Outputhandler::turntorealimag(const cvector& vals){
-		if (real){
-			return realdata(vals);
+	pdvector OutputHandler::TurnToRealImag(const cvector& vals){
+		if (real_){
+			return RealData(vals);
 		}
 		else {
-			return imagdata(vals);
+			return ImagData(vals);
 		}
 	}
 	
 
-	Gplotoutput::Gplotoutput(int xptsvalue, int yptsvalue, int ax, int bx, int ay, int by, std::string fname){
-		xpts=xptsvalue;
-		ypts=yptsvalue;
-		name=fname;
-		setreal();
-		mesh=*(meshgrid(ax,bx,ay,by,xpts,ypts));
+	GplotOutput::GplotOutput(int xpts, int ypts, int ax, int bx, int ay, int by, std::string name){
+		xpts_=xpts;
+		ypts_=ypts;
+		name_=name;
+		set_real(true);
+		mesh_=*(MeshGrid(ax,bx,ay,by,xpts_,ypts_));
 	}
 	
-	void Gplotoutput::writeIncident(const cvector& vals){
-		gplotout(name+"_inc",mesh,*(turntorealimag(vals)),xpts,ypts);
+	void GplotOutput::WriteIncident(const cvector& vals){
+		GplotOut(name_+"inc",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);
 	}
 	
-	void Gplotoutput::writeScattered(const cvector& vals){
-		gplotout(name+"scatt",mesh,*(turntorealimag(vals)),xpts,ypts);
+	void GplotOutput::WriteScattered(const cvector& vals){
+		GplotOut(name_+"scatt",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);
 	}
 	
-	void Gplotoutput::writeFull(const cvector& vals){
-		gplotout(name+"full",mesh,*(turntorealimag(vals)),xpts,ypts);		
+	void GplotOutput::WriteFull(const cvector& vals){
+		GplotOut(name_+"full",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);		
 	}
 	
-	void Gplotoutput::writeAll(const cvector& valsincident, const cvector& valsscattered, const cvector& valsfull){
-		gplotout(name+"_inc",mesh,*(turntorealimag(valsincident)),xpts,ypts);
-		gplotout(name+"scatt",mesh,*(turntorealimag(valsscattered)),xpts,ypts);
-		gplotout(name+"full",mesh,*(turntorealimag(valsfull)),xpts,ypts);		
+	void GplotOutput::WriteAll(const cvector& valsincident, const cvector& valsscattered, const cvector& valsfull){
+		GplotOut(name_+"_inc",mesh_,*(TurnToRealImag(valsincident)),xpts_,ypts_);
+		GplotOut(name_+"scatt",mesh_,*(TurnToRealImag(valsscattered)),xpts_,ypts_);
+		GplotOut(name_+"full",mesh_,*(TurnToRealImag(valsfull)),xpts_,ypts_);		
 	}
 			
 	
