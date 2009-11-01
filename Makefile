@@ -18,13 +18,14 @@ tests: bem2d
 
 .PHONY: bem2d
 bem2d:
-	cd libs; $(MAKE)
+	cd $(SRCDIR); $(MAKE)
 
 .PHONY: clean 
 clean:
-	cd libs; $(MAKE) clean
+	cd lib; $(MAKE) clean
 	cd tests; $(MAKE) clean
-	rm -f *~ *.o test
+	rm -f *~ *.o
+	rm -f ./bin/*
 
 testfile: bem2d tests
 	$(CPP) $(CFLAGS) -I./libs -o test test.cpp ./libs/bem2d.a $(LDFLAGS)

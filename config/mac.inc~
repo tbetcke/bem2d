@@ -45,7 +45,7 @@ OMP= -lgomp
 # Compiler and Flags
 ############################################
 CPP	= g++
-  CFLAGS  = -I$(GSLINC) -I/opt/local/include -fopenmp
+CFLAGS  = -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include -fopenmp
 DEBUGFLAGS = -g
 OPTFLAGS = -O3
 

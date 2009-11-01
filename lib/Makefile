@@ -15,7 +15,7 @@ all: $(OBJECTS)
 	ar rcs bem2d.a $(OBJECTS)
 
 %.o: %.cpp
-	$(CPP) $(CFLAGS) -I$(GSLINC) -I$(ATLASINC) -c $<
+	$(CPP) $(CFLAGS) -c $<
 
 clean:
 	rm -f *.o *~ bem2d.a

@@ -6,14 +6,11 @@ else
    CFLAGS += $(OPTFLAGS)
 endif
 
-#OBJECTS	= UnitTest.o testPoint.o testConstElement.o
-
 all: $(OBJECTS)
-#	$(CPP) $(CFLAGS) -o UnitTest $(OBJECTS) ../libs/bem2d.a $(LDFLAGS)
-	$(CPP) $(CFLAGS) -o test test.cpp ../libs/bem2d.a $(LDFLAGS)
+	$(CPP) $(CFLAGS) -o ../bin/test test.cpp ../lib/bem2d.a $(LDFLAGS)
 
 %.o: %.cpp
-	$(CPP) $(CFLAGS) -I$(GSLINC) -I$(ATLASINC) -c $<
+	$(CPP) $(CFLAGS)  -c $<
 
 clean: 
-	rm -f *.o *~ UnitTest
+	rm -f *.o *~

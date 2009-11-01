@@ -1,5 +1,5 @@
 #include<iostream>
-#include "../libs/bem2d.h"
+#include "../lib/bem2d.h"
 #include<cmath>
 
 

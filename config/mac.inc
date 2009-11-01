@@ -2,7 +2,7 @@
 # Specify Directories and output name
 ############################################
 
-SRCDIR	= libs
+SRCDIR	= lib
 
 ############################################
 #  Paths to Include Files
