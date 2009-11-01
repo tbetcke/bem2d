@@ -1,26 +1,26 @@
 #ifndef _BEM2D_H
 #define	_BEM2D_H
 
-#include "exceptions.h"
-#include "quadrature.h"
+#include "bem2d_exceptions.h"
+#include "bem2d_quadrature.h"
 
 
-#include "bem2ddefs.h"
-#include "Point.h"
-#include "Element.h"
-#include "Basis.h"
-#include "QuadPoints.h"
-#include "geometry.h"
-#include "kernel.h"
-#include "mathroutines.h"
-#include "outputroutines.h"
-#include "soundsoftscattering.h"
-#include "Outputhandler.h"
-#include "Bem2dfun.h"
-#include "Shape.h"
-#include "Curve.h"
-#include "Basis.h"
-#include "Basistypes.h"
+#include "bem2d_defs.h"
+#include "bem2d_point.h"
+#include "bem2d_element.h"
+#include "bem2d_basis.h"
+#include "bem2d_quadpoints.h"
+#include "bem2d_geometry.h"
+#include "bem2d_kernel.h"
+#include "bem2d_mathroutines.h"
+#include "bem2d_outputroutines.h"
+#include "bem2d_soundsoftscattering.h"
+#include "bem2d_outputhandler.h"
+#include "bem2d_fun.h"
+#include "bem2d_shape.h"
+#include "bem2d_curve.h"
+#include "bem2d_basis.h"
+#include "bem2d_basistypes.h"
 
 
 

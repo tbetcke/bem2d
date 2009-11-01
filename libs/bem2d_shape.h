@@ -2,11 +2,11 @@
 #define _SHAPE_H_
 
 #include<vector>
-#include "Element.h"
-#include "geometry.h"
-#include <boost/shared_ptr.hpp>
-#include "Point.h"
-#include "bem2ddefs.h"
+#include "boost/shared_ptr.hpp"
+#include "bem2d_element.h"
+#include "bem2d_geometry.h"
+#include "bem2d_point.h"
+#include "bem2d_defs.h"
 
 namespace bem2d {
 	
@@ -39,10 +39,10 @@ namespace bem2d {
 		}
 		elements[n-1]=pElement(new AnalyticCurveElement<T>((n-1)*h, 1,curve,n-1));
 		for (int i=1;i<n-1;i++) {
-			elements[i]->setNext(i+1);
-			elements[i]->setPrev(i-1);
+			elements[i]->set_next(i+1);
+			elements[i]->set_prev(i-1);
 		}
-		elements[0]->setNext(1); elements[n-1]->setNext(0);
+		elements[0]->set_next(1); elements[n-1]->set_next(0);
 	}
 	
 	template<typename T>

@@ -1,5 +1,5 @@
-#include "Point.h"
 #include <cmath>
+#include "bem2d_point.h"
 
 
 

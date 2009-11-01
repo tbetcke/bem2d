@@ -33,8 +33,8 @@ int main(int argc, char** argv){
 	*/
 	
 	
-	bem2d::circle cobj;
-	bem2d::analytic_curve<bem2d::circle> circle(n,cobj);
+	bem2d::Circle cobj;
+	bem2d::analytic_curve<bem2d::Circle> circle(n,cobj);
 	
 	bem2d::pGeometry pgeom=circle.getGeometry();
 	
@@ -47,9 +47,9 @@ int main(int argc, char** argv){
 	pgeom->addBasis(b1);
 	pgeom->addBasis(b2);
 	 */
-	bem2d::freqtype k=20;
-	bem2d::WavePolBasis::addBasis(2,k,pgeom);
-	std::cout << pgeom->getsize() << std::endl; 
+	bem2d::freqtype k=10;
+	bem2d::PolBasis::addBasis(0,pgeom);
+	std::cout << pgeom->size() << std::endl; 
 	
 	
 	
@@ -69,7 +69,7 @@ int main(int argc, char** argv){
 	std::cout << "System solved" << std::endl;
 	
 	
-	int xpts=200; int ypts=200;
+	int xpts=100; int ypts=100;
 	bem2d::pOutputhandler pout(new bem2d::Gplotoutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.setOutput(pout);
 	soundsoft.writeAll();

@@ -1,5 +1,5 @@
-#include "Shape.h"
-#include "bem2ddefs.h"
+#include "bem2d_shape.h"
+#include "bem2d_defs.h"
 
 namespace bem2d {
 
@@ -12,10 +12,10 @@ namespace bem2d {
 		}
 		elements[n-1]=bem2d::pElement(new bem2d::ConstElement(*(points[n-1]),*(points[0]),n-1));
 		for (int i=1;i<n-1;i++) {
-			elements[i]->setNext(i+1);
-			elements[i]->setPrev(i-1);
+			elements[i]->set_next(i+1);
+			elements[i]->set_prev(i-1);
 		}
-		elements[0]->setNext(1); elements[n-1]->setNext(0);
+		elements[0]->set_next(1); elements[n-1]->set_next(0);
 		
 	}
 	

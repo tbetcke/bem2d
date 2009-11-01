@@ -2,12 +2,12 @@
 #define	_BASISTYPES_H
 
 #include<cstdlib>
-#include<boost/shared_ptr.hpp>
-#include "bem2ddefs.h"
-#include "gsl/gsl_sf_legendre.h"
-#include "Basis.h"
-#include "geometry.h"
 #include <complex>
+#include "boost/shared_ptr.hpp"
+#include "gsl/gsl_sf_legendre.h"
+#include "bem2d_defs.h"
+#include "bem2d_basis.h"
+#include "bem2d_geometry.h"
 
 namespace bem2d{
 
@@ -28,38 +28,38 @@ namespace bem2d{
 		PolBasis(int degree);
 		inline complex operator()(double t){
 			double result=1;
-			for (int i=0;i<deg;i++) result=result*t;
+			for (int i=0;i<degree_;i++) result=result*t;
 			return result;
 		}
 	private:
-		int deg;
+		int degree_;
 	};
 	
 	class WaveBasis: public Basis {
 	public:
 		static void addBasis(freqtype k, pGeometry pgeom);
-		WaveBasis(double direction, freqtype kvalue);
+		WaveBasis(double direction, freqtype k);
 		inline complex operator()(double t){
-			return std::exp(complex(0,1)*k*dir*t);
+			return std::exp(complex(0,1)*k_*direction_*t);
 		}
 	private:
-		double dir;
-		freqtype k;
+		double direction_;
+		freqtype k_;
 	};
 
 	class WavePolBasis: public Basis {
 	public:
 		static void addBasis(int degree, freqtype k, pGeometry pgeom);
-		WavePolBasis(int degree, double direction, freqtype kvalue);
+		WavePolBasis(int degree, double direction, freqtype k);
 		inline complex operator()(double t){
 			double result=1;
-			for (int i=0;i<deg;i++) result=result*t;
-			return std::exp(complex(0,1)*k*dir*t)*result;
+			for (int i=0;i<degree_;i++) result=result*t;
+			return std::exp(complex(0,1)*k_*direction_*t)*result;
 		}
 	private:
-		double dir;
-		freqtype k;
-		int deg;
+		double direction_;
+		freqtype k_;
+		int degree_;
 	};
 	
 			

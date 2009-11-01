@@ -1,12 +1,12 @@
 #ifndef MATHROUTINES_H_
 #define MATHROUTINES_H_
 
+#include <vector>
 #include<vector>
-#include "bem2ddefs.h"
-#include "exceptions.h"
-#include<vector>
-#include "Point.h"
 #include<cstdlib>
+#include "bem2d_defs.h"
+#include "bem2d_exceptions.h"
+#include "bem2d_point.h"
 
 
 namespace bem2d {
@@ -33,17 +33,17 @@ namespace bem2d {
 		identity(int n);
 	};
 	
-	matrix operator+(const matrix& lhs, const matrix& rhs) throw (array_mismatch);
-	matrix operator-(const matrix& lhs, const matrix& rhs) throw (array_mismatch);
+	matrix operator+(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch);
+	matrix operator-(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch);
 	
 	matrix operator*(const matrix& lhs, complex& alpha);
 	matrix operator*(const complex& alpha, const matrix& rhs);
 	matrix operator*(const matrix& lhs, const double& alpha);
 	matrix operator*(const double& alpha, const matrix& rhs);
 			
-	matrix operator*(const matrix& lhs, const matrix& rhs) throw (array_mismatch);
+	matrix operator*(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch);
 	
-	void solve_system(pcvector pmatrix, pcvector prhs) throw (lapack_error);
+	void solve_system(pcvector pmatrix, pcvector prhs) throw (LapackError);
 	
 	
 }

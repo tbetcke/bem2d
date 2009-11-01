@@ -1,6 +1,5 @@
-#include "outputroutines.h"
 #include<fstream>
-#include "outputroutines.h"
+#include "bem2d_outputroutines.h"
 
 namespace bem2d {
 	

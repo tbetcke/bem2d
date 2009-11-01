@@ -1,12 +1,12 @@
-#include "quadrature.h"
 #include <tr1/array>
 #include <cstdlib>
-#include<boost/shared_ptr.hpp>
+#include "boost/shared_ptr.hpp"
+#include "bem2d_quadrature.h"
 
 namespace bem2d {
 	
 	
-	void gauss(dvector& x, dvector& w, int N) throw (lapack_error) {
+	void Gauss(dvector& x, dvector& w, int N) throw (LapackError) {
 		// Points xa and weights w for N point Gaussian quadrature
 		// in the interval [0,1]
 		
@@ -47,11 +47,11 @@ namespace bem2d {
             w[i] = v[i * N] * v[i * N];
         }
 		
-        if (info) throw lapack_error();
+        if (info) throw LapackError();
 		
     }
 	
-	void mappoints(dvector& x, dvector& w, double a, double b){
+	void MapPoints(dvector& x, dvector& w, double a, double b){
 		
 		for (std::size_t i = 0; i < x.size(); i++) {
 			x[i] = a + (b - a) * x[i];
@@ -60,7 +60,7 @@ namespace bem2d {
 		
 	}
 	
-	void mappoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double c, double d){
+	void MapPoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double c, double d){
 		
 		for (std::size_t i=0; i< x.size(); i++){
 			x[i]=a+(b-a)*x[i];

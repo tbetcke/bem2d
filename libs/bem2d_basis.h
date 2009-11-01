@@ -1,7 +1,7 @@
 #ifndef _BASIS_H_
 #define _BASIS_H_
 
-#include "bem2ddefs.h"
+#include "bem2d_defs.h"
 
 namespace bem2d {
 

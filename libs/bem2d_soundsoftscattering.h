@@ -1,14 +1,14 @@
 #ifndef _SOUNDSOFTSCATTERING_H_
 #define _SOUNDSOFTSCATTERING_H_
 
-#include "bem2ddefs.h"
-#include "geometry.h"
-#include "Bem2dfun.h"
 #include <vector>
-#include "Outputhandler.h"
-#include "quadrature.h"
-#include "mathroutines.h"
-#include "cblas.h"
+#include "bem2d_defs.h"
+#include "bem2d_geometry.h"
+#include "bem2d_fun.h"
+#include "bem2d_outputhandler.h"
+#include "bem2d_quadrature.h"
+#include "bem2d_mathroutines.h"
+#include "bem2d_cblas.h"
 
 namespace bem2d {
 	
@@ -52,7 +52,7 @@ namespace bem2d {
 	
 	template<typename T1, typename T2>
 	Soundsoftscattering<T1,T2>::Soundsoftscattering(pGeometry geom, freqtype kvalue, T1 inc, T2 rhs): pgeom(geom), 
-	k(kvalue), A(geom->getsize()), frhs(rhs), incident(inc) {
+	k(kvalue), A(geom->size()), frhs(rhs), incident(inc) {
 		quadopts.L=3;
 		quadopts.N=5;
 		quadopts.sigma=0.15;
@@ -73,14 +73,14 @@ namespace bem2d {
 	void Soundsoftscattering<T1,T2>::discretize(){
 		
 		
-		bem2d::combinedsingleconjdouble scdl(k,frhs.geteta());
-		A.data=discretekernel(*pgeom,quadopts,scdl);
-		pcvector pident=dotprodbasfuns(*pgeom,quadopts,Idfun());
+		bem2d::CombinedSingleConjDouble scdl(k,frhs.geteta());
+		A.data=DiscreteKernel(*pgeom,quadopts,scdl);
+		pcvector pident=DotProdBasFuns(*pgeom,quadopts,Idfun());
 		cblas_zdscal(A.dim*A.dim,2.0,&(*A.data)[0],1);
 		
 		for (int i=0;i<A.dim;i++) (*A.data)[A.dim*i+i]+=(*pident)[i];
 		
-		prhs=bem2d::dotprodbasfuns(*pgeom,quadopts,frhs);
+		prhs=bem2d::DotProdBasFuns(*pgeom,quadopts,frhs);
 		cblas_zdscal(A.dim,2.0,&(*prhs)[0],1);
 		
 		/*
@@ -114,8 +114,8 @@ namespace bem2d {
 	
 	template<typename T1, typename T2>
 	pcvector Soundsoftscattering<T1,T2>::evalsol(const std::vector<Point>& points){
-		boost::shared_ptr<bem2d::Geometry::flat_basis_map> bfuns=pgeom->getflatmap();
-		bem2d::singlelayer sl(k);
+		boost::shared_ptr<bem2d::Geometry::flat_basis_map> bfuns=pgeom->FlatMap();
+		bem2d::SingleLayer sl(k);
 		pcvector kerneleval=pcvector(new cvector(points.size()));
 		
 		bem2d::Gauss1D g1d(quadopts.N);
@@ -125,7 +125,7 @@ namespace bem2d {
 			evalkernel((*bfuns)[i], points, *result, (*psol)[i], dl,g1d);
 		}
 		 */
-		evalkernel(*bfuns,points,*kerneleval,*psol,sl,g1d);
+		EvalKernel(*bfuns,points,*kerneleval,*psol,sl,g1d);
 		
 		/*
 		std::cout << "Single Layer Kernel";

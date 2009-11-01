@@ -1,7 +1,6 @@
-#include "mathroutines.h"
+#include "bem2d_mathroutines.h"
 #include "gsl/gsl_sf_bessel.h"
-#include "fstream"
-#include "cblas.h"
+#include "bem2d_cblas.h"
 
 namespace bem2d {
 	
@@ -44,8 +43,8 @@ namespace bem2d {
 	}
 	
 	
-	matrix operator+(const matrix& lhs, const matrix& rhs) throw (array_mismatch){
-		if (lhs.dim!=rhs.dim) throw array_mismatch();
+	matrix operator+(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch){
+		if (lhs.dim!=rhs.dim) throw ArrayMismatch();
 		matrix result(lhs.dim);
 		*result.data=*rhs.data;
 		complex alpha=1.0;
@@ -54,8 +53,8 @@ namespace bem2d {
 		
 	}
 	
-	matrix operator-(const matrix& lhs, const matrix& rhs) throw (array_mismatch){
-		if (lhs.dim!=rhs.dim) throw array_mismatch();
+	matrix operator-(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch){
+		if (lhs.dim!=rhs.dim) throw ArrayMismatch();
 		matrix result(lhs.dim);
 		*result.data=*lhs.data;
 		complex alpha=-1.0;
@@ -87,8 +86,8 @@ namespace bem2d {
 		return rhs*alpha;
 	}
 	
-	matrix operator*(const matrix& lhs, const matrix& rhs) throw (array_mismatch){
-		if (lhs.dim!=rhs.dim) throw array_mismatch();
+	matrix operator*(const matrix& lhs, const matrix& rhs) throw (ArrayMismatch){
+		if (lhs.dim!=rhs.dim) throw ArrayMismatch();
 		matrix result(lhs.dim);
 		complex alpha=1.0;
 		complex beta=0.0;
@@ -100,7 +99,7 @@ namespace bem2d {
 	
 	
 	
-	void solve_system(pcvector pmatrix, pcvector prhs) throw (lapack_error){
+	void solve_system(pcvector pmatrix, pcvector prhs) throw (LapackError){
 		
 		int N=prhs->size();
 		int info;
@@ -110,10 +109,10 @@ namespace bem2d {
 		
 		
 		zgetrf_(&N, &N, &((*pmatrix)[0]), &N, &(ipiv[0]),&info);
-		if (info!=0) throw lapack_error();
+		if (info!=0) throw LapackError();
 		
 		zgetrs_(&trans,&N,&nrhs,&((*pmatrix)[0]),&N,&(ipiv[0]),&((*prhs)[0]),&N,&info);
-		if (info!=0) throw lapack_error();
+		if (info!=0) throw LapackError();
 		
 	}
 	

@@ -1,12 +1,11 @@
 #ifndef _OUTPUTHANDLER_H_
 #define _OUTPUTHANDLER_H_
 
-#include "bem2ddefs.h"
 #include<vector>
-#include "Point.h"
-#include <boost/shared_ptr.hpp>
+#include "boost/shared_ptr.hpp"
 #include <string>
-#include "Point.h"
+#include "bem2d_defs.h"
+#include "bem2d_point.h"
 
 namespace bem2d {
 	

@@ -2,8 +2,8 @@
 #define OUTPUTROUTINES_H_
 
 #include<vector>
-#include "bem2ddefs.h"
-#include "Point.h"
+#include "bem2d_defs.h"
+#include "bem2d_point.h"
 
 
 namespace bem2d {

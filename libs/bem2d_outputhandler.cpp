@@ -1,7 +1,6 @@
-#include "Outputhandler.h"
-#include "outputroutines.h"
-#include <boost/shared_ptr.hpp>
-#include "outputroutines.h"
+#include "boost/shared_ptr.hpp"
+#include "bem2d_outputhandler.h"
+#include "bem2d_outputroutines.h"
 
 namespace bem2d{
 

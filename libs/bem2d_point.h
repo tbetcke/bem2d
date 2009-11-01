@@ -1,5 +1,6 @@
 #ifndef _POINT_H
 #define	_POINT_H
+
 #include<iostream>
 
 namespace bem2d {

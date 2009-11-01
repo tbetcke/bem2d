@@ -1,4 +1,4 @@
-#include "Bem2dfun.h"
+#include "bem2d_fun.h"
 
 namespace bem2d {
 

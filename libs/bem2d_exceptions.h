@@ -6,20 +6,20 @@
 
 namespace bem2d {
 
-    class array_mismatch {
+    class ArrayMismatch {
     };
 
-    class lapack_error {
+    class LapackError {
     };
 
-    class interval_exception {
+    class IntervalException {
     };
 
-    class parameter_exception{
+    class ParameterException{
 
     };
 
-	class size_error {};
+	class SizeError {};
 	
 }
 

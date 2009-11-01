@@ -1,11 +1,11 @@
 #ifndef _BEM2DFUN_H_
 #define _BEM2DFUN_H_
 
-#include "bem2ddefs.h"
-#include "Point.h"
-#include "boost/shared_ptr.hpp"
 #include <complex>
-#include "kernel.h"
+#include "boost/shared_ptr.hpp"
+#include "bem2d_defs.h"
+#include "bem2d_point.h"
+#include "bem2d_kernel.h"
 
 namespace bem2d {
 	
@@ -102,7 +102,7 @@ namespace bem2d {
 		}
 	private:
 		freqtype k;
-		singlelayer s;
+		SingleLayer s;
 	};
 	
 	class Idfun {
