@@ -4,23 +4,28 @@
 
 // bem2d exception classes
 
-namespace bem2d {
+namespace bem2d
+{
 
-    class ArrayMismatch {
-    };
+class ArrayMismatch
+{
+};
 
-    class LapackError {
-    };
+class LapackError
+{
+};
 
-    class IntervalException {
-    };
+class IntervalException
+{
+};
 
-    class ParameterException{
+class ParameterException
+{
 
-    };
+};
 
-	class SizeError {};
-	
+class SizeError {};
+
 }
 
 

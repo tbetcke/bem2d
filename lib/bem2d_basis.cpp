@@ -1,7 +1,8 @@
 #include "bem2d_basis.h"
 
-namespace bem2d {
+namespace bem2d
+{
 
-	Basis::~Basis(){}
+Basis::~Basis() {}
 
 }

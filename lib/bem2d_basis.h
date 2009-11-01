@@ -3,15 +3,17 @@
 
 #include "bem2d_defs.h"
 
-namespace bem2d {
+namespace bem2d
+{
 
-	class Basis {
-	public:
-		virtual complex operator()(double t)=0;
-		virtual ~Basis();
-	};
-		
-	typedef boost::shared_ptr<Basis> pBasis;
+class Basis
+{
+public:
+  virtual complex operator()(double t)=0;
+  virtual ~Basis();
+};
+
+typedef boost::shared_ptr<Basis> pBasis;
 
 }
 

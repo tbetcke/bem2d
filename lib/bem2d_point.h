@@ -3,18 +3,20 @@
 
 #include<iostream>
 
-namespace bem2d {
+namespace bem2d
+{
 
-    struct Point {
-        double x; // x coordinate
-        double y; // y coordinate
+struct Point
+{
+  double x; // x coordinate
+  double y; // y coordinate
 
-        Point(double xx, double yy);
-        Point();
-        Point(const Point& p);
+  Point(double xx, double yy);
+  Point();
+  Point(const Point& p);
 
-        ~Point(){};
-    };
+  ~Point() {};
+};
 
 std::ostream & operator<<(std::ostream &s, const Point& z);
 Point operator+(const Point& p1, const Point& p2);
