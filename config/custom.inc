@@ -2,7 +2,7 @@
 # Specify Directories and output name
 ############################################
 
-SRCDIR	= libs
+SRCDIR	= lib
 
 ############################################
 #  Paths to Include Files
@@ -46,7 +46,7 @@ OMP= -lgomp
 # Compiler and Flags
 ############################################
 CPP	= g++
-CFLAGS  = -I$(ATLASINC) -fopenmp
+CFLAGS  = -I$(GSL) -I$(ATLASINC)  -fopenmp
 DEBUGFLAGS = -g
 OPTFLAGS = -O3
 

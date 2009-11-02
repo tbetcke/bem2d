@@ -21,34 +21,26 @@ int main(int argc, char** argv){
 	// File to test different things
 	
 	
-	int n=500;
+	int n=1000;
 	
 	//bem2d::diskshape_piecewise_const disk(n,1.0);
 		
-	/*
-	bem2d::trefoil tobj;
-	bem2d::analytic_curve<bem2d::trefoil> trefoil(n,tobj);
 	
-	bem2d::pGeometry pgeom=trefoil.getGeometry();
+	bem2d::Trefoil tobj;
+	bem2d::AnalyticCurve<bem2d::Trefoil> trefoil(n,tobj);
+	
+	bem2d::pGeometry pgeom=trefoil.GetGeometry();
+	
+	
+	/*
+	bem2d::Circle cobj;
+	bem2d::AnalyticCurve<bem2d::Circle> circle(n,cobj);
+	bem2d::pGeometry pgeom=circle.GetGeometry();
 	*/
 	
 	
-	bem2d::Circle cobj;
-	bem2d::AnalyticCurve<bem2d::Circle> circle(n,cobj);
-	
-	bem2d::pGeometry pgeom=circle.GetGeometry();
-	
-	
-	/* 
-	bem2d::pBasis b0(new bem2d::PolBasis(0));
-	bem2d::pBasis b1(new bem2d::PolBasis(1));
-	bem2d::pBasis b2(new bem2d::PolBasis(2));
-	pgeom->addBasis(b0);
-	pgeom->addBasis(b1);
-	pgeom->addBasis(b2);
-	 */
-	bem2d::freqtype k=10;
-	bem2d::PolBasis::AddBasis(0,pgeom);
+	bem2d::freqtype k=50;
+	bem2d::PolBasis::AddBasis(1,pgeom);
 	std::cout << pgeom->size() << std::endl; 
 	
 	
@@ -56,10 +48,10 @@ int main(int argc, char** argv){
 	bem2d::PlaneWave pw(bem2d::Point(1,0),k);
 	bem2d::CombinedPlaneWave cpw(bem2d::Point(1,0),k);
 
-	//bem2d::Outwave owave(k);
 	
 	bem2d::SoundSoftScattering<bem2d::PlaneWave,bem2d::CombinedPlaneWave> soundsoft(pgeom,k,pw,cpw);
-	
+	soundsoft.SetQuadOption(3,5,0.15);
+
 	soundsoft.Discretize();
 	
 	std::cout << "Solve system" << std::endl;
@@ -69,8 +61,8 @@ int main(int argc, char** argv){
 	std::cout << "System solved" << std::endl;
 	
 	
-	int xpts=100; int ypts=100;
-	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
+	int xpts=200; int ypts=200;
+	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-3,3,-3,3,"trefoil"));
 	soundsoft.SetOutput(pout);
 	soundsoft.WriteAll();
 	
