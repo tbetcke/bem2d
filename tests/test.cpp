@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 	// File to test different things
 	
 	
-	int n=1000;
+	int n=500;
 	
 	//bem2d::diskshape_piecewise_const disk(n,1.0);
 		
@@ -39,8 +39,8 @@ int main(int argc, char** argv){
 	
 	
 	
-	bem2d::freqtype k=50;
-	bem2d::PolBasis::AddBasis(1,pgeom);
+	bem2d::freqtype k=5;
+	bem2d::PolBasis::AddBasis(5,pgeom);
 	std::cout << pgeom->size() << std::endl; 
 	
 	
