@@ -25,18 +25,18 @@ int main(int argc, char** argv){
 	
 	//bem2d::diskshape_piecewise_const disk(n,1.0);
 		
-	
+	/*
 	bem2d::Trefoil tobj;
 	bem2d::AnalyticCurve<bem2d::Trefoil> trefoil(n,tobj);
 	
 	bem2d::pGeometry pgeom=trefoil.GetGeometry();
+	*/
 	
 	
-	/*
 	bem2d::Circle cobj;
 	bem2d::AnalyticCurve<bem2d::Circle> circle(n,cobj);
 	bem2d::pGeometry pgeom=circle.GetGeometry();
-	*/
+	
 	
 	
 	bem2d::freqtype k=50;
@@ -50,7 +50,7 @@ int main(int argc, char** argv){
 
 	
 	bem2d::SoundSoftScattering<bem2d::PlaneWave,bem2d::CombinedPlaneWave> soundsoft(pgeom,k,pw,cpw);
-	soundsoft.SetQuadOption(3,5,0.15);
+	soundsoft.SetQuadOption(3,3,0.15);
 
 	soundsoft.Discretize();
 	
@@ -61,8 +61,8 @@ int main(int argc, char** argv){
 	std::cout << "System solved" << std::endl;
 	
 	
-	int xpts=200; int ypts=200;
-	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-3,3,-3,3,"trefoil"));
+	int xpts=10; int ypts=10;
+	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.SetOutput(pout);
 	soundsoft.WriteAll();
 	
