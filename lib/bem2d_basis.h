@@ -9,7 +9,7 @@ namespace bem2d
 class Basis
 {
 public:
-  virtual complex operator()(double t)=0;
+  virtual complex operator()(double t) const=0;
   virtual ~Basis();
 };
 

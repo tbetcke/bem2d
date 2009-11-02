@@ -6,6 +6,12 @@ else
    CFLAGS += $(OPTFLAGS)
 endif
 
+ifeq ($(profile),y)
+   MAKE += profile=y
+   CFLAGS += -pg
+endif
+
+
 all: $(OBJECTS)
 	$(CPP) $(CFLAGS) -o ../bin/test test.cpp ../lib/bem2d.a $(LDFLAGS)
 

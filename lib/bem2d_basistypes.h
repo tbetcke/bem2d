@@ -31,10 +31,10 @@ class PolBasis: public Basis
 public:
   static void AddBasis(int deg, pGeometry pgeom);
   PolBasis(int degree);
-  inline complex operator()(double t)
+  inline complex operator()(double t) const
   {
-    double result=gsl_sf_legendre_Pl(degree_,2*t-1);
-    //for (int i=0; i<degree_; i++) result=result*t;
+    double result=1; //gsl_sf_legendre_Pl(degree_,2*t-1);
+    for (int i=0; i<degree_; i++) result=result*t;
     return result;
   }
 private:
@@ -48,7 +48,7 @@ class WaveBasis: public Basis
 public:
   static void AddBasis(freqtype k, pGeometry pgeom);
   WaveBasis(double direction, freqtype k);
-  inline complex operator()(double t)
+  inline complex operator()(double t) const
   {
     return std::exp(complex(0,1)*k_*direction_*t);
   }
@@ -64,7 +64,7 @@ class WavePolBasis: public Basis
 public:
   static void AddBasis(int degree, freqtype k, pGeometry pgeom);
   WavePolBasis(int degree, double direction, freqtype k);
-  inline complex operator()(double t)
+  inline complex operator()(double t) const
   {
     double result=1;
     for (int i=0; i<degree_; i++) result=result*t;
@@ -81,4 +81,3 @@ typedef boost::shared_ptr<WavePolBasis> pWavePolBasis;
 
 }
 #endif	/* _BASIS_H */
-

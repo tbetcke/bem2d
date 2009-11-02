@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 	// File to test different things
 	
 	
-	int n=500;
+	int n=2000;
 	
 	//bem2d::diskshape_piecewise_const disk(n,1.0);
 		
@@ -40,7 +40,7 @@ int main(int argc, char** argv){
 	
 	
 	bem2d::freqtype k=5;
-	bem2d::PolBasis::AddBasis(5,pgeom);
+	bem2d::PolBasis::AddBasis(0,pgeom);
 	std::cout << pgeom->size() << std::endl; 
 	
 	
@@ -50,7 +50,7 @@ int main(int argc, char** argv){
 
 	
 	bem2d::SoundSoftScattering<bem2d::PlaneWave,bem2d::CombinedPlaneWave> soundsoft(pgeom,k,pw,cpw);
-	soundsoft.SetQuadOption(3,3,0.15);
+	soundsoft.SetQuadOption(3,5,0.15);
 
 	soundsoft.Discretize();
 	

@@ -8,6 +8,11 @@ else
    CFLAGS += $(OPTFLAGS)
 endif
 
+ifeq ($(profile),y)
+   MAKE += profile=y
+   CFLAGS += -pg
+endif
+
 
 all:	bem2d tests
 
