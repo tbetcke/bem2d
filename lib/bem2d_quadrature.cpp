@@ -81,7 +81,36 @@ void MapPoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double 
 }
 
 
-
+	pcvector EvalIdent(const Geometry& geom, QuadOption opts){
+		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.FlatMap();
+		pcvector pmatrix(new std::vector<complex>);
+		std::size_t N=bfuns->size();
+		pmatrix->resize(N*N);
+		Gauss1D g1d(opts.N);
+		const dvector x=g1d.x();
+		const dvector w=g1d.w();
+		
+		// Now iterate through all the elements
+#pragma omp parallel for		
+		for (int i=0;i<N;i++){
+			pElement pi=(*bfuns)[i].first;
+			pBasis fi=(*bfuns)[i].second;
+			for (int j=0;j<N;j++){
+				pElement pj=(*bfuns)[j].first;
+				if (pi->index()==pj->index()){
+					pBasis fj=(*bfuns)[j].second;
+					complex value=0;
+					for (int t=0;t<x.size();t++){
+						double s=length(pj->Deriv(x[t]));
+						value+=s*std::conj((*fi)(x[t]))*(*fj)(x[t])*w[t];
+					}
+					(*pmatrix)[N*j+i]=value;
+				}
+			}
+		}
+		return pmatrix;
+	}
+	
 
 
 

@@ -95,6 +95,14 @@ private:
   Point n2_;
   double eta_;
 };
+	
+	class IdKernel{
+	public:
+		inline void SetNormal(Point normal1, Point normal2){}
+		complex operator()(Point x, Point y) const{
+			return 1.0;
+		}
+	};
 
 
 }

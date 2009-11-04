@@ -78,24 +78,18 @@ void SoundSoftScattering<T1,T2>::Discretize()
 {
 
 
-  bem2d::CombinedSingleConjDouble scdl(k_,frhs_.eta());
+   bem2d::CombinedSingleConjDouble scdl(k_,frhs_.eta());
+	
   A_.data=DiscreteKernel(*pgeom_,quadopts_,scdl);
-  pcvector pident=DotProdBasFuns(*pgeom_,quadopts_,IdFun());
-  cblas_zdscal(A_.dim*A_.dim,2.0,&(*A_.data)[0],1);
-
-  for (int i=0; i<A_.dim; i++) (*A_.data)[A_.dim*i+i]+=(*pident)[i];
-
+	Matrix Id(pgeom_->size());
+	Id.data=EvalIdent(*pgeom_, quadopts_);
+	A_=Id+2.0*A_;
+	
   prhs_=bem2d::DotProdBasFuns(*pgeom_,quadopts_,frhs_);
+	
+	
   cblas_zdscal(A_.dim,2.0,&(*prhs_)[0],1);
 
-  /*
-  std::cout << "A Matrix" << std::endl;
-  for (int i=0;i<A.dim;i++) std::cout << (*A.data)[i] << std::endl;
-
-  std::cout << "rhs";
-  for (int i=0;i<A.dim;i++) std::cout << (*prhs)[i] << std::endl;
-  std::cout << std::endl;
-  */
 }
 
 template<typename T1, typename T2>
@@ -104,10 +98,6 @@ void SoundSoftScattering<T1,T2>::Solve()
   psol_=pcvector(new cvector(*prhs_));
   SolveSystem(A_.data,psol_);
 
-  /*
-  std::cout << "Sol" << std::endl;
-  for (int i=0;i<A.dim;i++) std::cout << (*psol)[i] << std::endl;
-   */
 }
 
 template<typename T1,typename T2>
@@ -128,17 +118,7 @@ pcvector SoundSoftScattering<T1,T2>::EvalSol(const std::vector<Point>& points)
 
   bem2d::Gauss1D g1d(quadopts_.N);
 
-  /*
-  for (int i=0;i<A.dim;i++) {
-  	evalkernel((*bfuns)[i], points, *result, (*psol)[i], dl,g1d);
-  }
-   */
   EvalKernel(*bfuns,points,*kerneleval,*psol_,sl,g1d);
-
-  /*
-  std::cout << "Single Layer Kernel";
-  for (int i=0;i<points.size();i++) std::cout << (*kerneleval)[i] << std::endl;
-  */
 
 
   pcvector result=EvalIncident(points);
