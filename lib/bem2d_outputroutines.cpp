@@ -62,6 +62,7 @@ void GplotOut(std::string name, const std::vector<Point>& points, const dvector&
 
   out2 << "set pm3d map\n";
   out2 << "set hidden3d\n";
+  out2 << "set datafile missing \"nan\"\n";
   out2 << "set palette rgbformulae 33,13,10\n";
   out2 << "set size ratio -1\n";
   out2 << "set size square\n";

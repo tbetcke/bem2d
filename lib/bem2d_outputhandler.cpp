@@ -58,7 +58,7 @@ void GplotOutput::WriteFull(const cvector& vals)
 
 void GplotOutput::WriteAll(const cvector& valsincident, const cvector& valsscattered, const cvector& valsfull)
 {
-  GplotOut(name_+"_inc",mesh_,*(TurnToRealImag(valsincident)),xpts_,ypts_);
+  GplotOut(name_+"inc",mesh_,*(TurnToRealImag(valsincident)),xpts_,ypts_);
   GplotOut(name_+"scatt",mesh_,*(TurnToRealImag(valsscattered)),xpts_,ypts_);
   GplotOut(name_+"full",mesh_,*(TurnToRealImag(valsfull)),xpts_,ypts_);
 }

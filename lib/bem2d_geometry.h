@@ -6,6 +6,7 @@
 #include "boost/shared_ptr.hpp"
 #include "bem2d_basis.h"
 #include "bem2d_element.h"
+#include "bem2d_point.h"
 
 namespace bem2d
 {
@@ -54,20 +55,27 @@ public:
       }
     return p;
   }
+	
 
   inline std::size_t size() const
   {
     return size_;
   }
+	
+
+  inline const PointVector& points() const{
+		return points_;
+	}
 
 
 private:
   std::vector<pElement> elements_;
   basis_map elements_bases_;
+  PointVector points_; // Stores the points defining a geometry
   int size_; // Number of basis functions
 };
 
-typedef boost::shared_ptr<Geometry> pGeometry;
+	typedef boost::shared_ptr<Geometry> pGeometry;
 
 }
 

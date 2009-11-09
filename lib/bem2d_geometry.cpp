@@ -9,6 +9,13 @@ Geometry::Geometry(const std::vector<pElement>& elems):
     size_(0)
 {
   elements_bases_.resize(elems.size());
+	
+  // Now generate the point vector
+	
+	for (int i=0;i<elements_.size(); i++){
+		points_.push_back(elements_[i]->First());
+	}
+	
 }
 
 }

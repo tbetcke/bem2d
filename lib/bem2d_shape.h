@@ -7,6 +7,7 @@
 #include "bem2d_geometry.h"
 #include "bem2d_point.h"
 #include "bem2d_defs.h"
+#include "bem2d_exceptions.h"
 
 namespace bem2d
 {
@@ -23,6 +24,14 @@ private:
 
 };
 
+	class Polygon {
+	public:
+		Polygon(const std::vector<Point>& points, int n);
+		pGeometry GetGeometry();
+	private:
+		std::vector<bem2d::pElement> elements_;
+	};
+	
 template<typename T>
 class AnalyticCurve
 {
@@ -48,8 +57,8 @@ AnalyticCurve<T>::AnalyticCurve(int n, const T& curve): elements_(n)
       elements_[i]->set_next(i+1);
       elements_[i]->set_prev(i-1);
     }
-  elements_[0]->set_next(1);
-  elements_[n-1]->set_next(0);
+	elements_[0]->set_next(1); elements_[0]->set_prev(n-1);
+	elements_[n-1]->set_next(0); elements_[n-1]->set_prev(n-2);
 }
 
 template<typename T>

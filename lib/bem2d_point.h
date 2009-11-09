@@ -2,6 +2,8 @@
 #define	_POINT_H
 
 #include<iostream>
+#include "bem2d_defs.h"
+#include "bem2d_pnpoly.h"
 
 namespace bem2d
 {
@@ -30,6 +32,9 @@ double length(const Point& p);
 Point normalize(const Point& p);
 // Normalize a point by dividing it through its length
 
+	
+	typedef std::vector<Point> PointVector;
+	typedef boost::shared_ptr<PointVector> pPointVector;  
 }
 
 

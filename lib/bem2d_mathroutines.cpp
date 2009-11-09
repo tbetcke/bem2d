@@ -2,6 +2,7 @@
 #include "gsl/gsl_sf_bessel.h"
 #include "bem2d_cblas.h"
 
+
 namespace bem2d
 {
 
@@ -42,6 +43,11 @@ Matrix::Matrix(std::size_t n): dim(n)
   data=pcvector(new cvector);
   data->resize(n*n);
 }
+	
+	Matrix::Matrix(const Matrix& m){
+		dim=m.dim;
+		data=pcvector(new cvector(*m.data));
+	}
 
 Identity::Identity(int n): Matrix(n)
 {
@@ -110,6 +116,24 @@ Matrix operator*(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch)
 
 }
 
+	double L2Cond(const Matrix& m) throw (LapackError){
+		
+		char jobu='N';
+		char jobvt='N';
+		int M=m.dim;
+		dvector s(m.dim);
+		int lwork=5*M;
+		cvector work(lwork);
+		dvector rwork(lwork);
+		int info;
+		
+		Matrix tmp(m);
+		
+		zgesvd_(&jobu, &jobvt, &M, &M, &(*tmp.data)[0], &M, &s[0], NULL, &M, NULL, &M, &work[0], &lwork, &rwork[0], &info);
+		if (info!=0) throw LapackError();
+		return s[0]/s[M-1];
+	}
+			
 
 
 void SolveSystem(pcvector pmatrix, pcvector prhs) throw (LapackError)
@@ -130,7 +154,31 @@ void SolveSystem(pcvector pmatrix, pcvector prhs) throw (LapackError)
 
 }
 
-
+	void InPolygon(const std::vector<pGeometry> polygons, const std::vector<Point>& testpoints,std::vector<int>& inpoly){
+		int N=testpoints.size();
+		if (N!=inpoly.size()) inpoly.resize(N);
+		for (int i=0;i<N;i++) inpoly[i]=0;
+		for (int i=0;i<polygons.size();i++){
+			pGeometry pgeom=polygons[i];
+			PointVector polypoints((*pgeom).points());
+			dvector px(polypoints.size());
+			dvector py(polypoints.size());
+			for (int j=0;j<polypoints.size();j++){
+				px[j]=polypoints[j].x;
+				py[j]=polypoints[j].y;
+			}
+#pragma omp parallel for
+			for (int j=0;j<N;j++) {
+				inpoly[j]+=pnpoly(polypoints.size(), &px[0], &py[0], testpoints[j].x, testpoints[j].y);
+			}
+		}
+	}
+	
+	void InPolygon(const pGeometry polygon, const std::vector<Point>& testpoints,std::vector<int>& inpoly){
+		std::vector<pGeometry> polygons;
+		polygons.push_back(polygon);
+		InPolygon(polygons,testpoints,inpoly);
+	}
 
 
 
