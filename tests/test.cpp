@@ -4,25 +4,14 @@
 
 
 
-class planewave {
-public:
-	planewave(bem2d::freqtype kvalue): k(kvalue){}
-	bem2d::complex operator()(bem2d::Point x){
-		return cos(k*x.x)+bem2d::complex(0,1)*sin(k*x.x);
-	}
-	void setnormal(bem2d::Point p){}
-private:
-	bem2d::freqtype k;
-};
-	
-	
-
 int main(int argc, char** argv){
 	// File to test different things
 	
 	
-	int n=400;
+	int n=100;
 	
+	
+	/*
 	std::vector<bem2d::Point> square;
 	square.push_back(bem2d::Point(-.5,-.5));
 	square.push_back(bem2d::Point(.5,-.5));
@@ -30,7 +19,21 @@ int main(int argc, char** argv){
 	square.push_back(bem2d::Point(-.5,.5));
 	bem2d::Polygon poly(square,n);
 	bem2d::pGeometry pgeom=poly.GetGeometry();
+	*/
 	
+	std::vector<bem2d::Point> trapping;
+	trapping.push_back(bem2d::Point(0,0));
+	trapping.push_back(bem2d::Point(0,2));
+	trapping.push_back(bem2d::Point(-1,2));
+	trapping.push_back(bem2d::Point(-1,-1));
+	trapping.push_back(bem2d::Point(2,-1));
+	trapping.push_back(bem2d::Point(2,2));
+	trapping.push_back(bem2d::Point(1,2));
+	trapping.push_back(bem2d::Point(1,0));
+	bem2d::Polygon poly(trapping,n);
+	bem2d::pGeometry pgeom=poly.GetGeometry();
+	
+	 
 	/*
 	bem2d::Trefoil tobj;
 	bem2d::AnalyticCurve<bem2d::Trefoil> trefoil(n,tobj);
@@ -50,12 +53,12 @@ int main(int argc, char** argv){
 	*/
 	
 	
-	bem2d::freqtype k=20;
+	bem2d::freqtype k=2;
 	bem2d::PolBasis::AddBasis(0,pgeom);
 	std::cout << pgeom->size() << std::endl; 
 	
 	
-	bem2d::Point direction=bem2d::normalize(bem2d::Point(1,-1));
+	bem2d::Point direction=bem2d::normalize(bem2d::Point(0,-1));
 	bem2d::PlaneWave pw(direction,k);
 	bem2d::CombinedPlaneWave cpw(direction,k);
 	
@@ -79,7 +82,7 @@ int main(int argc, char** argv){
 	std::cout << "Condition Number: " << soundsoft.L2Condition() << std::endl;
 	
 	int xpts=100; int ypts=100;
-	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-1,1,-1,1,"square"));
+	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,3,-2,3,"trapping"));
 	soundsoft.SetOutput(pout);
 	soundsoft.WriteAll();
 	
