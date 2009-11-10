@@ -23,12 +23,20 @@ int main(int argc, char** argv){
 	
 	std::vector<bem2d::Point> trapping;
 	trapping.push_back(bem2d::Point(0,0));
+	trapping.push_back(bem2d::Point(0,1));
 	trapping.push_back(bem2d::Point(0,2));
 	trapping.push_back(bem2d::Point(-1,2));
+	trapping.push_back(bem2d::Point(-1,1));
+	trapping.push_back(bem2d::Point(-1,0));
 	trapping.push_back(bem2d::Point(-1,-1));
+	trapping.push_back(bem2d::Point(0,-1));
+	trapping.push_back(bem2d::Point(1,-1));
 	trapping.push_back(bem2d::Point(2,-1));
+	trapping.push_back(bem2d::Point(2,0));
+	trapping.push_back(bem2d::Point(2,1));
 	trapping.push_back(bem2d::Point(2,2));
 	trapping.push_back(bem2d::Point(1,2));
+	trapping.push_back(bem2d::Point(1,1));
 	trapping.push_back(bem2d::Point(1,0));
 	bem2d::Polygon poly(trapping,n);
 	bem2d::pGeometry pgeom=poly.GetGeometry();
