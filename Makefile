@@ -14,7 +14,7 @@ ifeq ($(profile),y)
 endif
 
 
-all:	bem2d tests
+all:	bem2d tests examples
 
 
 .PHONY: tests
@@ -29,8 +29,13 @@ bem2d:
 clean:
 	cd lib; $(MAKE) clean
 	cd tests; $(MAKE) clean
+	cd examples; $(MAKE) clean
 	rm -f *~ *.o
 	rm -rf ./bin/*
+
+.PHONY: examples
+examples: bem2d
+	cd examples; $(MAKE)
 
 testfile: bem2d tests
 	$(CPP) $(CFLAGS) -I./libs -o test test.cpp ./libs/bem2d.a $(LDFLAGS)

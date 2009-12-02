@@ -1,4 +1,5 @@
 #include<fstream>
+#include<complex>
 #include "bem2d_outputroutines.h"
 
 namespace bem2d
@@ -72,5 +73,24 @@ void GplotOut(std::string name, const std::vector<Point>& points, const dvector&
   out2.close();
 
 }
+	
+	void WriteMatrix(std::string fname, const Matrix m){
+		std::string fr=fname+"_real";
+		std::string fi=fname+"_imag";
+		std::ofstream outr(fr.c_str());
+		std::ofstream outi(fi.c_str());
+		
+		for (int i=0;i<m.dim;i++){
+			for (int j=0;j<m.dim;j++){
+				outr << real((*m.data)[j*m.dim+i]) << " ";
+				outi << imag((*m.data)[j*m.dim+i]) << " ";
+				
+			}
+			outr << std::endl;
+			outi << std::endl;
+		}
+		outr.close();
+		outi.close();
+	}
 
 }

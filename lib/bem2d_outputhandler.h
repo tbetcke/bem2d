@@ -40,7 +40,7 @@ typedef boost::shared_ptr<OutputHandler> pOutputHandler;
 class GplotOutput: public OutputHandler
 {
 public:
-  GplotOutput(int xpts, int ypts, int ax, int bx, int ay, int by, std::string name);
+  GplotOutput(int xpts, int ypts, double ax, double bx, double ay, double by, std::string name);
   void WriteIncident(const cvector& vals);
   void WriteScattered(const cvector& vals);
   void WriteFull(const cvector& vals);

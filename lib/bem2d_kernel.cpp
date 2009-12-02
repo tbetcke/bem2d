@@ -77,7 +77,7 @@ complex CombinedSingleConjDouble::operator()(Point x, Point y) const
   complex i(0,1);
   complex slayer=i/4.0*(BesselH0(k_*d));
   complex cdlayer=-i*k_/4.0*(BesselH1(k_*d)/d*(n1_.x*w.x+n1_.y*w.y));
-  return cdlayer+i*eta_*slayer;
+  return cdlayer-i*eta_*slayer;
 }
 
 }

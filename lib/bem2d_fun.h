@@ -79,7 +79,7 @@ public:
   {
     complex i(0,1);
     complex f=std::exp(k_*i*(direction_.x*p.x+direction_.y*p.y));
-    return i*k_*f*(n_.x*direction_.x+n_.y*direction_.y)+i*eta_*f;
+    return i*k_*f*(n_.x*direction_.x+n_.y*direction_.y)-i*eta_*f;
   }
   inline void SetNormal(Point normal)
   {

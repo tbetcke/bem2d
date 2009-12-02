@@ -32,7 +32,7 @@ pdvector OutputHandler::TurnToRealImag(const cvector& vals)
 }
 
 
-GplotOutput::GplotOutput(int xpts, int ypts, int ax, int bx, int ay, int by, std::string name)
+GplotOutput::GplotOutput(int xpts, int ypts, double ax, double bx, double ay, double by, std::string name)
 {
   xpts_=xpts;
   ypts_=ypts;

@@ -4,6 +4,7 @@
 #include<vector>
 #include "bem2d_defs.h"
 #include "bem2d_point.h"
+#include "bem2d_mathroutines.h"
 
 
 namespace bem2d
@@ -18,7 +19,11 @@ boost::shared_ptr<std::vector<Point > > MeshGrid(double ax, double bx,
 void GplotOut(std::string name, const std::vector<Point>& points, const dvector& z,
               int xpts, int ypts);
 
+void WriteMatrix(std::string fname, const Matrix m);
+
+	
 }
+
 
 #endif
 

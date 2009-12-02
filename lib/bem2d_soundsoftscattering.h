@@ -29,6 +29,9 @@ namespace bem2d
 		inline Matrix GetMatrix() const{
 			return Matrix(A_);
 		}
+		inline Matrix GetIdent() const{
+			return Matrix(Id_);
+		}
 		
 		pcvector EvalIncident(const std::vector<Point>& points);
 		pcvector EvalSol(const std::vector<Point>& points);
@@ -56,6 +59,7 @@ namespace bem2d
 		
 		QuadOption quadopts_;
 		Matrix A_;
+		Matrix Id_;
 		pcvector prhs_;
 		pcvector psol_;
 		std::vector<pGeometry> polygons_;
@@ -93,9 +97,9 @@ namespace bem2d
 		bem2d::CombinedSingleConjDouble scdl(k_,frhs_.eta());
 		
 		A_.data=DiscreteKernel(*pgeom_,quadopts_,scdl);
-		Matrix Id(pgeom_->size());
-		Id.data=EvalIdent(*pgeom_, quadopts_);
-		A_=Id+2.0*A_;
+		Id_.dim=(pgeom_->size());
+		Id_.data=EvalIdent(*pgeom_, quadopts_);
+		A_=Id_+2.0*A_;
 		
 		prhs_=bem2d::DotProdBasFuns(*pgeom_,quadopts_,frhs_);
 		
