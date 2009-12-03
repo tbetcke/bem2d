@@ -24,6 +24,10 @@ GSLLIB	= /opt/local/lib
 # ATLAS
 ATLASLIB = /usr/lib64/atlas
 
+# SCLAPACK
+SCLAPACKLIB= /Users/tbetcke/libs/scalapack
+
+
 ############################################
 # Libraries
 ############################################
@@ -40,12 +44,14 @@ BLAS   = -lptf77blas -lptcblas -latlas -lpthread -lgfortran
 # OpenMP
 OMP= -lgomp
 
+# ScaLapack
+SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lgfortran -lmpi_f77 -lgfortran
 
 ############################################
 # Compiler and Flags
 ############################################
-CPP	= g++
-CFLAGS  = -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include -fopenmp
+CPP	= mpic++
+CFLAGS  = -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include
 DEBUGFLAGS = -g
 OPTFLAGS = -O3
 
@@ -55,7 +61,7 @@ OPTFLAGS = -O3
 
 # Accelerate Framework
 
-  LDFLAGS = -framework Accelerate -L/opt/local/lib -L$(GSLLIB) $(GSL) $(OMP)
+  LDFLAGS = -framework Accelerate -L$(SCLAPACKLIB) -L/opt/local/lib -L$(GSLLIB) $(GSL) $(SCLAPACK)
 
 # For MKL
 

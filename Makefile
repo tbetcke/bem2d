@@ -31,7 +31,7 @@ clean:
 	cd tests; $(MAKE) clean
 	cd examples; $(MAKE) clean
 	rm -f *~ *.o
-	rm -rf ./bin/*
+	cd bin; find . -type f -exec rm -f {} \;
 
 .PHONY: examples
 examples: bem2d

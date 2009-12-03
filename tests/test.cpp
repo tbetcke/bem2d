@@ -1,54 +1,40 @@
 #include<iostream>
 #include "../lib/bem2d.h"
 #include<cmath>
+#include "mpi.h"
 
 
 
 int main(int argc, char** argv){
 	// File to test different things
 	
+	int myrank_mpi, nprocs_mpi;
+	
+	MPI_Init(&argc, &argv);
+	MPI_Comm_rank(MPI_COMM_WORLD,&myrank_mpi);
+	MPI_Comm_size(MPI_COMM_WORLD,&nprocs_mpi);
+	
+	
+	int nprow=2; int npcol=2;
+	int myrow, mycol;
+	int ictxt;
+	char order='R';
+	
+	sl_init_(&ictxt, &nprow, &npcol);
+	
+	std::cout << ictxt << std::endl;
+	
+	Cblacs_gridinfo(ictxt,&nprow,&npcol,&myrow,&mycol);
+
+	std::cout << "Rank: " << myrank_mpi << " Size: " << nprocs_mpi << " Row: " << myrow << " Col: "<< mycol <<std::endl;
+
+	
+	Cblacs_gridexit(0);	
+	MPI_Finalize(); exit(0);
 	
 	int n=500;
 	
 	
-	/*
-	std::vector<bem2d::Point> square;
-	square.push_back(bem2d::Point(-.5,-.5));
-	square.push_back(bem2d::Point(.5,-.5));
-	square.push_back(bem2d::Point(.5,.5));
-	square.push_back(bem2d::Point(-.5,.5));
-	bem2d::Polygon poly(square,n);
-	bem2d::pGeometry pgeom=poly.GetGeometry();
-	*/
-	
-	/*
-	std::vector<bem2d::Point> trapping;
-	trapping.push_back(bem2d::Point(0,0));
-	trapping.push_back(bem2d::Point(0,1));
-	trapping.push_back(bem2d::Point(0,2));
-	trapping.push_back(bem2d::Point(-1,2));
-	trapping.push_back(bem2d::Point(-1,1));
-	trapping.push_back(bem2d::Point(-1,0));
-	trapping.push_back(bem2d::Point(-1,-1));
-	trapping.push_back(bem2d::Point(0,-1));
-	trapping.push_back(bem2d::Point(1,-1));
-	trapping.push_back(bem2d::Point(2,-1));
-	trapping.push_back(bem2d::Point(2,0));
-	trapping.push_back(bem2d::Point(2,1));
-	trapping.push_back(bem2d::Point(2,2));
-	trapping.push_back(bem2d::Point(1,2));
-	trapping.push_back(bem2d::Point(1,1));
-	trapping.push_back(bem2d::Point(1,0));
-	bem2d::Polygon poly(trapping,n);
-	bem2d::pGeometry pgeom=poly.GetGeometry();
-	*/
-	 
-	/*
-	bem2d::Trefoil tobj;
-	bem2d::AnalyticCurve<bem2d::Trefoil> trefoil(n,tobj);
-	
-	bem2d::pGeometry pgeom=trefoil.GetGeometry();
-	*/
 	
 	
 	bem2d::Circle cobj;
