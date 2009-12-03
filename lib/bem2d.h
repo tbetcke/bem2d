@@ -1,6 +1,7 @@
 #ifndef _BEM2D_H
 #define	_BEM2D_H
 
+#include "bem2d_mpi.h"
 #include "bem2d_exceptions.h"
 #include "bem2d_quadrature.h"
 

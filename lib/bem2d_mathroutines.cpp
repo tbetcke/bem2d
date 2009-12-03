@@ -2,6 +2,10 @@
 #include "gsl/gsl_sf_bessel.h"
 #include "bem2d_cblas.h"
 
+#ifdef BEM2DMPI
+#include "bem2d_mpi.h"
+#endif
+
 
 namespace bem2d
 {
@@ -32,14 +36,10 @@ complex BesselH1(double x)
 }
 
 
-Matrix::Matrix(): dim(0)
-{
-  data=pcvector(new cvector);
-
-};
 
 Matrix::Matrix(std::size_t n): dim(n)
 {
+	
   data=pcvector(new cvector);
   data->resize(n*n);
 }

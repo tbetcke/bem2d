@@ -70,7 +70,7 @@ namespace bem2d
 	
 	template<typename T1, typename T2>
 	SoundSoftScattering<T1,T2>::SoundSoftScattering(pGeometry pgeom, freqtype k, T1 inc, T2 rhs): pgeom_(pgeom),
-    k_(k), A_(pgeom->size()), frhs_(rhs), incident_(inc), plotInterior_(false)
+    k_(k), A_(pgeom->size()), Id_(pgeom->size()), frhs_(rhs), incident_(inc), plotInterior_(false)
 	{
 		quadopts_.L=3;
 		quadopts_.N=5;

@@ -26,11 +26,14 @@ complex BesselH1(double x);
 
 struct Matrix
 {
-  Matrix();
   explicit Matrix(std::size_t n);
   Matrix(const Matrix& m);
   pcvector data;
   std::size_t dim;
+	
+#ifdef BEM2DMPI
+  int desc[9];
+#endif
 };
 
 struct Identity: public Matrix

@@ -1,37 +1,27 @@
 #include<iostream>
 #include "../lib/bem2d.h"
 #include<cmath>
-#include "mpi.h"
 
 
 
 int main(int argc, char** argv){
 	// File to test different things
 	
-	int myrank_mpi, nprocs_mpi;
-	
 	MPI_Init(&argc, &argv);
-	MPI_Comm_rank(MPI_COMM_WORLD,&myrank_mpi);
-	MPI_Comm_size(MPI_COMM_WORLD,&nprocs_mpi);
 	
+	int nprow=2; int npcol=2; int mb=3; int nb=10;
+	bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 	
-	int nprow=2; int npcol=2;
-	int myrow, mycol;
-	int ictxt;
-	char order='R';
+	int myrow=b->get_myrow(); int mycol=b->get_mycol();
+	 
+	std::cout << "Rank: " << b->get_mpirank() << " Size: " << b->get_mpiprocs() << " Row: " << b->get_myrow() << " Col: "<< b->get_mycol() <<std::endl;
+	bem2d::BlacsSystem::Release();
 	
-	sl_init_(&ictxt, &nprow, &npcol);
+	int n=104; int np0=0;
+	std::cout << bem2d::numroc_(&n,&mb,&myrow,&np0,&nprow) << std::endl;
 	
-	std::cout << ictxt << std::endl;
-	
-	Cblacs_gridinfo(ictxt,&nprow,&npcol,&myrow,&mycol);
-
-	std::cout << "Rank: " << myrank_mpi << " Size: " << nprocs_mpi << " Row: " << myrow << " Col: "<< mycol <<std::endl;
-
-	
-	Cblacs_gridexit(0);	
-	MPI_Finalize(); exit(0);
-	
+	MPI_Finalize(); return 0; 
+	/*
 	int n=500;
 	
 	
@@ -43,9 +33,9 @@ int main(int argc, char** argv){
 	
 	
 	
-	/*
+	
 	bem2d::DiskShapePiecewiseConst circle(n,1.0);
-	*/
+	
 	
 	
 	bem2d::freqtype k=10;
@@ -86,4 +76,5 @@ int main(int argc, char** argv){
 		 
 	 
 	return 0;
+	*/
 }

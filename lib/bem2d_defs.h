@@ -41,27 +41,6 @@ namespace bem2d
 	
 }
 
-// External functions
-
-extern "C"
-{
-	
-	
-	// Blacs Functions
-	
-	extern void   Cblacs_pinfo( int* mypnum, int* nprocs);
-	extern void   Cblacs_get( int context, int request, int* value);
-	extern int    Cblacs_gridinit( int* context, char * order, int np_row, int np_col);
-	extern void   Cblacs_gridinfo( int context, int*  np_row, int* np_col, int*  my_row, int*  my_col);
-	extern void   Cblacs_gridexit( int context);
-	extern void   Cblacs_exit( int error_code);
-	
-	// Scalapack functions
-	
-	void sl_init_(int* ictxt, int* nprow, int* npcol);
-	
-	
-}
 
 
 
