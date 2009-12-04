@@ -97,14 +97,15 @@ namespace bem2d
 		bem2d::CombinedSingleConjDouble scdl(k_,frhs_.eta());
 		
 		A_.data=DiscreteKernel(*pgeom_,quadopts_,scdl);
-		Id_.dim=(pgeom_->size());
+		Id_.dim[0]=(pgeom_->size());
+		Id_.dim[1]=Id_.dim[0];
 		Id_.data=EvalIdent(*pgeom_, quadopts_);
 		A_=Id_+2.0*A_;
 		
 		prhs_=bem2d::DotProdBasFuns(*pgeom_,quadopts_,frhs_);
 		
 		
-		cblas_zdscal(A_.dim,2.0,&(*prhs_)[0],1);
+		cblas_zdscal(A_.dim[0],2.0,&(*prhs_)[0],1);
 		
 	}
 	
@@ -113,7 +114,7 @@ namespace bem2d
 	{
 		psol_=pcvector(new cvector(*prhs_));
 		Matrix tmp(A_);
-		SolveSystem(tmp.data,psol_);
+		//SolveSystem(tmp,psol_);
 		
 	}
 	

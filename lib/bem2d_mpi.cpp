@@ -19,6 +19,18 @@ namespace bem2d {
 		
 	}
 	
+	int BlacsSystem::MSize(int m)
+	{
+		int irsrc=0;
+		return numroc_(&m,&mb_,&myrow_,&irsrc,&nprow_);
+	}	
+
+	int BlacsSystem::NSize(int n)
+	{
+		int icsrc=0;
+		return numroc_(&n,&nb_,&mycol_,&icsrc,&npcol_);
+	}	
+	
 		
 		
 }

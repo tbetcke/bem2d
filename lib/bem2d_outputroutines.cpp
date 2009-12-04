@@ -80,10 +80,10 @@ void GplotOut(std::string name, const std::vector<Point>& points, const dvector&
 		std::ofstream outr(fr.c_str());
 		std::ofstream outi(fi.c_str());
 		
-		for (int i=0;i<m.dim;i++){
-			for (int j=0;j<m.dim;j++){
-				outr << real((*m.data)[j*m.dim+i]) << " ";
-				outi << imag((*m.data)[j*m.dim+i]) << " ";
+		for (int i=0;i<m.dim[0];i++){
+			for (int j=0;j<m.dim[0];j++){
+				outr << real((*m.data)[j*m.dim[0]+i]) << " ";
+				outi << imag((*m.data)[j*m.dim[0]+i]) << " ";
 				
 			}
 			outr << std::endl;

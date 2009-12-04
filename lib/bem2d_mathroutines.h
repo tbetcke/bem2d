@@ -12,52 +12,55 @@
 
 namespace bem2d
 {
-
-
-// Special Functions
-
-complex BesselH0(double x);
-complex BesselH1(double x);
-
-// ----------------------------
-
-
-// Definition of matrix structures
-
-struct Matrix
-{
-  explicit Matrix(std::size_t n);
-  Matrix(const Matrix& m);
-  pcvector data;
-  std::size_t dim;
 	
+	
+	// Special Functions
+	
+	complex BesselH0(double x);
+	complex BesselH1(double x);
+	
+	// ----------------------------
+	
+	
+	// Definition of matrix structures
+	
+	struct Matrix
+	{
+		explicit Matrix(int n);
+		explicit Matrix(int m, int n);
+		
+		Matrix(const Matrix& m);
+		pcvector data;
+		int dim[2]; // M=dim[0]; N=dim[1];
+		int msize; // Number of rows in local array
+		int nsize; // Number of columns in local array	
 #ifdef BEM2DMPI
-  int desc[9];
+		int desc[9];
 #endif
-};
-
-struct Identity: public Matrix
-{
-  Identity(int n);
-};
-
-Matrix operator+(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
-Matrix operator-(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
-
-Matrix operator*(const Matrix& lhs, complex& alpha);
-Matrix operator*(const complex& alpha, const Matrix& rhs);
-Matrix operator*(const Matrix& lhs, const double& alpha);
-Matrix operator*(const double& alpha, const Matrix& rhs);
-
-Matrix operator*(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
+	};
+	
+	
+	Matrix operator+(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
+	Matrix operator-(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
+	
+	Matrix operator*(const Matrix& lhs, complex& alpha);
+	Matrix operator*(const complex& alpha, const Matrix& rhs);
+	Matrix operator*(const Matrix& lhs, const double& alpha);
+	Matrix operator*(const double& alpha, const Matrix& rhs);
+	
+	Matrix operator*(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
 	
 	double L2Cond(const Matrix& m) throw (LapackError);
-
-void SolveSystem(pcvector pmatrix, pcvector prhs) throw (LapackError);
-
-void InPolygon(const std::vector<pGeometry> polygons, const std::vector<Point>& testpoints,std::vector<int>& inpoly);
-void InPolygon(const pGeometry polygon, const std::vector<Point>& testpoints,std::vector<int>& inpoly);
-
+	
+#ifdef BEM2DMPI	
+	Matrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError);
+#else
+	Matrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
+#endif
+	
+	void InPolygon(const std::vector<pGeometry> polygons, const std::vector<Point>& testpoints,std::vector<int>& inpoly);
+	void InPolygon(const pGeometry polygon, const std::vector<Point>& testpoints,std::vector<int>& inpoly);
+	
 	
 }
 

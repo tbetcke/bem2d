@@ -9,17 +9,54 @@ int main(int argc, char** argv){
 	
 	MPI_Init(&argc, &argv);
 	
-	int nprow=2; int npcol=2; int mb=3; int nb=10;
+	int nprow=2; int npcol=2; int mb=3; int nb=3;
 	bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 	
 	int myrow=b->get_myrow(); int mycol=b->get_mycol();
 	 
 	std::cout << "Rank: " << b->get_mpirank() << " Size: " << b->get_mpiprocs() << " Row: " << b->get_myrow() << " Col: "<< b->get_mycol() <<std::endl;
+	
+	bem2d::Matrix A(5);
+	
+	// Fill the matrix
+	
+	if ((myrow==0)&(mycol==0)){
+		(*A.data)[0]=1; (*A.data)[3]=2; (*A.data)[6]=5;
+		(*A.data)[1]=6; (*A.data)[4]=9; (*A.data)[7]=7;
+		(*A.data)[2]=3; (*A.data)[5]=2; (*A.data)[8]=8;
+	}
+	
+	if ((myrow==0)&(mycol==1)){
+		(*A.data)[0]=3; (*A.data)[3]=4;
+		(*A.data)[1]=2; (*A.data)[4]=1;
+		(*A.data)[2]=1; (*A.data)[5]=0;
+	}
+	
+	if ((myrow==1)&(mycol==0)){
+		(*A.data)[0]=3; (*A.data)[2]=2; (*A.data)[4]=5;
+		(*A.data)[1]=9; (*A.data)[3]=0; (*A.data)[5]=4;
+	}
+		
+	if ((myrow==1)&(mycol==1)){
+		(*A.data)[0]=8; (*A.data)[2]=7;
+		(*A.data)[1]=2; (*A.data)[3]=1;
+	}
+
+	bem2d::Matrix B(5,2);
+	if ((myrow==0)&(mycol==0)){
+		(*B.data)[0]=1; (*B.data)[3]=2;
+	}
+	
+	bem2d::Matrix C(5,2);
+	C=bem2d::SolveSystem(A,B);
+	
+	if ((myrow==0)&(mycol==0)) std::cout << "Result: " << (*C.data)[4] << std::endl;
+	
+	//for (int i=0;i<9;i++) std::cout << A.desc[i] << " ";
+	//std::cout << std::endl;
+
 	bem2d::BlacsSystem::Release();
-	
-	int n=104; int np0=0;
-	std::cout << bem2d::numroc_(&n,&mb,&myrow,&np0,&nprow) << std::endl;
-	
+	 
 	MPI_Finalize(); return 0; 
 	/*
 	int n=500;

@@ -45,19 +45,19 @@ BLAS   = -lptf77blas -lptcblas -latlas -lpthread -lgfortran
 OMP= -lgomp
 
 # ScaLapack
-SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC
+SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lgfortran -lmpi_f77 -lgfortran
 
 ############################################
 # Compiler and Flags
 ############################################
-CPP	= /opt/local/bin/openmpic++
+CPP	= mpic++
 CFLAGS  = -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include
 DEBUGFLAGS = -g
 OPTFLAGS = -O3
 
 # For open source atlas
 
-# LDFLAGS	= -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS)
+# LDFLAGS	= -DBEM2DMPI -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS)
 
 # Accelerate Framework
 

@@ -51,7 +51,7 @@ SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lgfortran -lmpi_f77 -lgfortran
 # Compiler and Flags
 ############################################
 CPP	= mpic++
-CFLAGS  = -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include
+CFLAGS  = -DBEM2DMPI -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include
 DEBUGFLAGS = -g
 OPTFLAGS = -O3
 

@@ -2,6 +2,7 @@
 #define _BEM2D_MPI_H
 
 #include "mpi.h"
+#include "bem2d_defs.h"
 
 // All MPI/ScaLapack related functions
 
@@ -26,6 +27,10 @@ namespace bem2d {
 		
 		void sl_init_(int* ictxt, int* nprow, int* npcol);
 		int numroc_(int*, int*, int*, int*, int*);
+		void descinit_(int*, int*, int*, int*, int*, int*, int*, int*, int*, int*);
+		void pzgemm_(const char*,const char*,const int*,const int*,const int*,const complex*,const complex*,const int*,const int*,const int*,const complex*,const int*,const int*,const int*,const complex*, complex*,const int*,const int*,int*);
+		void pzgetrf_(const int*, const int*, complex*, const int*, const int*, const int*, int*, int*);
+		void pzgetrs_(const char*, const int*, const int*, const complex*, const int*, const int*, const int*, const int*, complex*, const int*, const int*, const int*, int*);
 		
 		
 	}
@@ -62,7 +67,12 @@ namespace bem2d {
 			Cblacs_gridexit(ictxt);
 		}
 		
-		
+		int MSize(int m);
+		// Return number of rows stored locally
+
+		int NSize(int n);
+		// Return number of columns stored locally
+
 		inline int get_ictxt(){
 			return ictxt_;
 		}

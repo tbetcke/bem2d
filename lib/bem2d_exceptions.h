@@ -26,6 +26,12 @@ class ParameterException
 
 class SizeError {};
 
+#ifdef BEM2DMPI
+	class ScaLapackError
+	{
+	};
+#endif
+	
 }
 
 
