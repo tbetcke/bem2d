@@ -39,6 +39,8 @@ namespace bem2d
 #endif
 	};
 	
+	typedef boost::shared_ptr<Matrix> pmatrix;
+	
 	
 	Matrix operator+(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
 	Matrix operator-(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
@@ -53,9 +55,9 @@ namespace bem2d
 	double L2Cond(const Matrix& m) throw (LapackError);
 	
 #ifdef BEM2DMPI	
-	Matrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError);
+	pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError);
 #else
-	Matrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
+	pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
 #endif
 	
 	void InPolygon(const std::vector<pGeometry> polygons, const std::vector<Point>& testpoints,std::vector<int>& inpoly);

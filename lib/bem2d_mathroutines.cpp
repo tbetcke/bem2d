@@ -191,14 +191,14 @@ namespace bem2d
 	
 	
 #ifdef BEM2DMPI	
-	Matrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError)
+	pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError)
 #else
-	Matrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)	
+	pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)	
 #endif
 	{
 		char trans='N';
 		Matrix tmp(m);
-		Matrix res(rhs);
+		pMatrix res(new Matrix(rhs));
 		int info;
 #ifdef BEM2DMPI
 		BlacsSystem* b=BlacsSystem::Instance();
@@ -206,14 +206,14 @@ namespace bem2d
 		int ione=1;
 		pzgetrf_(&tmp.dim[0],&tmp.dim[1],&(*tmp.data)[0],&ione,&ione,tmp.desc,ipiv,&info);
 		if (info) throw ScaLapackError();
-		pzgetrs_(&trans,&tmp.dim[0],&res.dim[1],&(*tmp.data)[0],&ione,&ione,tmp.desc,ipiv,&(*res.data)[0],&ione,&ione,res.desc,&info);
+		pzgetrs_(&trans,&tmp.dim[0],&res->dim[1],&(*tmp.data)[0],&ione,&ione,tmp.desc,ipiv,&(*res->data)[0],&ione,&ione,res->desc,&info);
 		if (info) throw ScaLapackError();
 #else		
 		int nrhs=1;
 		int ipiv[min(tmp.dim[0],tmp.dim[1])];
 		zgetrf_(&tmp.dim[0], &tmp.dim[1], &(*tmp.data)[0], &tmp.dim[0], &ipiv,&info);
 		if (info) throw LapackError();		
-		zgetrs_(&trans,&tmp.dim[0],&res.dim[1],&(*tmp.data)[0],&tmp.dim[0],ipiv,&(*res.data)[0],&res.dim[0],&info);
+		zgetrs_(&trans,&tmp.dim[0],&res->dim[1],&(*tmp.data)[0],&tmp.dim[0],ipiv,&(*res->data)[0],&res->dim[0],&info);
 		if (info) throw LapackError();
 #endif
 		return res;

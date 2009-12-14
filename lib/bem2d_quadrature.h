@@ -14,6 +14,10 @@
 #include "bem2d_geometry.h"
 #include "bem2d_fun.h"
 
+#ifdef BEM2DMPI
+#include "bem2d_mpi.h"
+#endif
+
 namespace bem2d
 {
 	
@@ -124,17 +128,30 @@ namespace bem2d
 	}
 	
 	template<typename Bem2dfun>
-	boost::shared_ptr<std::vector<complex> > DotProdBasFuns(const Geometry& geom, QuadOption ops, Bem2dfun fun)
+	pMatrix DotProdBasFuns(const Geometry& geom, QuadOption ops, Bem2dfun fun)
 	{
 		
-		boost::shared_ptr<std::vector<complex> > prhs(new std::vector<complex >);
 		int N=geom.size();
-		prhs->resize(N);
+		pMatrix prhs(new Matrix(N,1));
 		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.FlatMap();
 		Gauss1D g1d(ops.N);
 		
+#ifdef BEM2DMPI		
+		BlacsSystem* b=BlacsSystem::Instance();
+		int nrow=b->MSize(N);
+#else
+		int nrow=N;
+#endif
+		
 #pragma omp parallel for
-		for (int i=0; i<N; i++) (*prhs)[i]=Integrate((*bfuns)[i],fun, g1d);
+		for (int i=0; i<nrow; i++){
+#ifdef BEM2DMPI	
+			int gi=b->L2gr(i);
+#else
+			int gi=i;
+#endif
+			(*prhs->data)[i]=Integrate((*bfuns)[gi],fun, g1d);
+		}
 		return prhs;
 	}
 	
@@ -164,7 +181,7 @@ namespace bem2d
 		
 	}
 	
-	pcvector EvalIdent(const Geometry& geom, QuadOption opts);
+	pMatrix EvalIdent(const Geometry& geom, QuadOption opts);
 	
 	template<typename kernel>
 	void EvalKernel(const Geometry::flat_basis_map& basfuns, const std::vector<Point>& points,
@@ -199,26 +216,42 @@ namespace bem2d
 	
 	
 	template<typename kernel>
-	boost::shared_ptr<std::vector<complex> > DiscreteKernel(const Geometry& geom, QuadOption opts, kernel g)
+	pMatrix DiscreteKernel(const Geometry& geom, QuadOption opts, kernel g)
 	{
 		
 		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.FlatMap();
-		boost::shared_ptr<std::vector<complex> > pmatrix(new std::vector<complex >);
 		std::size_t N=bfuns->size();
-		pmatrix->resize(N*N);
+		pMatrix dkernel(new Matrix(N));
 		
 		Gauss2D g0(opts.N);
 		AdaptedGauss1 g1(opts.N,opts.L,opts.sigma);
 		AdaptedGauss2 g2(opts.N,opts.L,opts.sigma);
 		AdaptedGauss3 g3(opts.N,opts.L,opts.sigma);
 		
+#ifdef BEM2DMPI
+		BlacsSystem* b=BlacsSystem::Instance();
+		int nrow=b->MSize(N);
+		int ncol=b->NSize(N);
+#else
+		int nrow=N;
+		int ncol=N;
+#endif
+		
 #pragma omp parallel for
-		for (int j=0; j<N; j++)
+		for (int j=0; j<ncol; j++)
 		{
-			for (int i=0; i<N; i++)
+			for (int i=0; i<nrow; i++)
 			{
-				std::pair<pElement,pBasis> pi((*bfuns)[i]);
-				std::pair<pElement,pBasis> pj((*bfuns)[j]);
+#ifdef BEM2DMPI
+				int gi=b->L2gr(i); // Global i index
+				int gj=b->L2gc(j); // Global j index
+#else
+				int gi=i;
+				int gj=j;
+#endif
+				
+				std::pair<pElement,pBasis> pi((*bfuns)[gi]);
+				std::pair<pElement,pBasis> pj((*bfuns)[gj]);
 				std::size_t indi=pi.first->index();
 				std::size_t indj=pj.first->index();
 				//std::cout << indi << " " << indj << " " << i << " " << j << std::endl;
@@ -228,31 +261,31 @@ namespace bem2d
 				{
 					// Identical elements
 					//std::cout << "Integrate Ident" << std::endl;
-					(*pmatrix)[i+N*j]=IntegrateIdent(pi,pj,g,g1);
+					(*dkernel->data)[i+N*j]=IntegrateIdent(pi,pj,g,g1);
 				}
 				else if (pi.first->next()==indj)
 				{
 					// (1,0) situation
 					//std::cout << "Integrate (1,0)" << std::endl;
-					(*pmatrix)[i+N*j]=Integrate(pi,pj,g,g3);
+					(*dkernel->data)[i+N*j]=Integrate(pi,pj,g,g3);
 				}
 				else if (pi.first->prev()==indj)
 				{
 					// (0,1) situation
 					//std::cout << "Integrate (0,1)" << std::endl;
-					(*pmatrix)[i+N*j]=Integrate(pi,pj,g,g2);
+					(*dkernel->data)[i+N*j]=Integrate(pi,pj,g,g2);
 				}
 				else
 				{
 					// Elements are not neighbors
 					//std::cout << "Integrate Remote" << std::endl;
-					(*pmatrix)[i+N*j]=Integrate(pi,pj,g,g0);
+					(*dkernel->data)[i+N*j]=Integrate(pi,pj,g,g0);
 				}
 				//std::cout << (*pmatrix)[i+N*j] << std::endl;
 				
 			}
 		}
-		return pmatrix;
+		return dkernel;
 		
 	}
 	

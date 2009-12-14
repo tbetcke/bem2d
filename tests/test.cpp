@@ -9,7 +9,7 @@ int main(int argc, char** argv){
 	
 	MPI_Init(&argc, &argv);
 	
-	int nprow=2; int npcol=2; int mb=3; int nb=3;
+	int nprow=2; int npcol=2; int mb=2; int nb=2;
 	bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 	
 	int myrow=b->get_myrow(); int mycol=b->get_mycol();
@@ -50,7 +50,10 @@ int main(int argc, char** argv){
 	bem2d::Matrix C(5,2);
 	C=bem2d::SolveSystem(A,B);
 	
-	if ((myrow==0)&(mycol==0)) std::cout << "Result: " << (*C.data)[4] << std::endl;
+	if ((myrow==0)&(mycol==0)){
+		std::cout << "Result: " << (*C.data)[4] << std::endl;
+		std::cout << "Global index for (3,1): " << b->L2gc(3) << std::endl;
+	}
 	
 	//for (int i=0;i<9;i++) std::cout << A.desc[i] << " ";
 	//std::cout << std::endl;

@@ -31,7 +31,7 @@ namespace bem2d {
 		void pzgemm_(const char*,const char*,const int*,const int*,const int*,const complex*,const complex*,const int*,const int*,const int*,const complex*,const int*,const int*,const int*,const complex*, complex*,const int*,const int*,int*);
 		void pzgetrf_(const int*, const int*, complex*, const int*, const int*, const int*, int*, int*);
 		void pzgetrs_(const char*, const int*, const int*, const complex*, const int*, const int*, const int*, const int*, complex*, const int*, const int*, const int*, int*);
-		
+		int indxl2g_(const int*, const int*, const int*, const int*, const int*);
 		
 	}
 
@@ -100,6 +100,20 @@ namespace bem2d {
 		}
 		inline int get_nb(){
 			return nb_;
+		}
+		inline int L2gr(int m){
+			// Map local row index m to global row index
+			// (counting from zero)
+			int zero=0;
+			int mp1=m+1;
+			return indxl2g_(&mp1,&mb_,&myrow_,&zero,&nprow_)-1;			
+		}
+		inline int L2gc(int n){
+			// Map local row index m to global row index
+			// (counting from zero)
+			int zero=0;
+			int np1=n+1;
+			return indxl2g_(&np1,&nb_,&mycol_,&zero,&npcol_)-1;
 		}
 			
 		

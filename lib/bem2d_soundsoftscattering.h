@@ -58,10 +58,10 @@ namespace bem2d
 		pOutputHandler pout_;
 		
 		QuadOption quadopts_;
-		Matrix A_;
-		Matrix Id_;
-		pcvector prhs_;
-		pcvector psol_;
+		pMatrix pA_;
+		pMatrix pId_;
+		pMatrix prhs_;
+		pMatrix psol_;
 		std::vector<pGeometry> polygons_;
 		bool plotInterior_;
 		
@@ -70,7 +70,7 @@ namespace bem2d
 	
 	template<typename T1, typename T2>
 	SoundSoftScattering<T1,T2>::SoundSoftScattering(pGeometry pgeom, freqtype k, T1 inc, T2 rhs): pgeom_(pgeom),
-    k_(k), A_(pgeom->size()), Id_(pgeom->size()), frhs_(rhs), incident_(inc), plotInterior_(false)
+    k_(k), frhs_(rhs), incident_(inc), plotInterior_(false)
 	{
 		quadopts_.L=3;
 		quadopts_.N=5;
@@ -96,25 +96,22 @@ namespace bem2d
 		
 		bem2d::CombinedSingleConjDouble scdl(k_,frhs_.eta());
 		
-		A_.data=DiscreteKernel(*pgeom_,quadopts_,scdl);
-		Id_.dim[0]=(pgeom_->size());
-		Id_.dim[1]=Id_.dim[0];
-		Id_.data=EvalIdent(*pgeom_, quadopts_);
-		A_=Id_+2.0*A_;
+		pA_=DiscreteKernel(*pgeom_,quadopts_,scdl);
+		pId_=EvalIdent(*pgeom_, quadopts_);
+		(*pA_)=(*pId_)+2.0*(*pA_);
 		
 		prhs_=bem2d::DotProdBasFuns(*pgeom_,quadopts_,frhs_);
 		
 		
-		cblas_zdscal(A_.dim[0],2.0,&(*prhs_)[0],1);
+		//cblas_zdscal(A_.dim[0],2.0,&(*prhs_)[0],1);
+		(*prhs_)=2.0*(*prhs_);
 		
 	}
 	
 	template<typename T1, typename T2>
 	void SoundSoftScattering<T1,T2>::Solve()
 	{
-		psol_=pcvector(new cvector(*prhs_));
-		Matrix tmp(A_);
-		//SolveSystem(tmp,psol_);
+		psol_=SolveSystem(*pA_,*prhs_);
 		
 	}
 	
@@ -156,7 +153,6 @@ namespace bem2d
 		cblas_zaxpy(points.size(),&alpha, &(*kerneleval)[0], 1, &(*result)[0], 1);
 		
 		
-		// If 
 		return result;
 		
 		
