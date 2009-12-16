@@ -33,6 +33,7 @@ protected:
   pdvector TurnToRealImag(const cvector& vals);
   std::vector<Point> mesh_;
   bool real_;
+  bool isroot_;
 };
 
 typedef boost::shared_ptr<OutputHandler> pOutputHandler;

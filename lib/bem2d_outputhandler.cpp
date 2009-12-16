@@ -2,6 +2,10 @@
 #include "bem2d_outputhandler.h"
 #include "bem2d_outputroutines.h"
 
+#ifdef BEM2DMPI
+#include "bem2d_mpi.h"
+#endif
+
 namespace bem2d
 {
 
@@ -39,28 +43,35 @@ GplotOutput::GplotOutput(int xpts, int ypts, double ax, double bx, double ay, do
   name_=name;
   set_real(true);
   mesh_=*(MeshGrid(ax,bx,ay,by,xpts_,ypts_));
+#ifdef BEM2DMPI
+	isroot_=BlacsSystem::Instance()->IsRoot();
+#else
+	isroot_=true;
+#endif
 }
 
 void GplotOutput::WriteIncident(const cvector& vals)
 {
-  GplotOut(name_+"inc",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);
+  if (isroot_) GplotOut(name_+"inc",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);
 }
 
 void GplotOutput::WriteScattered(const cvector& vals)
 {
-  GplotOut(name_+"scatt",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);
+  if (isroot_) GplotOut(name_+"scatt",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);
 }
 
 void GplotOutput::WriteFull(const cvector& vals)
 {
-  GplotOut(name_+"full",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);
+  if (isroot_) GplotOut(name_+"full",mesh_,*(TurnToRealImag(vals)),xpts_,ypts_);
 }
 
 void GplotOutput::WriteAll(const cvector& valsincident, const cvector& valsscattered, const cvector& valsfull)
 {
+	if (isroot_){
   GplotOut(name_+"inc",mesh_,*(TurnToRealImag(valsincident)),xpts_,ypts_);
   GplotOut(name_+"scatt",mesh_,*(TurnToRealImag(valsscattered)),xpts_,ypts_);
   GplotOut(name_+"full",mesh_,*(TurnToRealImag(valsfull)),xpts_,ypts_);
+	}
 }
 
 

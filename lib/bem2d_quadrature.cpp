@@ -88,6 +88,7 @@ void MapPoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double 
 		const dvector x=g1d.x();
 		const dvector w=g1d.w();
 		
+		
 #ifdef BEM2DMPI
 		BlacsSystem* b=BlacsSystem::Instance();
 		int nrow=b->MSize(N);
@@ -102,7 +103,7 @@ void MapPoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double 
 #pragma omp parallel for		
 		for (int i=0;i<nrow;i++){
 #ifdef BEM2DMPI
-			int gi=b->L2gr(N);
+			int gi=b->L2gr(i);
 #else
 			int gi=i;
 #endif
@@ -110,7 +111,7 @@ void MapPoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double 
 			pBasis fi=(*bfuns)[gi].second;
 			for (int j=0;j<ncol;j++){
 #ifdef BEM2DMPI
-				int gj=b->L2gc(N);
+				int gj=b->L2gc(j);
 #else
 				int gj=j;
 #endif

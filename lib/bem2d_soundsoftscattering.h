@@ -26,17 +26,17 @@ namespace bem2d
 		virtual void Discretize();
 		
 		void Solve();
-		inline Matrix GetMatrix() const{
-			return Matrix(A_);
+		inline pMatrix GetMatrix() const{
+			return pA_;
 		}
-		inline Matrix GetIdent() const{
-			return Matrix(Id_);
+		inline pMatrix GetIdent() const{
+			return pId_;
 		}
 		
 		pcvector EvalIncident(const std::vector<Point>& points);
 		pcvector EvalSol(const std::vector<Point>& points);
 		inline double L2Condition() const{
-			return L2Cond(A_);
+			return L2Cond(*pA_);
 		}
 		
 		void SetOutput(pOutputHandler output);
@@ -118,6 +118,7 @@ namespace bem2d
 	template<typename T1,typename T2>
 	pcvector SoundSoftScattering<T1,T2>::EvalIncident(const std::vector<Point>& points)
 	{
+
 		pcvector pz(new cvector(points.size()));
 		std::vector<int> inpoly(points.size());
 		if (plotInterior_ & (polygons_.size()>0)){
@@ -151,7 +152,6 @@ namespace bem2d
 		pcvector result=EvalIncident(points);
 		complex alpha=-1.0;
 		cblas_zaxpy(points.size(),&alpha, &(*kerneleval)[0], 1, &(*result)[0], 1);
-		
 		
 		return result;
 		

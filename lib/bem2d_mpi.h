@@ -22,6 +22,7 @@ namespace bem2d {
 		extern void   Cblacs_gridinfo( int context, int*  np_row, int* np_col, int*  my_row, int*  my_col);
 		extern void   Cblacs_gridexit( int context);
 		extern void   Cblacs_exit( int error_code);
+		extern void   Czgsum2d(int icontxt, char* scope, char* top, int m, int n, complex* A, int lda, int rdest, int cdest);
 		
 		// Scalapack functions
 		
@@ -114,6 +115,9 @@ namespace bem2d {
 			int zero=0;
 			int np1=n+1;
 			return indxl2g_(&np1,&nb_,&mycol_,&zero,&npcol_)-1;
+		}
+		inline bool IsRoot(){
+			return ((myrow_==0)&&(mycol_==0));
 		}
 			
 		

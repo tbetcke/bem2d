@@ -13,6 +13,7 @@
 #include "bem2d_point.h"
 #include "bem2d_geometry.h"
 #include "bem2d_fun.h"
+#include "bem2d_mathroutines.h"
 
 #ifdef BEM2DMPI
 #include "bem2d_mpi.h"
@@ -185,8 +186,15 @@ namespace bem2d
 	
 	template<typename kernel>
 	void EvalKernel(const Geometry::flat_basis_map& basfuns, const std::vector<Point>& points,
-					cvector& vals, const cvector& alpha, kernel g, const Gauss1D& g1d) throw (SizeError)
+					cvector& vals, Matrix& alpha, kernel g, const Gauss1D& g1d) throw (SizeError)
 	{
+		
+#ifdef BEM2DMPI
+		BlacsSystem* b=BlacsSystem::Instance();
+		int nrow=b->MSize(basfuns.size());
+#else
+		int nrow=basfuns.size();
+#endif
 		
 		const dvector x=g1d.x();
 		const dvector w=g1d.w();
@@ -196,10 +204,15 @@ namespace bem2d
 #pragma omp parallel for
 		for (int j=0; j<N; j++)
 		{
-			for (int itbas=0; itbas<basfuns.size(); itbas++)
+			for (int itbas=0; itbas<nrow; itbas++)
 			{
-				pElement elem=basfuns[itbas].first;
-				pBasis bf=basfuns[itbas].second;
+#ifdef BEM2DMPI
+				int global_itbas=b->L2gr(itbas);
+#else
+				int global_itbas=itbas;
+#endif
+				pElement elem=basfuns[global_itbas].first;
+				pBasis bf=basfuns[global_itbas].second;
 				kernel bg(g);
 				for (int i=0; i<g1d.Size(); i++)
 				{
@@ -207,10 +220,16 @@ namespace bem2d
 					complex basval=(*bf)(x[i]);
 					Point xp=elem->Map(x[i]);
 					double s=length(elem->Deriv(x[i]));
-					vals[j]+=alpha[itbas]*bg(points[j],xp)*s*basval*w[i];
+					vals[j]+=(*alpha.data)[itbas]*bg(points[j],xp)*s*basval*w[i];
 				}
 			}
 		}
+#ifdef BEM2DMPI
+		// Now distribute all information in vals to all nodes
+		char ALL[]="ALL";
+		char EMPTY[]=" ";
+		Czgsum2d(b->get_ictxt(),ALL,EMPTY,points.size(),1,&vals[0],points.size(),-1,-1);
+#endif
 		
 	}
 	
@@ -221,6 +240,7 @@ namespace bem2d
 		
 		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.FlatMap();
 		std::size_t N=bfuns->size();
+		Matrix ptemp=Matrix(N);
 		pMatrix dkernel(new Matrix(N));
 		
 		Gauss2D g0(opts.N);

@@ -39,7 +39,7 @@ namespace bem2d
 #endif
 	};
 	
-	typedef boost::shared_ptr<Matrix> pmatrix;
+	typedef boost::shared_ptr<Matrix> pMatrix;
 	
 	
 	Matrix operator+(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
