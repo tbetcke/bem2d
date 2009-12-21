@@ -45,14 +45,14 @@ BLAS   = -lptf77blas -lptcblas -latlas -lpthread -lgfortran
 OMP= -lgomp
 
 # ScaLapack
-SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lgfortran -lmpi_f77 -lgfortran
+SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lmpi_f77 -lgfortran
 
 ############################################
 # Compiler and Flags
 ############################################
 CPP	= mpic++
-CFLAGS  = -DBEM2DMPI -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include
-DEBUGFLAGS = -g
+CFLAGS  = -DBEM2DMPI -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include -I/opt/openmpi/include
+DEBUGFLAGS = -g -save-temps
 OPTFLAGS = -O3
 
 # For open source atlas

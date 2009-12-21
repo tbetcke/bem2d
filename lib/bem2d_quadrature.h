@@ -240,7 +240,6 @@ namespace bem2d
 		
 		boost::shared_ptr<Geometry::flat_basis_map> bfuns=geom.FlatMap();
 		std::size_t N=bfuns->size();
-		Matrix ptemp=Matrix(N);
 		pMatrix dkernel(new Matrix(N));
 		
 		Gauss2D g0(opts.N);
@@ -281,25 +280,25 @@ namespace bem2d
 				{
 					// Identical elements
 					//std::cout << "Integrate Ident" << std::endl;
-					(*dkernel->data)[i+N*j]=IntegrateIdent(pi,pj,g,g1);
+					(*dkernel->data)[i+nrow*j]=IntegrateIdent(pi,pj,g,g1);
 				}
 				else if (pi.first->next()==indj)
 				{
 					// (1,0) situation
 					//std::cout << "Integrate (1,0)" << std::endl;
-					(*dkernel->data)[i+N*j]=Integrate(pi,pj,g,g3);
+					(*dkernel->data)[i+nrow*j]=Integrate(pi,pj,g,g3);
 				}
 				else if (pi.first->prev()==indj)
 				{
 					// (0,1) situation
 					//std::cout << "Integrate (0,1)" << std::endl;
-					(*dkernel->data)[i+N*j]=Integrate(pi,pj,g,g2);
+					(*dkernel->data)[i+nrow*j]=Integrate(pi,pj,g,g2);
 				}
 				else
 				{
 					// Elements are not neighbors
 					//std::cout << "Integrate Remote" << std::endl;
-					(*dkernel->data)[i+N*j]=Integrate(pi,pj,g,g0);
+					(*dkernel->data)[i+nrow*j]=Integrate(pi,pj,g,g0);
 				}
 				//std::cout << (*pmatrix)[i+N*j] << std::endl;
 				

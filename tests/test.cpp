@@ -9,20 +9,8 @@ int main(int argc, char** argv){
 	
 	MPI_Init(&argc, &argv);
 	
-	
-	// Debug Code
-	
-	{
-		int i = 0;
-		char hostname[256];
-		gethostname(hostname, sizeof(hostname));
-		printf("PID %d on %s ready for attach\n", getpid(), hostname);
-		fflush(stdout);
-		while (0 == i)
-			sleep(5);
-	}
-	
-	int nprow=2; int npcol=1; int mb=50; int nb=50;
+		
+	int nprow=1; int npcol=2; int mb=33; int nb=33;
 	bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
 	int myrow=b->get_myrow(); int mycol=b->get_mycol();
@@ -86,7 +74,7 @@ int main(int argc, char** argv){
 	
 	
 	
-	bem2d::freqtype k=10;
+	bem2d::freqtype k=5;
 	bem2d::PolBasis::AddBasis(0,pgeom);
 	std::cout << pgeom->size() << std::endl; 
 	
@@ -102,7 +90,7 @@ int main(int argc, char** argv){
 	
 	
 	bem2d::SoundSoftScattering<bem2d::PlaneWave,bem2d::CombinedPlaneWave> soundsoft(pgeom,k,pw,cpw);
-	soundsoft.SetQuadOption(3,2,0.15);
+	soundsoft.SetQuadOption(5,5,0.15);
 	soundsoft.set_polygons(pgeom);
 	soundsoft.set_plotInterior();
 
@@ -120,19 +108,20 @@ int main(int argc, char** argv){
 	
 	// Test evaluation of solution
 	
-	std::vector<bem2d::Point> p; p.push_back(bem2d::Point(1.5,0.0));
+	//std::vector<bem2d::Point> p; p.push_back(bem2d::Point(1.5,0.0));
 	//bem2d::pcvector sol=soundsoft.EvalSol(p);
-	//std::cout << myrow << " " << mycol << " " << (*sol)[0] << std::endl;
+	
+	//bem2d::pMatrix A=soundsoft.GetMatrix();
+	//std::cout << myrow << " " << mycol << " " << (*A->data)[250*250-1] << std::endl;
+
 	
 	
 	
-	
-	/*
 	int xpts=100; int ypts=100;
-	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,3,-2,3,"trapping"));
+	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.SetOutput(pout);
-	 */
-	//soundsoft.WriteAll();
+	
+	soundsoft.WriteAll();
 	
 	//bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/diskmatrix10",soundsoft.GetMatrix());	
 	//bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/iddiskmatrix10",soundsoft.GetIdent());

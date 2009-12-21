@@ -123,7 +123,7 @@ void MapPoints2d(dvector& x, dvector& y, dvector& w, double a, double b, double 
 						double s=length(pj->Deriv(x[t]));
 						value+=s*std::conj((*fi)(x[t]))*(*fj)(x[t])*w[t];
 					}
-					(*pId->data)[N*j+i]=value;
+					(*pId->data)[nrow*j+i]=value;
 				}
 			}
 		}

@@ -45,23 +45,23 @@ BLAS   = -lptf77blas -lptcblas -latlas -lpthread -lgfortran
 OMP= -lgomp
 
 # ScaLapack
-SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lgfortran -lmpi_f77 -lgfortran
+SCLAPACK= -L/opt/local/lib/gcc43 -lscalapack -lblacsC -lblacs -lblacsC -lmpi_f77 -lgfortran
 
 ############################################
 # Compiler and Flags
 ############################################
-CPP	= mpic++
-CFLAGS  = -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include
-DEBUGFLAGS = -g
+CPP	= icpc
+CFLAGS  = -DBEM2DMPI -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include -I/opt/openmpi/include
+DEBUGFLAGS = -g -save-temps
 OPTFLAGS = -O3
 
 # For open source atlas
 
-# LDFLAGS	= -DBEM2DMPI -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS)
+# LDFLAGS	= -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS)
 
 # Accelerate Framework
 
-  LDFLAGS = -framework Accelerate -L$(SCLAPACKLIB) -L/opt/local/lib -L$(GSLLIB) $(GSL) $(SCLAPACK)
+  LDFLAGS = -framework Accelerate -L$(SCLAPACKLIB) -L/opt/local/lib -L$(GSLLIB) $(GSL) $(SCLAPACK) -L/opt/openmpi/lib -lmpi -lopen-rte -lopen-pal -lutil
 
 # For MKL
 
