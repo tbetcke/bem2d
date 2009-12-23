@@ -1,43 +1,59 @@
-include ./config/$(config).inc
-MAKE += config=$(config)
+ifdef config
+  include ./config/$(config).inc
+else
+  include ./config/default.inc
+endif
 
 ifeq ($(debug),y)
-   MAKE += debug=y
-   CFLAGS += $(DEBUGFLAGS)
+ CFLAGS += $(DEBUGFLAGS)
 else
-   CFLAGS += $(OPTFLAGS)
+ CFLAGS += $(OPTFLAGS)
 endif
 
 ifeq ($(profile),y)
-   MAKE += profile=y
    CFLAGS += -pg
 endif
 
+ifeq ($(mpi),y)
+   CFLAGS += -DBEM2DMPI
+endif
+
+ifeq ($(omp),y)
+   CFLAGS += -fopenmp
+endif
+
+export CFLAGS
+export LDFLAGS
+export CPP
 
 all:	bem2d tests examples
 
 
 .PHONY: tests
-tests: bem2d
-	cd tests; $(MAKE)
+tests: bem2d dirs
+	cd tests; make
 
 .PHONY: bem2d
 bem2d:
-	cd $(SRCDIR); $(MAKE)
+	cd lib; make
 
 .PHONY: clean 
 clean:
-	cd lib; $(MAKE) clean
-	cd tests; $(MAKE) clean
-	cd examples; $(MAKE) clean
+	cd lib; make clean
+	cd tests; make clean
+	cd examples; make clean
 	rm -f *~ *.o
-	cd bin; find . -type f -exec rm -f {} \;
+	rm -rf bin
 
 .PHONY: examples
-examples: bem2d
-	cd examples; $(MAKE)
+examples: bem2d dirs
+	cd examples; make
 
-testfile: bem2d tests
-	$(CPP) $(CFLAGS) -I./libs -o test test.cpp ./libs/bem2d.a $(LDFLAGS)
+.PHONY: dirs
+dirs:
+	test -d bin || mkdir bin;
+	test -d bin/examples || mkdir bin/examples;
 
-
+.PHONY: commit
+commit: clean
+	git commit --all

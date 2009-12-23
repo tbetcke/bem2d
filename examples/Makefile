@@ -1,5 +1,3 @@
-include ../config/$(config).inc
-
 all: trapping wedge triangle
 
 trapping: trapping.o
@@ -15,4 +13,5 @@ triangle: triangle.o
 	$(CPP) $(CFLAGS)  -c $<
 
 clean: 
-	rm -f *.o *~
+	rm -f *.o *~ *.s *.ii
+
