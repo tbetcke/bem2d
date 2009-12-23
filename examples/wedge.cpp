@@ -49,14 +49,11 @@ int main(int argc, char** argv){
 	
 	// Output the matrix
 	
-	bem2d::WriteMatrix("/Users/tbetcke/work/matlab/scattmatrices/wedgepmatrix",soundsoft.GetMatrix());
-	bem2d::WriteMatrix("/Users/tbetcke/work/matlab/scattmatrices/idwedgematrix",soundsoft.GetIdent());
-
-	/*
+	
 	 int xpts=300; int ypts=300;
 	 bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-4,8,-4,8,"wedge"));
 	 soundsoft.SetOutput(pout);
 	 soundsoft.WriteAll();
-	 */
+	 
 
 }

@@ -23,7 +23,9 @@ namespace bem2d
 		
 		
 		void SetQuadOption(int L, int N, double sigma);
-		virtual void Discretize();
+		virtual void DiscretizeMatrix();
+		virtual void DiscretizeRhs();
+		void Discretize();
 		
 		void Solve();
 		inline pMatrix GetMatrix() const{
@@ -88,24 +90,31 @@ namespace bem2d
 		quadopts_.N=N;
 		quadopts_.sigma=sigma;
 	}
+
+	template<typename T1, typename T2>
+	  void SoundSoftScattering<T1,T2>::DiscretizeMatrix()
+	{
+		bem2d::CombinedSingleConjDouble scdl(k_,frhs_.eta());
+		
+		pA_=DiscreteKernel(*pgeom_,quadopts_,scdl);
+		pId_=EvalIdent(*pgeom_, quadopts_);
+		(*pA_)=(*pId_)+2.0*(*pA_);
+	}
+
+	template<typename T1, typename T2>
+	  void SoundSoftScattering<T1,T2>::DiscretizeRhs()
+	{
+		prhs_=bem2d::DotProdBasFuns(*pgeom_,quadopts_,frhs_);
+		(*prhs_)=2.0*(*prhs_);
+	}
 	
 	template<typename T1, typename T2>
 	void SoundSoftScattering<T1,T2>::Discretize()
 	{
 		
 		
-		bem2d::CombinedSingleConjDouble scdl(k_,frhs_.eta());
-		
-		pA_=DiscreteKernel(*pgeom_,quadopts_,scdl);
-		pId_=EvalIdent(*pgeom_, quadopts_);
-		(*pA_)=(*pId_)+2.0*(*pA_);
-		
-		prhs_=bem2d::DotProdBasFuns(*pgeom_,quadopts_,frhs_);
-		
-		
-		//cblas_zdscal(A_.dim[0],2.0,&(*prhs_)[0],1);
-		(*prhs_)=2.0*(*prhs_);
-		
+	  DiscretizeMatrix();
+	  DiscretizeRhs();
 	}
 	
 	template<typename T1, typename T2>

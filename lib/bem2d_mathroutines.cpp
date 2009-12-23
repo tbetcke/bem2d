@@ -1,4 +1,5 @@
 #include<algorithm>
+#include<cmath>
 #include "bem2d_mathroutines.h"
 #include "gsl/gsl_sf_bessel.h"
 #include "bem2d_cblas.h"
@@ -160,8 +161,8 @@ namespace bem2d
 		int ione=1;
 		pzgemm_(&trans,&trans,&lhs.dim[0],&rhs.dim[1],&lhs.dim[1],&alpha,&(*lhs.data)[0],&ione,&ione,lhs.desc,&(*rhs.data)[0],&ione,&ione,rhs.desc,&beta,&(*result.data)[0],&ione,&ione,result.desc);
 #else  	
-		cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,lhs.dim[0],rhs.dim[1],lhs.dim[1],&alpha,&(*lhs.data)[0],lhs.dim,&(*rhs.data)[0],
-					rhs.dim,&beta,&(*result.data)[0],rhs.dim);
+		cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,lhs.dim[0],rhs.dim[1],lhs.dim[1],&alpha,&(*lhs.data)[0],lhs.dim[0],&(*rhs.data)[0],
+					rhs.dim[0],&beta,&(*result.data)[0],rhs.dim[0]);
 #endif
 		return result;
 		
@@ -210,8 +211,9 @@ namespace bem2d
 		if (info) throw ScaLapackError();
 #else		
 		int nrhs=1;
-		int ipiv[min(tmp.dim[0],tmp.dim[1])];
-		zgetrf_(&tmp.dim[0], &tmp.dim[1], &(*tmp.data)[0], &tmp.dim[0], &ipiv,&info);
+		//int ipiv[std::min(tmp.dim[0],tmp.dim[1])];
+		int ipiv[tmp.dim[0]];
+		zgetrf_(&tmp.dim[0], &tmp.dim[1], &(*tmp.data)[0], &tmp.dim[0], ipiv,&info);
 		if (info) throw LapackError();		
 		zgetrs_(&trans,&tmp.dim[0],&res->dim[1],&(*tmp.data)[0],&tmp.dim[0],ipiv,&(*res->data)[0],&res->dim[0],&info);
 		if (info) throw LapackError();

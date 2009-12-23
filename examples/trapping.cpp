@@ -55,17 +55,11 @@ int main(int argc, char** argv){
 	std::cout << "Computing time (minutes): " << time/60 << std::endl;
 	std::cout << "Condition Number: " << soundsoft.L2Condition() << std::endl;
 	
-
-	// Output the matrix
-	
-	bem2d::WriteMatrix("/Users/tbetcke/work/matlab/scattmatrices/trapmatrix",soundsoft.GetMatrix());
-	bem2d::WriteMatrix("/Users/tbetcke/work/matlab/scattmatrices/idtrapmatrix",soundsoft.GetIdent());
-	/*
 	int xpts=100; int ypts=100;
-	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2*c,2*c,-2*c+a,2*c,"trapping"));
-	soundsoft.SetOutput(pout);
+	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,3,-2,2,"trapping"));
+	soundsoft.SetOutput(pout);	
 	soundsoft.WriteAll();
-	*/
+
 	
 	
 	

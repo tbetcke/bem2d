@@ -10,6 +10,7 @@ namespace bem2d {
 		
 		// Initialize Scalapack
 		sl_init_(&ictxt_,&nprow,&npcol);
+ 
 		
 		// Fill the context information
 		MPI_Comm_size(MPI_COMM_WORLD,&mpiprocs_);

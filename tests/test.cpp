@@ -5,62 +5,29 @@
 
 
 int main(int argc, char** argv){
-	// File to test different things
 	
-	MPI_Init(&argc, &argv);
+  
+
+  	MPI_Init(&argc, &argv);
 	
 		
 	int nprow=1; int npcol=2; int mb=33; int nb=33;
 	bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
+	if (!b){
+	  std::cout <<  "Could not create Blacs context" << std::endl;
+	  MPI_Finalize();
+	  exit(1);
+	}
+	if ((b->get_myrow()==-1)&&(b->get_mycol()==-1)) {
+	  MPI_Finalize();
+	  exit(0);
+	}
+
+	  
+
 	int myrow=b->get_myrow(); int mycol=b->get_mycol();
-
-	/*	
-	 
-	std::cout << "Rank: " << b->get_mpirank() << " Size: " << b->get_mpiprocs() << " Row: " << b->get_myrow() << " Col: "<< b->get_mycol() <<std::endl;
-	
-	bem2d::Matrix A(5);
-	
-	// Fill the matrix
-	
-	if ((myrow==0)&(mycol==0)){
-		(*A.data)[0]=1; (*A.data)[3]=2; (*A.data)[6]=5;
-		(*A.data)[1]=6; (*A.data)[4]=9; (*A.data)[7]=7;
-		(*A.data)[2]=3; (*A.data)[5]=2; (*A.data)[8]=8;
-	}
-	
-	if ((myrow==0)&(mycol==1)){
-		(*A.data)[0]=3; (*A.data)[3]=4;
-		(*A.data)[1]=2; (*A.data)[4]=1;
-		(*A.data)[2]=1; (*A.data)[5]=0;
-	}
-	
-	if ((myrow==1)&(mycol==0)){
-		(*A.data)[0]=3; (*A.data)[2]=2; (*A.data)[4]=5;
-		(*A.data)[1]=9; (*A.data)[3]=0; (*A.data)[5]=4;
-	}
-		
-	if ((myrow==1)&(mycol==1)){
-		(*A.data)[0]=8; (*A.data)[2]=7;
-		(*A.data)[1]=2; (*A.data)[3]=1;
-	}
-
-	bem2d::Matrix B(5,2);
-	if ((myrow==0)&(mycol==0)){
-		(*B.data)[0]=1; (*B.data)[3]=2;
-	}
-	
-	bem2d::Matrix C(5,2);
-	C=bem2d::SolveSystem(A,B);
-	
-	if ((myrow==0)&(mycol==0)){
-		std::cout << "Result: " << (*C.data)[4] << std::endl;
-		std::cout << "Global index for (3,1): " << b->L2gc(3) << std::endl;
-	}
-	
-	//for (int i=0;i<9;i++) std::cout << A.desc[i] << " ";
-	//std::cout << std::endl;
-*/
+  
 	int n=500;
 	
 	bem2d::Circle cobj;
@@ -117,7 +84,7 @@ int main(int argc, char** argv){
 	
 	
 	
-	int xpts=100; int ypts=100;
+		int xpts=100; int ypts=100;
 	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.SetOutput(pout);
 	

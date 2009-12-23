@@ -46,17 +46,13 @@ int main(int argc, char** argv){
 	std::cout << "Computing time (minutes): " << time/60 << std::endl;
 	std::cout << "Condition Number: " << soundsoft.L2Condition() << std::endl;
 	
-	// Output the matrix
 	
-	bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/trianglematrix10",soundsoft.GetMatrix());
-	bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/idtrianglematrix10",soundsoft.GetIdent());
 	
-	/*
 	 int xpts=300; int ypts=300;
 	 bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-4,8,-4,8,"wedge"));
 	 soundsoft.SetOutput(pout);
 	 soundsoft.WriteAll();
-	 */
+	 
 	
 }
 
