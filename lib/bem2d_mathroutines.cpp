@@ -167,12 +167,68 @@ namespace bem2d
 		return result;
 		
 	}
-	
-	double L2Cond(const Matrix& m) throw (LapackError){
-		
+
 #ifdef BEM2DMPI
-		return 0;
+	void L2NormCond(const Matrix& stiff, const Matrix& mass, double& norm, double& cond) throw (ScaLapackError){
+#else
+	void L2NormCond(const Matrix& stiff, const Matrix& mass, double& norm, double& cond) throw (LapackError){
 #endif
+		
+		
+		Matrix tstiff(stiff);
+		Matrix tmass(mass);
+		
+		// Compute Cholesky decomposition of mass matrix
+#ifdef BEM2DMPI
+		// Compute Cholesky decomposition of mass matrix
+		char uplo='U';
+		int ia=1;
+		int ja=1;
+		int info;
+		pzpotrf_(&uplo, &tmass.dim[0], &(*tmass.data)[0],&ia, &ja,tmass.desc,&info);
+		if (info) throw ScaLapackError();
+
+		// Factor Cholesky decomposition into original matrix
+		
+		char side='R';
+		char transa='N';
+		char diag='N';
+		complex alpha=1.0;
+		
+		pztrsm_(&side,&uplo,&transa,&diag,&tstiff.dim[0],&tstiff.dim[1],&alpha,&(*tmass.data)[0],&ia,&ja,tmass.desc,&(*tstiff.data)[0],&ia,&ja,tstiff.desc);
+		side='L'; transa='C';
+		pztrsm_(&side,&uplo,&transa,&diag,&tstiff.dim[0],&tstiff.dim[1],&alpha,&(*tmass.data)[0],&ia,&ja,tmass.desc,&(*tstiff.data)[0],&ia,&ja,tstiff.desc);
+		
+		// tstiff now includes the mass matrix
+		
+		// Compute singular values
+		
+		char jobu='N';
+		char jobvt='N';
+		int n=tstiff.dim[1];
+		double s[n];
+		complex wsize;
+		int lwork=-1;
+		double rwork[1+4*n];
+		
+		
+		
+		// Compute Workspace Size
+		pzgesvd_(&jobu,&jobvt,&tstiff.dim[0],&tstiff.dim[1],&(*tstiff.data)[0],&ia,&ja,tstiff.desc,s,0,&ia,&ja,tstiff.desc,0,&ia,&ja,tstiff.desc,&wsize,&lwork,rwork,&info);
+		// Now do the actual call
+
+		lwork=(int) real(wsize);
+		complex work[lwork];
+		
+		pzgesvd_(&jobu,&jobvt,&tstiff.dim[0],&tstiff.dim[1],&(*tstiff.data)[0],&ia,&ja,tstiff.desc,s,0,&ia,&ja,tstiff.desc,0,&ia,&ja,tstiff.desc,work,&lwork,rwork,&info);
+		
+		norm=s[0];
+		cond=s[0]/s[n-1];
+#else
+		
+		
+		
+	/*	
 		
 		char jobu='N';
 		char jobvt='N';
@@ -188,6 +244,8 @@ namespace bem2d
 		zgesvd_(&jobu, &jobvt, &M, &M, &(*tmp.data)[0], &M, &s[0], NULL, &M, NULL, &M, &work[0], &lwork, &rwork[0], &info);
 		if (info!=0) throw LapackError();
 		return s[0]/s[M-1];
+	 */
+#endif
 	}
 	
 	

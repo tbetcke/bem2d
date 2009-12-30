@@ -11,7 +11,7 @@ int main(int argc, char** argv){
   	MPI_Init(&argc, &argv);
 	
 		
-	int nprow=1; int npcol=2; int mb=33; int nb=33;
+	int nprow=2; int npcol=1; int mb=100; int nb=100;
 	bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
 	if (!b){
@@ -29,6 +29,7 @@ int main(int argc, char** argv){
 	int myrow=b->get_myrow(); int mycol=b->get_mycol();
   
 	int n=500;
+
 	
 	bem2d::Circle cobj;
 	bem2d::AnalyticCurve<bem2d::Circle> circle(n,cobj);
@@ -88,10 +89,16 @@ int main(int argc, char** argv){
 	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.SetOutput(pout);
 	
-	soundsoft.WriteAll();
+	double norm,cond;
+	soundsoft.NormCond(norm,cond);
+	std::cout << norm << " " << cond << std::endl;
+
+	//soundsoft.WriteAll();
 	
 	//bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/diskmatrix10",soundsoft.GetMatrix());	
 	//bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/iddiskmatrix10",soundsoft.GetIdent());
+	
+
 	
 	bem2d::BlacsSystem::Release();	
 	MPI_Finalize(); 

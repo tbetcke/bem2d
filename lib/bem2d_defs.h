@@ -36,6 +36,7 @@ namespace bem2d
 		void zgetrf_(int*, int*, complex*, int*, int*, int*);
 		void zgetrs_(char*, int*, int*, complex*, int*, int*, complex*, int*, int*);
 		void zgesvd_(char*, char*, int*, int*, complex*, int*, double*, complex*, int*, complex*, int*, complex*, int*, double*, int*);
+	  void zpotrf_(const char*, const int*, complex*, const int*, int*);
 	}		
 	
 	

@@ -37,8 +37,8 @@ namespace bem2d
 		
 		pcvector EvalIncident(const std::vector<Point>& points);
 		pcvector EvalSol(const std::vector<Point>& points);
-		inline double L2Condition() const{
-			return L2Cond(*pA_);
+		inline void NormCond(double& norm, double& cond)  const{
+		  L2NormCond(*pA_,*pId_,norm,cond);
 		}
 		
 		void SetOutput(pOutputHandler output);

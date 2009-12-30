@@ -51,8 +51,12 @@ namespace bem2d
 	Matrix operator*(const double& alpha, const Matrix& rhs);
 	
 	Matrix operator*(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
-	
-	double L2Cond(const Matrix& m) throw (LapackError);
+
+#ifdef BEM2DMPI
+	void L2NormCond(const Matrix& stiff, const Matrix& mass, double& norm, double& cond) throw (ScaLapackError);
+#else
+	void L2NormCond(const Matrix& stiff, const Matrix& mass, double& norm, double& cond) throw (LapackError);
+#endif
 	
 #ifdef BEM2DMPI	
 	pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError);

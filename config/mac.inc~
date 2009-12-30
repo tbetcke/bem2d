@@ -1,18 +1,11 @@
 ############################################
-# Specify Directories and output name
-############################################
-
-SRCDIR	= lib
-
-############################################
 #  Paths to Include Files
 ############################################
 
 # GNU Scientific Library
-GSLINC	= /opt/local/include/gsl
- 
-# ATLAS Include
-ATLASINC = /usr/include/atlas
+# files expected in $(GSLINC)/gsl
+GSLINC	= /opt/local/include
+
 
 ############################################
 #  Paths to Libraries
@@ -21,8 +14,11 @@ ATLASINC = /usr/include/atlas
 # GNU Scientific Library
 GSLLIB	= /opt/local/lib
  
-# ATLAS
-ATLASLIB = /usr/lib64/atlas
+# BLAS
+BLASLIB =
+
+# LAPACK
+LAPACKLIB =
 
 # SCLAPACK
 SCLAPACKLIB= /Users/tbetcke/libs/scalapack
@@ -36,33 +32,26 @@ SCLAPACKLIB= /Users/tbetcke/libs/scalapack
 GSL = -lgsl
 
 # Lapack
-LAPACK = -llapack
+LAPACK = -framework Accelerate
 
 # Blas
-BLAS   = -lptf77blas -lptcblas -latlas -lpthread -lgfortran
+BLAS   = 
 
 # OpenMP
 OMP= -lgomp
 
 # ScaLapack
-SCLAPACK= -L/opt/local/lib/gcc43 -lscalapack -lblacsC -lblacs -lblacsC -lmpi_f77 -lgfortran
+SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lmpi_f77 -lgfortran
 
 ############################################
 # Compiler and Flags
 ############################################
-CPP	= icpc
-CFLAGS  = -DBEM2DMPI -I$(GSLINC) -I$(ATLASINC) -I/opt/local/include -I/opt/openmpi/include
+CPP	= mpic++
+INCLUDES = -I$(GSLINC)
+CFLAGS  += $(INCLUDES)
 DEBUGFLAGS = -g -save-temps
 OPTFLAGS = -O3
+LDFLAGS = -L$(GSLLIB) -L$(SCLAPACKLIB) -L$(LAPACKLIB) -L$(BLAS)
+LDFLAGS += $(GSL) $(SCLAPACK) $(LAPACK) $(BLAS) $(OMP)
 
-# For open source atlas
 
-# LDFLAGS	= -L$(GSLLIB) -L$(ATLASLIB) $(GSL) $(LAPACK) $(BLAS)
-
-# Accelerate Framework
-
-  LDFLAGS = -framework Accelerate -L$(SCLAPACKLIB) -L/opt/local/lib -L$(GSLLIB) $(GSL) $(SCLAPACK) -L/opt/openmpi/lib -lmpi -lopen-rte -lopen-pal -lutil
-
-# For MKL
-
-# LDFLAGS = -L$(GSLLIB) $(GSL) -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread

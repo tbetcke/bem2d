@@ -33,7 +33,9 @@ namespace bem2d {
 		void pzgetrf_(const int*, const int*, complex*, const int*, const int*, const int*, int*, int*);
 		void pzgetrs_(const char*, const int*, const int*, const complex*, const int*, const int*, const int*, const int*, complex*, const int*, const int*, const int*, int*);
 		int indxl2g_(const int*, const int*, const int*, const int*, const int*);
-		
+		void pzpotrf_(const char*, const int*, complex* ,const int*, const int*, const int*, int*);
+		void pztrsm_(const char*, const char*, const char*, const char*, const int*, const int*, const complex*, const complex*, const int*, const int*, const int*, complex*, const int*, const int*, const int*);
+		void pzgesvd_(const char*, const char*, const int*, const int*, complex*, const int*, const int*, const int*, double*, complex*, const int*, const int*, const int*, complex*, const int*, const int*, const int*, complex*, const int*, double*, int*);
 	}
 
 	

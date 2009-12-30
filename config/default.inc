@@ -15,13 +15,13 @@ GSLINC	= /opt/local/include
 GSLLIB	= /opt/local/lib
  
 # BLAS
-BLASLIB =
+BLASLIB =/Users/tbetcke/lib
 
 # LAPACK
 LAPACKLIB =
 
 # SCLAPACK
-SCLAPACKLIB= /Users/tbetcke/libs/scalapack
+SCLAPACKLIB= /Users/tbetcke/lib
 
 
 ############################################
@@ -32,10 +32,10 @@ SCLAPACKLIB= /Users/tbetcke/libs/scalapack
 GSL = -lgsl
 
 # Lapack
-LAPACK = -framework Accelerate
+LAPACK = -llapack
 
 # Blas
-BLAS   = 
+BLAS   = -lgoto2
 
 # OpenMP
 OMP= -lgomp
