@@ -6,7 +6,30 @@
 
 int main(int argc, char** argv){
 	
-    int m=2;
+#ifdef BEM2DMPI
+  	MPI_Init(&argc, &argv);
+	
+		
+	int nprow=2; int npcol=1; int mb=100; int nb=100;
+	bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
+
+	if (!b){
+	  std::cout <<  "Could not create Blacs context" << std::endl;
+	  MPI_Finalize();
+	  exit(1);
+	}
+	if ((b->get_myrow()==-1)&&(b->get_mycol()==-1)) {
+	  MPI_Finalize();
+	  exit(0);
+	}
+
+	  
+
+	int myrow=b->get_myrow(); int mycol=b->get_mycol();
+#endif
+
+
+    int m=4;
 	bem2d::freqtype k=5*m;
 	int n=20*m;
 	
@@ -50,18 +73,40 @@ int main(int argc, char** argv){
 	
 	start=clock();
 	soundsoft.Discretize();
+	soundsoft.Solve();
 	finish=clock();
 	time=(double(finish)-double(start))/CLOCKS_PER_SEC;
+
+#ifdef BEM2DMPI
+	if (b->IsRoot()) {
+#endif
 	std::cout << "Computing time (minutes): " << time/60 << std::endl;
-	std::cout << "Condition Number: " << soundsoft.L2Condition() << std::endl;
-	
-	int xpts=100; int ypts=100;
+#ifdef BEM2DMPI
+	}
+#endif
+	double cond; double norm;
+	soundsoft.NormCond(norm,cond);
+
+#ifdef BEM2DMPI
+	if (b->IsRoot()){
+#endif
+	std::cout << "Condition Number: " << cond << std::endl;
+	std::cout << "Norm: " << norm << std::endl;
+#ifdef BEM2DMPI
+	}	
+#endif
+
+	int xpts=200; int ypts=200;
 	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,3,-2,2,"trapping"));
 	soundsoft.SetOutput(pout);	
 	soundsoft.WriteAll();
 
 	
 	
+#ifdef BEM2DMPI
+	bem2d::BlacsSystem::Release();	
+	MPI_Finalize(); 
+#endif
 	
 	
 	

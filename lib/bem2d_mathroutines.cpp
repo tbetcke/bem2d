@@ -226,25 +226,33 @@ namespace bem2d
 		cond=s[0]/s[n-1];
 #else
 		
+		// Compute Cholesky of mass matrix
 		
-		
-	/*	
-		
+		char uplo='U';
+		int info;
+		complex alpha=1.0;
+		zpotrf_(&uplo,&tmass.dim[0],&(*tmass.data)[0],&tmass.dim[0],&info);
+
+		// Factor Cholesky factor into stiffness matrix
+
+		cblas_ztrsm(CblasColMajor,CblasRight,CblasUpper,CblasNoTrans,CblasNonUnit,tstiff.dim[0],tstiff.dim[0],&alpha,&(*tmass.data)[0],tmass.dim[0],&(*tstiff.data)[0],tstiff.dim[0]);
+
+		cblas_ztrsm(CblasColMajor,CblasLeft,CblasUpper,CblasConjTrans,CblasNonUnit,tstiff.dim[0],tstiff.dim[0],&alpha,&(*tmass.data)[0],tmass.dim[0],&(*tstiff.data)[0],tstiff.dim[0]);
+
+		// Compute singular values of stiffness matrix
+
 		char jobu='N';
 		char jobvt='N';
-		int M=m.dim[0];
+		int M=tstiff.dim[0];
 		dvector s(M);
 		int lwork=5*M;
 		cvector work(lwork);
 		dvector rwork(lwork);
-		int info;
-		
-		Matrix tmp(m);
-		
-		zgesvd_(&jobu, &jobvt, &M, &M, &(*tmp.data)[0], &M, &s[0], NULL, &M, NULL, &M, &work[0], &lwork, &rwork[0], &info);
+				
+		zgesvd_(&jobu, &jobvt, &M, &M, &(*tstiff.data)[0], &M, &s[0], NULL, &M, NULL, &M, &work[0], &lwork, &rwork[0], &info);
 		if (info!=0) throw LapackError();
-		return s[0]/s[M-1];
-	 */
+		norm=s[0];
+		cond=s[0]/s[M-1];
 #endif
 	}
 	

@@ -44,7 +44,6 @@ int main(int argc, char** argv){
 	finish=clock();
 	time=(double(finish)-double(start))/CLOCKS_PER_SEC;
 	std::cout << "Computing time (minutes): " << time/60 << std::endl;
-	std::cout << "Condition Number: " << soundsoft.L2Condition() << std::endl;
 	
 	
 	

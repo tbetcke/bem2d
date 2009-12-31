@@ -7,7 +7,7 @@
 int main(int argc, char** argv){
 	
   
-
+#ifdef BEM2DMPI
   	MPI_Init(&argc, &argv);
 	
 		
@@ -27,7 +27,7 @@ int main(int argc, char** argv){
 	  
 
 	int myrow=b->get_myrow(); int mycol=b->get_mycol();
-  
+#endif
 	int n=500;
 
 	
@@ -85,7 +85,7 @@ int main(int argc, char** argv){
 	
 	
 	
-		int xpts=100; int ypts=100;
+	int xpts=100; int ypts=100;
 	bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
 	soundsoft.SetOutput(pout);
 	
@@ -99,9 +99,9 @@ int main(int argc, char** argv){
 	//bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/iddiskmatrix10",soundsoft.GetIdent());
 	
 
-	
+#ifdef BEM2DMPI
 	bem2d::BlacsSystem::Release();	
 	MPI_Finalize(); 
-	
+#endif
 	 
 }
