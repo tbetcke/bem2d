@@ -9,8 +9,8 @@ namespace bem2d
 class Basis
 {
 public:
-  virtual complex operator()(double t) const=0;
-  virtual ~Basis();
+        virtual complex operator()(double t) const=0;
+        virtual ~Basis();
 };
 
 typedef boost::shared_ptr<Basis> pBasis;

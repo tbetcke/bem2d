@@ -8,16 +8,15 @@
 namespace bem2d
 {
 
-struct Point
-{
-  double x; // x coordinate
-  double y; // y coordinate
+struct Point {
+        double x; // x coordinate
+        double y; // y coordinate
 
-  Point(double xx, double yy);
-  Point();
-  Point(const Point& p);
+        Point(double xx, double yy);
+        Point();
+        Point(const Point& p);
 
-  ~Point() {};
+        ~Point() {};
 };
 
 std::ostream & operator<<(std::ostream &s, const Point& z);
@@ -32,9 +31,9 @@ double length(const Point& p);
 Point normalize(const Point& p);
 // Normalize a point by dividing it through its length
 
-	
-	typedef std::vector<Point> PointVector;
-	typedef boost::shared_ptr<PointVector> pPointVector;  
+
+typedef std::vector<Point> PointVector;
+typedef boost::shared_ptr<PointVector> pPointVector;
 }
 
 
