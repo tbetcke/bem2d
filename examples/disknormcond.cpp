@@ -1,7 +1,7 @@
 #include<iostream>
 #include "../lib/bem2d.h"
 #include<cmath>
-
+#include<ctime>
 
 
 int main(int argc, char** argv)
@@ -9,14 +9,19 @@ int main(int argc, char** argv)
  
         bem2d::freqtype k=160; // Wavenumber
         int n=(int) 10*k;     // Size of the linear system
+
+
+        clock_t start, finish;
+        double time;
+        start=clock();
  
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
 
 
-        int nprow=2; // Number of rows in process grid
-        int npcol=1; // Number of columns in process grid
+        int nprow=4; // Number of rows in process grid
+        int npcol=2; // Number of columns in process grid
         int mb=100;  // Row Block size
         int nb=100;  // Column Block size
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
@@ -74,12 +79,19 @@ int main(int argc, char** argv)
         double norm,cond;
         soundsoft.NormCond(norm,cond);
 
+        finish=clock();
+        time=(double(finish)-double(start))/CLOCKS_PER_SEC/60;
+
+
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
 	  std::cout << "Norm: " << norm << " Norm of Inverse: " << cond/norm << " Condition Nr.: " << cond <<  std::endl;
+	  std::cout << "Overalll time (minutes): " << time << std::endl;
 	}
 #else
 	  std::cout << "Norm: " << norm << " Norm of Inverse: " << cond/norm << " Condition Nr.: " << cond <<  std::endl;
+	  std::cout << "Overalll time (minutes): " << time << std::endl;
+
 #endif
 
 #ifdef BEM2DMPI
