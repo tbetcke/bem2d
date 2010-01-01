@@ -6,3 +6,4 @@ namespace bem2d
 Basis::~Basis() {}
 
 }
+

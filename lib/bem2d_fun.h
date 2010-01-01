@@ -122,3 +122,4 @@ public:
 }
 
 #endif // _INCIDENTFUN_H_
+

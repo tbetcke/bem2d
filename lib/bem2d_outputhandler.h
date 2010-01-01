@@ -53,3 +53,4 @@ private:
 }
 
 #endif // _OUTPUTHANDLER_H_
+

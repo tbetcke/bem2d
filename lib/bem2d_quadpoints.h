@@ -199,3 +199,4 @@ private:
 
 }
 #endif /* QUADPOINTS_H_ */
+

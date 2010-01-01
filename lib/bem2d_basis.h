@@ -19,3 +19,4 @@ typedef boost::shared_ptr<Basis> pBasis;
 
 
 #endif // _BASIS_H_
+

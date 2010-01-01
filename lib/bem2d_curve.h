@@ -38,3 +38,4 @@ public:
 
 
 #endif // _CURVE_H_
+

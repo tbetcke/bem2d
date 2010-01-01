@@ -81,3 +81,4 @@ complex CombinedSingleConjDouble::operator()(Point x, Point y) const
 }
 
 }
+

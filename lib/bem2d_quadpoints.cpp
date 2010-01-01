@@ -186,3 +186,4 @@ AdaptedGauss3::~AdaptedGauss3() {}
 
 
 }
+

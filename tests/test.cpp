@@ -12,8 +12,8 @@ int main(int argc, char** argv)
         MPI_Init(&argc, &argv);
 
 
-        int nprow=2;
-        int npcol=1;
+        int nprow=4;
+        int npcol=2;
         int mb=100;
         int nb=100;
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
         int myrow=b->get_myrow();
         int mycol=b->get_mycol();
 #endif
-        int n=500;
+        int n=4000;
 
 
         bem2d::Circle cobj;
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 
 
 
-        bem2d::freqtype k=5;
+        bem2d::freqtype k=50;
         bem2d::PolBasis::AddBasis(0,pgeom);
         std::cout << pgeom->size() << std::endl;
 
@@ -69,13 +69,13 @@ int main(int argc, char** argv)
 
         std::cout << "Discretize System" << std::endl;
 
-        soundsoft.Discretize();
+        soundsoft.DiscretizeMatrix();
 
-        std::cout << "Solve system" << std::endl;
+        //std::cout << "Solve system" << std::endl;
 
-        soundsoft.Solve();
+        //soundsoft.Solve();
 
-        std::cout << "System solved" << std::endl;
+        //std::cout << "System solved" << std::endl;
 
         //std::cout << "Condition Number: " << soundsoft.L2Condition() << std::endl;
 
@@ -90,11 +90,12 @@ int main(int argc, char** argv)
 
 
 
-        int xpts=100;
-        int ypts=100;
-        bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
-        soundsoft.SetOutput(pout);
+        //int xpts=100;
+        //int ypts=100;
+        //bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
+        //soundsoft.SetOutput(pout);
 
+	std::cout << "Compute norm/cond" << std::endl;
         double norm,cond;
         soundsoft.NormCond(norm,cond);
         std::cout << norm << " " << cond << std::endl;
@@ -111,3 +112,4 @@ int main(int argc, char** argv)
 #endif
 
 }
+

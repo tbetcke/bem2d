@@ -74,3 +74,4 @@ pGeometry AnalyticCurve<T>::GetGeometry()
 }
 
 #endif // _SHAPE_H_
+

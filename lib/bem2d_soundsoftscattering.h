@@ -235,3 +235,4 @@ void SoundSoftScattering<T1,T2>::set_polygons(pGeometry polygon)
 
 
 #endif // _SOUNDSOFTSCATTERING_H_
+

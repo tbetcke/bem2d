@@ -61,3 +61,4 @@ Point normalize(const Point& p)
 }
 
 }
+
