@@ -110,7 +110,6 @@ int main(int argc, char** argv)
         soundsoft.NormCond(norm,cond);
         std::cout << norm << " " << cond << std::endl;
 
-        //soundsoft.WriteAll();
 
         //bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/diskmatrix10",soundsoft.GetMatrix());
         //bem2d::WriteMatrix("/Users/tbetcke/svn/numerical_coercivity/matlab/iddiskmatrix10",soundsoft.GetIdent());
