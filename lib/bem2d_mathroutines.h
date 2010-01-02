@@ -63,6 +63,14 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError);
 pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
 #endif
 
+#ifdef BEM2DMPI
+ pdvector HermitianEigenvalues(const Matrix& k, const Matrix& m) throw (ScaLapackError);
+#else
+ pdvector HermitianEigenvalues(const Matrix& k, const Matrix& m) throw (LapackError);
+#endif
+
+ Matrix ConjTranspose(const Matrix& m);
+
 void InPolygon(const std::vector<pGeometry> polygons, const std::vector<Point>& testpoints,std::vector<int>& inpoly);
 void InPolygon(const pGeometry polygon, const std::vector<Point>& testpoints,std::vector<int>& inpoly);
 

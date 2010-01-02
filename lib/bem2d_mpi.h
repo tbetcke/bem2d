@@ -36,6 +36,19 @@ extern "C" {
         void pzpotrf_(const char*, const int*, complex* ,const int*, const int*, const int*, int*);
         void pztrsm_(const char*, const char*, const char*, const char*, const int*, const int*, const complex*, const complex*, const int*, const int*, const int*, complex*, const int*, const int*, const int*);
         void pzgesvd_(const char*, const char*, const int*, const int*, complex*, const int*, const int*, const int*, double*, complex*, const int*, const int*, const int*, complex*, const int*, const int*, const int*, complex*, const int*, double*, int*);
+  void pzhegvx_(const int* ibtype, const char* jobz, const char* range, const char* uplo, const int* N, 
+		complex* A, const int* IA, const int* JA, const int* desca, complex* B, const int* ib,
+		const int* jb, const int* descb, const double* vl, const double* vu, const int* il,
+		const int* iu, const double* abstol, int* M, int* NZ, double* w, const double* orfac,
+		complex* Z, const int* iz, const int* jz, const int* descz, complex* work, const int* lwork,
+		double* rwork, const int* lrwork, int* iwork, const int* liwork, int* ifail, int* icluster,
+		double* gap, int* info);
+  double pdlamch_(const int* ictxt, const char* cmach);
+
+  void pzgeadd_(const char* trans, const int* M, const int* N, const complex* alpha, const complex* A, 
+		const int* ia, const int* ja, const int* desca, const complex* beta, complex* C, const int* ic, 
+		const int* jc, const int* descc);
+
 }
 
 

@@ -12,10 +12,10 @@ int main(int argc, char** argv)
         MPI_Init(&argc, &argv);
 
 
-        int nprow=4;
+        int nprow=2;
         int npcol=2;
-        int mb=100;
-        int nb=100;
+        int mb=5;
+        int nb=5;
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
         if (!b) {
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
         int myrow=b->get_myrow();
         int mycol=b->get_mycol();
 #endif
-        int n=4000;
+        int n=20;
 
 
         bem2d::Circle cobj;
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 
 
 
-        bem2d::freqtype k=50;
+        bem2d::freqtype k=5;
         bem2d::PolBasis::AddBasis(0,pgeom);
         std::cout << pgeom->size() << std::endl;
 
@@ -87,7 +87,17 @@ int main(int argc, char** argv)
         //bem2d::pMatrix A=soundsoft.GetMatrix();
         //std::cout << myrow << " " << mycol << " " << (*A->data)[250*250-1] << std::endl;
 
+	std::cout << "Test Eigenvalues" << std::endl;
+	bem2d::pMatrix pk=soundsoft.GetMatrix();
+	bem2d::pMatrix pm=soundsoft.GetIdent();
 
+	bem2d::Matrix H=0.5*(*pk+bem2d::ConjTranspose(*pk));
+
+	bem2d::pdvector result=HermitianEigenvalues(H,*pm);
+
+	if (b->IsRoot()){
+	  for (int i=0;i<result->size();i++) std::cout << (*result)[i] << std::endl;
+	}
 
 
         //int xpts=100;

@@ -293,6 +293,98 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
         return res;
 }
 
+#ifdef BEM2DMPI
+ pdvector HermitianEigenvalues(const Matrix& k, const Matrix& m) throw (ScaLapackError){
+#else
+   pcvector HermitianEigenvalues(const Matrix& k, const Matrix& m) throw (LapackError){
+#endif
+
+     Matrix tk(k);
+     Matrix tm(m);
+
+     pdvector result(new dvector(tk.dim[0]));
+
+#ifdef BEM2DMPI
+     BlacsSystem* b=BlacsSystem::Instance();
+     int ictxt=b->get_ictxt();
+
+
+     int ibtype=1;
+     char jobz='N';
+     char range='A';
+     char uplo='U';
+     char cmach='S';
+     int one=1;
+     int M;
+     double orfac=-1;
+     complex wsize;
+     int lwork=-1;
+     double trwork[3];
+     int lrwork=-1;
+     int tiwork;
+     int liwork=-1;
+     double gap[b->get_nprow()*b->get_npcol()];
+     int info;
+     double abstol=2*pdlamch_(&ictxt,&cmach);
+     int ifail[tm.dim[0]];
+
+     // Do a workspace query
+     
+     pzhegvx_(&ibtype,&jobz,&range,&uplo,&tk.dim[0],&(*tk.data)[0],&one,&one,tk.desc,&(*tm.data)[0],&one,&one,
+	      tm.desc,NULL,NULL,NULL,NULL,&abstol, &M,NULL,&(*result)[0],&orfac,NULL,&one,&one,tm.desc,
+	      &wsize,&lwork,trwork,&lrwork,&tiwork,&liwork,NULL,ifail,gap,&info);
+
+     // Adjust workspace and compute eigenvalues
+
+     lwork=(int)std::real(wsize);
+     complex work[lwork];
+     lrwork=(int)trwork[0];
+     double rwork[lrwork];
+     liwork=tiwork;
+     int iwork[liwork];
+
+     
+
+     pzhegvx_(&ibtype,&jobz,&range,&uplo,&tk.dim[0],&(*tk.data)[0],&one,&one,tk.desc,&(*tm.data)[0],&one,&one,
+	      tm.desc,NULL,NULL,NULL,NULL,&abstol, &M,NULL,&(*result)[0],&orfac,NULL,&one,&one,tm.desc,
+	      work,&lwork,rwork,&lrwork,iwork,&liwork,NULL,ifail,gap,&info);
+     std::cout << "Info: " << info << std::endl;
+     
+
+#endif
+     return result;
+   }
+
+
+   Matrix ConjTranspose(const Matrix& m){
+
+
+     int M=m.dim[0];
+     int N=m.dim[1];
+     Matrix result(N,M);
+
+#ifdef BEM2DMPI
+     char trans='C';
+     int one=1;
+     complex alpha=1.0;
+     complex beta=1.0;
+
+     pzgeadd_(&trans,&N,&M,&alpha,&(*m.data)[0],&one,&one,m.desc,&beta,&(*result.data)[0],&one,&one,
+	      result.desc);
+#else
+     for (int i=0;i<M;i++){
+       for (int j=0;j<N;j++){
+	 (*result.data)[j+N*i]=std::conj((*m.data)[i+M*j]);
+       }
+     }
+
+#endif
+
+     return result;
+
+   }
+
+
 void InPolygon(const std::vector<pGeometry> polygons, const std::vector<Point>& testpoints,std::vector<int>& inpoly)
 {
         int N=testpoints.size();
