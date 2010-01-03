@@ -294,15 +294,16 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 }
 
 #ifdef BEM2DMPI
- pdvector HermitianEigenvalues(const Matrix& k, const Matrix& m) throw (ScaLapackError){
+ void HermitianEigenvalues(const Matrix& k, const Matrix& m, pdvector& evalues, pMatrix& evectors) throw (ScaLapackError){
 #else
-   pcvector HermitianEigenvalues(const Matrix& k, const Matrix& m) throw (LapackError){
+   void HermitianEigenvalues(const Matrix& k, const Matrix& m, pdvector& evalues, pMatrix& evectors) throw (LapackError){
 #endif
 
      Matrix tk(k);
      Matrix tm(m);
 
-     pdvector result(new dvector(tk.dim[0]));
+     evalues=pdvector(new dvector(tk.dim[0])); 
+     evectors=pMatrix(new Matrix(tk.dim[0]));
 
 #ifdef BEM2DMPI
      BlacsSystem* b=BlacsSystem::Instance();
@@ -310,13 +311,13 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 
 
      int ibtype=1;
-     char jobz='N';
+     char jobz='V';
      char range='A';
      char uplo='U';
-     char cmach='S';
+     char cmach='U';
      int one=1;
      int M;
-     double orfac=-1;
+     double orfac=0;
      complex wsize;
      int lwork=-1;
      double trwork[3];
@@ -325,14 +326,17 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
      int liwork=-1;
      double gap[b->get_nprow()*b->get_npcol()];
      int info;
-     double abstol=2*pdlamch_(&ictxt,&cmach);
+     double abstol=pdlamch_(&ictxt,&cmach);
      int ifail[tm.dim[0]];
+     int nz;
+     int icluster[2*b->get_nprow()*b->get_npcol()];
 
      // Do a workspace query
      
      pzhegvx_(&ibtype,&jobz,&range,&uplo,&tk.dim[0],&(*tk.data)[0],&one,&one,tk.desc,&(*tm.data)[0],&one,&one,
-	      tm.desc,NULL,NULL,NULL,NULL,&abstol, &M,NULL,&(*result)[0],&orfac,NULL,&one,&one,tm.desc,
-	      &wsize,&lwork,trwork,&lrwork,&tiwork,&liwork,NULL,ifail,gap,&info);
+	      tm.desc,NULL,NULL,NULL,NULL,&abstol, &M,&nz,&(*evalues)[0],&orfac,&(*(evectors->data))[0],&one,
+	      &one,evectors->desc,
+	      &wsize,&lwork,trwork,&lrwork,&tiwork,&liwork,ifail,icluster,gap,&info);
 
      // Adjust workspace and compute eigenvalues
 
@@ -346,13 +350,33 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
      
 
      pzhegvx_(&ibtype,&jobz,&range,&uplo,&tk.dim[0],&(*tk.data)[0],&one,&one,tk.desc,&(*tm.data)[0],&one,&one,
-	      tm.desc,NULL,NULL,NULL,NULL,&abstol, &M,NULL,&(*result)[0],&orfac,NULL,&one,&one,tm.desc,
-	      work,&lwork,rwork,&lrwork,iwork,&liwork,NULL,ifail,gap,&info);
-     std::cout << "Info: " << info << std::endl;
+	      tm.desc,NULL,NULL,NULL,NULL,&abstol, &M,&nz,&(*evalues)[0],&orfac,&(*(evectors->data))[0],&one,&one,evectors->desc,
+	      work,&lwork,rwork,&lrwork,iwork,&liwork,ifail,icluster,gap,&info);
+     if (info) throw ScaLapackError();
+#else
+     int itype=1;
+     char jobz='V';
+     char uplo='U';
+     complex wsize;
+     int lwork=-1;
+     double rwork[3*tk.dim[0]-2];
+     int info;
      
+     // Get work size
+
+     zhegv_(&itype,&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&tk.dim[0],&(*tm.data)[0],&tm.dim[0],
+	    &(*evalues)[0],&wsize,&lwork,rwork,&info);
+
+     lwork=(int)std::real(wsize);
+     complex work[lwork];
+
+     zhegv_(&itype,&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&tk.dim[0],&(*tm.data)[0],&tm.dim[0],
+	    &(*evalues)[0],work,&lwork,rwork,&info);
+     if (info) throw LapackError();
+
+     *evectors=tk;
 
 #endif
-     return result;
    }
 
 
@@ -382,6 +406,43 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 
      return result;
 
+   }
+
+   Matrix ExtractColumn(const Matrix& m, int j){
+     
+     Matrix result(m.dim[0],1);
+#ifdef BEM2DMPI
+     BlacsSystem* b=BlacsSystem::Instance();
+     int lj=b->G2lc(j);
+     if (lj==-1) return result; // Do nothing if local process has no column of global matrix
+     // Get Process of column and check if it is the first column of the process grid
+     int p=(n/b->get_nb()) % b->get_npcol();
+     if (p==0){
+       for (int i=0;i<result.msize;i++) (*result.data)[i]=(*m.data)[lj*m.msize+i];
+     }
+     else{
+       if (b->get_mycol()==0)
+	 if (b->get_mycol()==p)
+     }
+     return result;
+#else
+     for (int i=0;i<result.msize;i++) (*result.data)[i]=(*m.data)[j*m.msize+i];
+     return result;
+#endif
+       }
+
+   complex DotProduct(const Matrix& a, const Matrix& b) throw (ArrayMismatch){
+
+     if ((a.nsize!=1)||(b.nsize!=1)) throw ArrayMismatch();
+     if ((a.msize!=b.msize)) throw ArrayMismatch();
+     complex dotc;
+#ifdef BEM2DMPI
+     int one=1;
+     pzdotc_(&a.msize,&dotc,&(*a.data)[0],&one,&one,a.desc,&one,&(*b.data)[0],&one,&one,b.desc,&one);
+#else
+     cblas_zdotc_sub(a.msize,&(*a.data)[0],1,&(*b.data)[0],1,&dotc);
+#endif
+     return dotc;
    }
 
 

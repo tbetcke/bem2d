@@ -37,6 +37,9 @@ extern "C" {
         void zgetrs_(char*, int*, int*, complex*, int*, int*, complex*, int*, int*);
         void zgesvd_(char*, char*, int*, int*, complex*, int*, double*, complex*, int*, complex*, int*, complex*, int*, double*, int*);
         void zpotrf_(const char*, const int*, complex*, const int*, int*);
+  void zhegv_(const int* itype, const char* jobz, const char* uplo, const int* N, complex* A, 
+	      const int* lda, complex* B, const int* ldb, double* w, complex* work, 
+	      const int* lwork, double* rwork, int* info);
 }
 
 

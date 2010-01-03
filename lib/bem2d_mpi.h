@@ -23,6 +23,8 @@ extern "C" {
         extern void   Cblacs_gridexit( int context);
         extern void   Cblacs_exit( int error_code);
         extern void   Czgsum2d(int icontxt, char* scope, char* top, int m, int n, complex* A, int lda, int rdest, int cdest);
+  extern void   Czgesd2d(int icontxt, int m, int n, complex* A, int lda, int rdest, int cdest);
+  extern void   Czgerv2d(int icontxt, int m, int n, complex* A, int lda, int rsrc, int csrc);
 
         // Scalapack functions
 
@@ -33,6 +35,7 @@ extern "C" {
         void pzgetrf_(const int*, const int*, complex*, const int*, const int*, const int*, int*, int*);
         void pzgetrs_(const char*, const int*, const int*, const complex*, const int*, const int*, const int*, const int*, complex*, const int*, const int*, const int*, int*);
         int indxl2g_(const int*, const int*, const int*, const int*, const int*);
+  int indxg2l_(const int*, const int*, const int*, const int*, const int*);
         void pzpotrf_(const char*, const int*, complex* ,const int*, const int*, const int*, int*);
         void pztrsm_(const char*, const char*, const char*, const char*, const int*, const int*, const complex*, const complex*, const int*, const int*, const int*, complex*, const int*, const int*, const int*);
         void pzgesvd_(const char*, const char*, const int*, const int*, complex*, const int*, const int*, const int*, double*, complex*, const int*, const int*, const int*, complex*, const int*, const int*, const int*, complex*, const int*, double*, int*);
@@ -48,6 +51,10 @@ extern "C" {
   void pzgeadd_(const char* trans, const int* M, const int* N, const complex* alpha, const complex* A, 
 		const int* ia, const int* ja, const int* desca, const complex* beta, complex* C, const int* ic, 
 		const int* jc, const int* descc);
+  void pzdotc_(const int* n, complex* dotc, const complex* x, const int* ix, const int* jx, 
+	       const int* descx,
+	       const int* incx, const complex* y, const int* iy, const int* jy, const int* descy,
+	       const int* incy);
 
 }
 
@@ -128,6 +135,27 @@ public:
                 int np1=n+1;
                 return indxl2g_(&np1,&nb_,&mycol_,&zero,&npcol_)-1;
         }
+	inline int G2lr(int m){
+	  // Map global row index m to local row index
+	  // return -1 if index not on local processor
+	  int p= (m/mb_) % nprow_;
+	  if (p!=myrow_) return -1;
+	  int l=m/(nprow_*mb_);
+	  int x=m % mb_;
+	  return l*mb_+x;
+
+	}
+	inline int G2lc(int n){
+	  // Map global row index m to local row index
+	  // return -1 if index not on local processor
+	  int p=(n/nb_) % npcol_;
+	  If (p!=mycol_) return -1;
+	  int l=n/(npcol_*nb_);
+	  int x=n % nb_;
+	  return l*nb_+x;
+	}
+
+
         inline bool IsRoot() {
                 return ((myrow_==0)&&(mycol_==0));
         }
