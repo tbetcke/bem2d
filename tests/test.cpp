@@ -13,9 +13,9 @@ int main(int argc, char** argv)
 
 
         int nprow=2;
-        int npcol=1;
-        int mb=100;
-        int nb=100;
+        int npcol=2;
+        int mb=10;
+        int nb=10;
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
         if (!b) {
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
         int myrow=b->get_myrow();
         int mycol=b->get_mycol();
 #endif
-        int n=1000;
+        int n=20;
 
 
         bem2d::Circle cobj;
@@ -103,6 +103,7 @@ int main(int argc, char** argv)
 
 	bem2d::HermitianEigenvalues(H,*pm,pevalues,pevectors);
 
+	/*
 	std::cout << "Exctract a column and compute inner products" << std::endl;
 
 	bem2d::Matrix z=bem2d::ExtractColumn(*pevectors,16);
@@ -116,14 +117,14 @@ int main(int argc, char** argv)
 	bem2d::pcvector eigvalues;
 	std::cout << " Compute Eigenvalues" << std::endl;
 	bem2d::Eigenvalues(*pk,*pm,eigvalues);
-
+	*/
 	
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  for (int i=0;i<eigvalues->size();i++) std::cout << (*eigvalues)[i] << std::endl;
+	  for (int i=0;i<pevalues->size();i++) std::cout << (*pevalues)[i] << std::endl;
 	}
 #else
-	  for (int i=0;i<eigvalues->size();i++) std::cout << (*eigvalues)[i] << std::endl;
+	  for (int i=0;i<pevalues->size();i++) std::cout << (*pevalues)[i] << std::endl;
 #endif
 	
 

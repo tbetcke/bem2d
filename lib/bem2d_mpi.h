@@ -64,6 +64,10 @@ extern "C" {
 		const int* ihi, complex* A, const int* desca, complex* w, const int* iloz,
 	        const int* ihiz, complex* Z, const int* descz, complex* work, const int* lwork,
 		int* iwork, const int* ilwork, int* info);
+  void pzheev_(const char* jobz, const char* uplo, const int* n, complex* A, const int* ia,
+	       const int* ja, const int* desca, double* w, complex* Z, const int* iz,
+	       const int* jz, const int* descz, complex* work, const int* lwork,
+	       double* rwork, const int* lrwork, int* info);
 
 }
 

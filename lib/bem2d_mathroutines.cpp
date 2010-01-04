@@ -309,6 +309,7 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
      BlacsSystem* b=BlacsSystem::Instance();
      int ictxt=b->get_ictxt();
 
+     /*
 
      int ibtype=1;
      char jobz='V';
@@ -358,6 +359,60 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 	      tm.desc,NULL,NULL,NULL,NULL,&abstol, &M,&nz,&(*evalues)[0],&orfac,&(*(evectors->data))[0],&one,&one,evectors->desc,
 	      work,&lwork,rwork,&lrwork,iwork,&liwork,ifail,icluster,gap,&info);
      if (info) throw ScaLapackError();
+
+     std::cout << "Hermitian Eigenvalue computation completed" << std::endl;
+     */
+
+        // Compute Cholesky decomposition of mass matrix
+        char uplo='U';
+        int ia=1;
+        int ja=1;
+        int info;
+        pzpotrf_(&uplo, &tm.dim[0], &(*tm.data)[0],&ia, &ja,tm.desc,&info);
+        if (info) throw ScaLapackError();
+
+        // Factor Cholesky decomposition into original matrix
+
+        char side='R';
+        char transa='N';
+        char diag='N';
+        complex alpha=1.0;
+
+        pztrsm_(&side,&uplo,&transa,&diag,&tk.dim[0],&tk.dim[1],&alpha,&(*tm.data)[0],&ia,&ja,tm.desc,&(*tk.data)[0],&ia,&ja,tk.desc);
+        side='L';
+        transa='C';
+        pztrsm_(&side,&uplo,&transa,&diag,&tk.dim[0],&tk.dim[1],&alpha,&(*tm.data)[0],&ia,&ja,tm.desc,&(*tk.data)[0],&ia,&ja,tk.desc);
+
+        // tstiff now includes the mass matrix
+
+	char jobz='V';
+	complex wsize;
+	int lwork=-1;
+	double rwsize;
+	int rlwork=-1;
+
+	// Workspace query for eigenvalue computation
+
+	std::cout << "Start eigenvalue computation" << std::endl;
+
+	pzheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&ia,&ja,tk.desc,&(*evalues)[0],
+		&(*evectors->data)[0],&ia,&ja,evectors->desc,&wsize,&lwork,&rwsize,&rlwork,
+		&info);
+	std::cout << info << std::endl;
+
+	std::cout << "Size test completed " << std::endl;
+
+	lwork=(int)std::real(wsize);
+	complex work[lwork];
+	rlwork=(int)rwsize;
+	double rwork[rlwork];
+
+	pzheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&ia,&ja,tk.desc,&(*evalues)[0],
+		&(*evectors->data)[0],&ia,&ja,evectors->desc,work,&lwork,rwork,&rlwork,
+		&info);
+	
+		
+
 #else
      int itype=1;
      char jobz='V';
@@ -456,7 +511,7 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 	if (info) throw ScaLapackError();
 
 #else
-
+	/*
         // Compute Cholesky of mass matrix
 
         char uplo='U';
@@ -484,6 +539,7 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
         if (info!=0) throw LapackError();
         norm=s[0];
         cond=s[0]/s[M-1];
+	*/
 #endif
 
 
