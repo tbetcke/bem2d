@@ -25,6 +25,8 @@ extern "C" {
         extern void   Czgsum2d(int icontxt, char* scope, char* top, int m, int n, complex* A, int lda, int rdest, int cdest);
   extern void   Czgesd2d(int icontxt, int m, int n, complex* A, int lda, int rdest, int cdest);
   extern void   Czgerv2d(int icontxt, int m, int n, complex* A, int lda, int rsrc, int csrc);
+  extern void   Czgebs2d(int icontxt, char *scope, char *top, int m, int n, complex* A, int lda);
+  extern void   Czgebr2d(int icontxt, char *scope, char *top, int m, int n, complex* A, int lda, int rsrc, int csrc);
 
         // Scalapack functions
 
@@ -55,6 +57,13 @@ extern "C" {
 	       const int* descx,
 	       const int* incx, const complex* y, const int* iy, const int* jy, const int* descy,
 	       const int* incy);
+  void pzgehrd_(const int* n, const int* ilo, const int* ihi, complex* A, const int* ia,
+		const int* ja, const int* desca, complex* tau, complex* work,
+		const int* lwork, int* info);
+  void pzlahqr_(const int* wantt, const int* wantz, const int* n, const int* ilo,
+		const int* ihi, complex* A, const int* desca, complex* w, const int* iloz,
+	        const int* ihiz, complex* Z, const int* descz, complex* work, const int* lwork,
+		int* iwork, const int* ilwork, int* info);
 
 }
 
@@ -149,7 +158,7 @@ public:
 	  // Map global row index m to local row index
 	  // return -1 if index not on local processor
 	  int p=(n/nb_) % npcol_;
-	  If (p!=mycol_) return -1;
+	  if (p!=mycol_) return -1;
 	  int l=n/(npcol_*nb_);
 	  int x=n % nb_;
 	  return l*nb_+x;

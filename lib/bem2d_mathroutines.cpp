@@ -332,13 +332,18 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
      int icluster[2*b->get_nprow()*b->get_npcol()];
 
      // Do a workspace query
+
+     std::cout << " Worspace Query" << std::endl;
      
      pzhegvx_(&ibtype,&jobz,&range,&uplo,&tk.dim[0],&(*tk.data)[0],&one,&one,tk.desc,&(*tm.data)[0],&one,&one,
 	      tm.desc,NULL,NULL,NULL,NULL,&abstol, &M,&nz,&(*evalues)[0],&orfac,&(*(evectors->data))[0],&one,
 	      &one,evectors->desc,
 	      &wsize,&lwork,trwork,&lrwork,&tiwork,&liwork,ifail,icluster,gap,&info);
+     std::cout << info << std::endl;
 
      // Adjust workspace and compute eigenvalues
+
+     std::cout << " Computation" << std::endl;
 
      lwork=(int)std::real(wsize);
      complex work[lwork];
@@ -379,6 +384,111 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 #endif
    }
 
+#ifdef BEM2DMPI
+   void Eigenvalues(const Matrix& k, const Matrix& m, pcvector& evalues) throw (ScaLapackError){
+#else
+   void Eigenvalues(const Matrix& k, const Matrix& m, pcvector& evalues) throw (LapackError){
+#endif
+
+        Matrix tstiff(k);
+        Matrix tmass(m);
+
+        // Compute Cholesky decomposition of mass matrix
+#ifdef BEM2DMPI
+        // Compute Cholesky decomposition of mass matrix
+        char uplo='U';
+        int ia=1;
+        int ja=1;
+        int info;
+        pzpotrf_(&uplo, &tmass.dim[0], &(*tmass.data)[0],&ia, &ja,tmass.desc,&info);
+        if (info) throw ScaLapackError();
+
+        // Factor Cholesky decomposition into original matrix
+
+        char side='R';
+        char transa='N';
+        char diag='N';
+        complex alpha=1.0;
+
+        pztrsm_(&side,&uplo,&transa,&diag,&tstiff.dim[0],&tstiff.dim[1],&alpha,&(*tmass.data)[0],&ia,&ja,tmass.desc,&(*tstiff.data)[0],&ia,&ja,tstiff.desc);
+        side='L';
+        transa='C';
+        pztrsm_(&side,&uplo,&transa,&diag,&tstiff.dim[0],&tstiff.dim[1],&alpha,&(*tmass.data)[0],&ia,&ja,tmass.desc,&(*tstiff.data)[0],&ia,&ja,tstiff.desc);
+
+        // tstiff now includes the mass matrix
+
+        // Compute Hessenberg form of tstiff
+
+	BlacsSystem* b=BlacsSystem::Instance();
+
+	int ilo=1;
+	int ihi=tstiff.dim[0];
+	complex tau[b->NSize(tstiff.dim[0]-1)];
+	complex wsize;
+	int lwork=-1;
+
+	pzgehrd_(&tstiff.dim[0],&ilo,&ihi,&(*tstiff.data)[0],&ia,&ja,tstiff.desc,tau,
+		 &wsize,&lwork,&info);
+
+	lwork=(int)std::real(wsize);
+	complex work1[lwork];
+
+	pzgehrd_(&tstiff.dim[0],&ilo,&ihi,&(*tstiff.data)[0],&ia,&ja,tstiff.desc,tau,
+		 work1,&lwork,&info);
+
+	// Compute eigenvalues of Hessenberg form
+
+	int wantt=0;
+	int wantz=0;
+	evalues=pcvector(new cvector(tstiff.dim[0]));
+	lwork=-1;
+	
+	pzlahqr_(&wantt,&wantz,&tstiff.dim[0],&ilo,&ihi,&(*tstiff.data)[0],
+		 tstiff.desc,&(*evalues)[0],
+		 &ilo,&ihi,NULL,tstiff.desc,&wsize,&lwork,NULL,NULL,&info);
+        
+	lwork=(int)std::real(wsize);
+	complex work2[lwork];
+
+	pzlahqr_(&wantt,&wantz,&tstiff.dim[0],&ilo,&ihi,&(*tstiff.data)[0],
+		 tstiff.desc,&(*evalues)[0],
+		 &ilo,&ihi,NULL,tstiff.desc,work2,&lwork,NULL,NULL,&info);
+	if (info) throw ScaLapackError();
+
+#else
+
+        // Compute Cholesky of mass matrix
+
+        char uplo='U';
+        int info;
+        complex alpha=1.0;
+        zpotrf_(&uplo,&tmass.dim[0],&(*tmass.data)[0],&tmass.dim[0],&info);
+
+        // Factor Cholesky factor into stiffness matrix
+
+        cblas_ztrsm(CblasColMajor,CblasRight,CblasUpper,CblasNoTrans,CblasNonUnit,tstiff.dim[0],tstiff.dim[0],&alpha,&(*tmass.data)[0],tmass.dim[0],&(*tstiff.data)[0],tstiff.dim[0]);
+
+        cblas_ztrsm(CblasColMajor,CblasLeft,CblasUpper,CblasConjTrans,CblasNonUnit,tstiff.dim[0],tstiff.dim[0],&alpha,&(*tmass.data)[0],tmass.dim[0],&(*tstiff.data)[0],tstiff.dim[0]);
+
+        // Compute singular values of stiffness matrix
+
+        char jobu='N';
+        char jobvt='N';
+        int M=tstiff.dim[0];
+        dvector s(M);
+        int lwork=5*M;
+        cvector work(lwork);
+        dvector rwork(lwork);
+
+        zgesvd_(&jobu, &jobvt, &M, &M, &(*tstiff.data)[0], &M, &s[0], NULL, &M, NULL, &M, &work[0], &lwork, &rwork[0], &info);
+        if (info!=0) throw LapackError();
+        norm=s[0];
+        cond=s[0]/s[M-1];
+#endif
+
+
+   }
+
 
    Matrix ConjTranspose(const Matrix& m){
 
@@ -414,15 +524,15 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 #ifdef BEM2DMPI
      BlacsSystem* b=BlacsSystem::Instance();
      int lj=b->G2lc(j);
-     if (lj==-1) return result; // Do nothing if local process has no column of global matrix
      // Get Process of column and check if it is the first column of the process grid
-     int p=(n/b->get_nb()) % b->get_npcol();
+     int p=(j/b->get_nb()) % b->get_npcol();
      if (p==0){
        for (int i=0;i<result.msize;i++) (*result.data)[i]=(*m.data)[lj*m.msize+i];
      }
      else{
-       if (b->get_mycol()==0)
-	 if (b->get_mycol()==p)
+       // Send data over to the first column of processors
+       if (b->get_mycol()==0) Czgerv2d(b->get_ictxt(),result.msize,1,&(*result.data)[0],result.msize,b->get_myrow(),p);
+	 if (b->get_mycol()==p) Czgesd2d(b->get_ictxt(),m.msize,1,&(*m.data)[lj*m.msize],m.msize,b->get_myrow(),0); 
      }
      return result;
 #else
@@ -439,6 +549,17 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 #ifdef BEM2DMPI
      int one=1;
      pzdotc_(&a.msize,&dotc,&(*a.data)[0],&one,&one,a.desc,&one,&(*b.data)[0],&one,&one,b.desc,&one);
+     // Send result over to all other processors in the row
+     BlacsSystem* blacs=BlacsSystem::Instance();
+     char scope[]="All";
+     char top[]=" ";
+     
+     if (blacs->IsRoot()){ 
+       Czgebs2d(blacs->get_ictxt(),scope,top,1,1,&dotc,1);
+     }
+     else{
+       Czgebr2d(blacs->get_ictxt(),scope,top,1,1,&dotc,1,0,0);
+     }
 #else
      cblas_zdotc_sub(a.msize,&(*a.data)[0],1,&(*b.data)[0],1,&dotc);
 #endif

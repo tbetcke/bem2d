@@ -69,6 +69,13 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
  void HermitianEigenvalues(const Matrix& k, const Matrix& m, pdvector& evalues, pMatrix& evectors) throw (LapackError);
 #endif
 
+#ifdef BEM2DMPI
+ void Eigenvalues(const Matrix& k, const Matrix& m, pcvector& evalues) throw (ScaLapackError);
+#else
+ void Eigenvalues(const Matrix& k, const Matrix& m, pcvector& evalues) throw (LapackError);
+#endif
+
+
  Matrix ConjTranspose(const Matrix& m);
 
  Matrix ExtractColumn(const Matrix& m, int j);

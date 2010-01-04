@@ -13,9 +13,9 @@ int main(int argc, char** argv)
 
 
         int nprow=2;
-        int npcol=2;
-        int mb=5;
-        int nb=5;
+        int npcol=1;
+        int mb=100;
+        int nb=100;
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
         if (!b) {
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
         int myrow=b->get_myrow();
         int mycol=b->get_mycol();
 #endif
-        int n=20;
+        int n=1000;
 
 
         bem2d::Circle cobj;
@@ -88,6 +88,9 @@ int main(int argc, char** argv)
         //std::cout << myrow << " " << mycol << " " << (*A->data)[250*250-1] << std::endl;
 
 	//std::cout << "Test Eigenvalues" << std::endl;
+
+
+	std::cout << " Do some tests" << std::endl;
 	bem2d::pMatrix pk=soundsoft.GetMatrix();
 	bem2d::pMatrix pm=soundsoft.GetIdent();
 
@@ -95,23 +98,34 @@ int main(int argc, char** argv)
 
 	bem2d::pdvector pevalues;
 	bem2d::pMatrix pevectors;
-	HermitianEigenvalues(H,*pm,pevalues,pevectors);
+       
+	std::cout <<" Compute HErmitian eigenvalues" << std::endl;
 
-	bem2d::Matrix z=bem2d::ExtractColumn(*pevectors,19);
+	bem2d::HermitianEigenvalues(H,*pm,pevalues,pevectors);
+
+	std::cout << "Exctract a column and compute inner products" << std::endl;
+
+	bem2d::Matrix z=bem2d::ExtractColumn(*pevectors,16);
 	bem2d::Matrix Hz=H*z;
 	bem2d::complex lambda=DotProduct(z,H*z);
 	bem2d::complex lambda2=DotProduct(z,(*pm)*z);
+	
 
-	std::cout << b->get_myrow() << " " << b->get_mycol() << " " << (*Hz.data)[0] << std::endl;
-	/*
+	//std::cout << lambda/lambda2 << " " << (*pevalues)[16] << std::endl;
+
+	bem2d::pcvector eigvalues;
+	std::cout << " Compute Eigenvalues" << std::endl;
+	bem2d::Eigenvalues(*pk,*pm,eigvalues);
+
+	
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  for (int i=0;i<pevalues->size();i++) std::cout << (*pevalues)[i] << std::endl;
+	  for (int i=0;i<eigvalues->size();i++) std::cout << (*eigvalues)[i] << std::endl;
 	}
 #else
-	  for (int i=0;i<pevalues->size();i++) std::cout << (*pevalues)[i] << std::endl;
+	  for (int i=0;i<eigvalues->size();i++) std::cout << (*eigvalues)[i] << std::endl;
 #endif
-	*/
+	
 
         //int xpts=100;
         //int ypts=100;
