@@ -35,7 +35,7 @@ GSL = -lgsl
 LAPACK = -llapack
 
 # Blas
-BLAS   = -lgoto2
+BLAS   = -lcblas -lf77blas -latlas
 
 # OpenMP
 OMP= -lgomp

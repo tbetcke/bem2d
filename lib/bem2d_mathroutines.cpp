@@ -274,19 +274,55 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
      evectors=pMatrix(new Matrix(tk.dim[0]));
 
 #ifdef BEM2DMPI
+     BlacsSystem* b=BlacsSystem::Instance();
 	char jobz='V';
 	char uplo='U';
+	char range='A';
 	int ia=1;
 	int ja=1;
 	int info;
 	complex wsize;
 	int lwork=-1;
-	double rwsize;
-	int rlwork=-1;
+	double rwsize[3];
+	int lrwork=-1;
+	int n=tk.dim[0];
+	char cmach='U';
+	int ictxt=b->get_ictxt();
+	double abstol=pdlamch_(&ictxt,&cmach);
+	int m,nz;
+	double orfac=0;
+	int iwsize;
+	//int liwork=std::max(n,b->get_nprow()*b->get_npcol()+1);
+	//liwork=std::max(liwork,4);
+	int liwork=-1;
+	//int iwork[liwork];
+	int ifail[n];
+	int icluster[2*b->get_nprow()*b->get_npcol()];
+	double gap[b->get_nprow()*b->get_npcol()];
+	int il=1;
+	int iu=1;
 
 	// Workspace query for eigenvalue computation
 
+	pzheevx_(&jobz,&range,&uplo,&n,&(*tk.data)[0],&ia,&ja,tk.desc,NULL,NULL,&il,&iu,&abstol,
+		 &m,&nz,&(*evalues)[0],&orfac,&(*evectors->data)[0],&ia,&ja,evectors->desc,
+		 &wsize,&lwork,rwsize,&lrwork,&iwsize,&liwork,ifail,icluster,gap,&info);
+	std::cout << info << std::endl;
 
+	lwork=(int)std::real(wsize);
+	complex work[lwork];
+	lrwork=(int)rwsize[0];
+	lrwork=std::max(lrwork,3);
+	double rwork[lrwork];
+	liwork=iwsize;
+	int iwork[liwork];
+
+	pzheevx_(&jobz,&range,&uplo,&n,&(*tk.data)[0],&ia,&ja,tk.desc,NULL,NULL,NULL,NULL,&abstol,
+		 &m,&nz,&(*evalues)[0],&orfac,&(*evectors->data)[0],&ia,&ja,evectors->desc,
+		 work,&lwork,rwork,&lrwork,iwork,&liwork,ifail,icluster,gap,&info);
+	std::cout << info << std::endl;
+
+	/*
 	pzheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&ia,&ja,tk.desc,&(*evalues)[0],
 		&(*evectors->data)[0],&ia,&ja,evectors->desc,&wsize,&lwork,&rwsize,&rlwork,
 		&info);
@@ -296,9 +332,11 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 	rlwork=100*(int)rwsize;
 	double rwork[rlwork];
 
+	
 	pzheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&ia,&ja,tk.desc,&(*evalues)[0],
 		&(*evectors->data)[0],&ia,&ja,evectors->desc,work,&lwork,rwork,&rlwork,
 		&info);
+	*/
 	if (info) throw ScaLapackError();
 	
 		

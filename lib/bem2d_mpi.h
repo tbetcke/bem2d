@@ -74,7 +74,7 @@ extern "C" {
 		const int* il, const int* iu, const double* abstol,
 		int* m, int* nz, double* w, const double* orfac,
 		complex* Z, const int* iz, const int* jz, const int* descz,
-		complex* work, int* lwork, double* rwork,
+		complex* work, const int* lwork, double* rwork,
 		const int* lrwork, int* iwork, const int* liwork,
 		int* ifail, int* icluster, double* gap, int* info);
 		

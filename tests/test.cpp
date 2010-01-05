@@ -12,10 +12,10 @@ int main(int argc, char** argv)
         MPI_Init(&argc, &argv);
 
 
-        int nprow=2;
-        int npcol=2;
-        int mb=100;
-        int nb=100;
+        int nprow=4;
+        int npcol=4;
+        int mb=200;
+        int nb=200;
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
         if (!b) {
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
         int myrow=b->get_myrow();
         int mycol=b->get_mycol();
 #endif
-        int n=500;
+        int n=1100;
 
 
         bem2d::Circle cobj;
@@ -90,12 +90,12 @@ int main(int argc, char** argv)
 	
 	std::cout << "Exctract a column and compute inner products" << std::endl;
 
-	bem2d::Matrix z=bem2d::ExtractColumn(*pevectors,16);
+	bem2d::Matrix z=bem2d::ExtractColumn(*pevectors,0);
 	bem2d::Matrix Hz=H*z;
 	bem2d::complex lambda=DotProduct(z,H*z);
-	
+	bem2d::complex lambda2=DotProduct(z,z);
 
-	std::cout << lambda << " " << (*pevalues)[16] << std::endl;
+	std::cout << lambda/lambda2 << " " << (*pevalues)[0] << std::endl;
 
 	/*
 	bem2d::pcvector eigvalues;
