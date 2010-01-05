@@ -14,8 +14,8 @@ int main(int argc, char** argv)
 
         int nprow=2;
         int npcol=2;
-        int mb=10;
-        int nb=10;
+        int mb=100;
+        int nb=100;
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
         if (!b) {
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
         int myrow=b->get_myrow();
         int mycol=b->get_mycol();
 #endif
-        int n=20;
+        int n=500;
 
 
         bem2d::Circle cobj;
@@ -71,29 +71,12 @@ int main(int argc, char** argv)
 
         soundsoft.DiscretizeMatrix();
 
-        //std::cout << "Solve system" << std::endl;
-
-        //soundsoft.Solve();
-
-        //std::cout << "System solved" << std::endl;
-
-        //std::cout << "Condition Number: " << soundsoft.L2Condition() << std::endl;
-
-        // Test evaluation of solution
-
-        //std::vector<bem2d::Point> p; p.push_back(bem2d::Point(1.5,0.0));
-        //bem2d::pcvector sol=soundsoft.EvalSol(p);
-
-        //bem2d::pMatrix A=soundsoft.GetMatrix();
-        //std::cout << myrow << " " << mycol << " " << (*A->data)[250*250-1] << std::endl;
-
-	//std::cout << "Test Eigenvalues" << std::endl;
-
 
 	std::cout << " Do some tests" << std::endl;
 	bem2d::pMatrix pk=soundsoft.GetMatrix();
 	bem2d::pMatrix pm=soundsoft.GetIdent();
 
+	*pk=bem2d::ChangeBasis(*pk,*pm);
 	bem2d::Matrix H=0.5*(*pk+bem2d::ConjTranspose(*pk));
 
 	bem2d::pdvector pevalues;
@@ -101,23 +84,24 @@ int main(int argc, char** argv)
        
 	std::cout <<" Compute HErmitian eigenvalues" << std::endl;
 
-	bem2d::HermitianEigenvalues(H,*pm,pevalues,pevectors);
+	
+	bem2d::HermitianEigenvalues(H,pevalues,pevectors);
 
-	/*
+	
 	std::cout << "Exctract a column and compute inner products" << std::endl;
 
 	bem2d::Matrix z=bem2d::ExtractColumn(*pevectors,16);
 	bem2d::Matrix Hz=H*z;
 	bem2d::complex lambda=DotProduct(z,H*z);
-	bem2d::complex lambda2=DotProduct(z,(*pm)*z);
 	
 
-	//std::cout << lambda/lambda2 << " " << (*pevalues)[16] << std::endl;
+	std::cout << lambda << " " << (*pevalues)[16] << std::endl;
 
+	/*
 	bem2d::pcvector eigvalues;
 	std::cout << " Compute Eigenvalues" << std::endl;
 	bem2d::Eigenvalues(*pk,*pm,eigvalues);
-	*/
+	
 	
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
@@ -126,7 +110,7 @@ int main(int argc, char** argv)
 #else
 	  for (int i=0;i<pevalues->size();i++) std::cout << (*pevalues)[i] << std::endl;
 #endif
-	
+	*/
 
         //int xpts=100;
         //int ypts=100;

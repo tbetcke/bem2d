@@ -40,6 +40,14 @@ extern "C" {
   void zhegv_(const int* itype, const char* jobz, const char* uplo, const int* N, complex* A, 
 	      const int* lda, complex* B, const int* ldb, double* w, complex* work, 
 	      const int* lwork, double* rwork, int* info);
+  void zheev_(const char* jobz, const char* uplo, const int* n, complex* A,
+	      const int* lda, double* w, complex* work, const int* lwork,
+	      double* rwork, int* info);
+  void zgeev_(const char* jobvl, const char* jobvr, const int* n, 
+	     complex* A, const int* lda, complex* w, complex* vl,
+	     const int* ldvl, complex* vr, const int* ldvr, 
+	     complex* work, const int* lwork, double* rwork,
+	     int* info);
 }
 
 

@@ -64,15 +64,21 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
 #endif
 
 #ifdef BEM2DMPI
- void HermitianEigenvalues(const Matrix& k, const Matrix& m, pdvector& evalues, pMatrix& evectors) throw (ScaLapackError);
+ void HermitianEigenvalues(const Matrix& k, pdvector& evalues, pMatrix& evectors) throw (ScaLapackError);
 #else
- void HermitianEigenvalues(const Matrix& k, const Matrix& m, pdvector& evalues, pMatrix& evectors) throw (LapackError);
+ void HermitianEigenvalues(const Matrix& k, pdvector& evalues, pMatrix& evectors) throw (LapackError);
 #endif
 
 #ifdef BEM2DMPI
- void Eigenvalues(const Matrix& k, const Matrix& m, pcvector& evalues) throw (ScaLapackError);
+ void Eigenvalues(const Matrix& k, pcvector& evalues) throw (ScaLapackError);
 #else
- void Eigenvalues(const Matrix& k, const Matrix& m, pcvector& evalues) throw (LapackError);
+ void Eigenvalues(const Matrix& k, pcvector& evalues) throw (LapackError);
+#endif
+
+#ifdef BEM2DMPI
+ Matrix ChangeBasis(const Matrix& k, const Matrix& m) throw (ScaLapackError);
+#else
+ Matrix ChangeBasis(const Matrix& k, const Matrix& m) throw (LapackError);
 #endif
 
 
