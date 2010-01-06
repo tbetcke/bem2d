@@ -38,7 +38,8 @@ public:
         pcvector EvalIncident(const std::vector<Point>& points);
         pcvector EvalSol(const std::vector<Point>& points);
         inline void NormCond(double& norm, double& cond)  const {
-                L2NormCond(*pA_,*pId_,norm,cond);
+	  Matrix k=ChangeBasis(*pA_,*pId_);
+	  L2NormCond(k,norm,cond);
         }
 
         void SetOutput(pOutputHandler output);

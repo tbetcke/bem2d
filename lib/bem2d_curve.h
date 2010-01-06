@@ -33,6 +33,17 @@ public:
         }
 };
 
+class Kite
+{
+ public:
+  inline Point Map(double t) const {
+    return Point(cos(2*PI*t)+0.65*cos(4*PI*t)-0.65,1.5*sin(2*PI*t));
+  }
+  inline Point Deriv(double t) const {
+    return Point(-2*PI*sin(2*PI*t)-0.65*4*PI*sin(4*PI*t),1.5*2*PI*cos(2*PI*t));
+  }
+};
+
 
 }
 

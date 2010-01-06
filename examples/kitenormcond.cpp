@@ -7,8 +7,8 @@
 int main(int argc, char** argv)
 {
  
-        bem2d::freqtype k=160; // Wavenumber
-        int n=(int) 10*k;     // Size of the linear system
+        bem2d::freqtype k=10; // Wavenumber
+        int n=(int) 30*k;     // Size of the linear system
 
 
         clock_t start, finish;
@@ -39,9 +39,9 @@ int main(int argc, char** argv)
         }
 #endif
 
-        bem2d::Circle cobj;
-        bem2d::AnalyticCurve<bem2d::Circle> circle(n,cobj);
-        bem2d::pGeometry pgeom=circle.GetGeometry();
+        bem2d::Kite kobj;
+        bem2d::AnalyticCurve<bem2d::Kite> kite(n,kobj);
+        bem2d::pGeometry pgeom=kite.GetGeometry();
 
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
 
@@ -66,7 +66,8 @@ int main(int argc, char** argv)
 	std::cout << "Discretize System" << std::endl;
 #endif
 
-        soundsoft.DiscretizeMatrix();
+        //soundsoft.DiscretizeMatrix();
+	soundsoft.Discretize();
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
@@ -93,6 +94,14 @@ int main(int argc, char** argv)
 	  std::cout << "Overalll time (minutes): " << time << std::endl;
 
 #endif
+
+	  soundsoft.Solve();
+        int xpts=200;
+        int ypts=200;
+        bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2.5,2.5,-2,2,"kite"));
+        soundsoft.SetOutput(pout);
+        soundsoft.WriteAll();
+
 
 #ifdef BEM2DMPI
         bem2d::BlacsSystem::Release();

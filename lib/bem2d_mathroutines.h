@@ -52,9 +52,9 @@ Matrix operator*(const double& alpha, const Matrix& rhs);
 Matrix operator*(const Matrix& lhs, const Matrix& rhs) throw (ArrayMismatch);
 
 #ifdef BEM2DMPI
-void L2NormCond(const Matrix& stiff, const Matrix& mass, double& norm, double& cond) throw (ScaLapackError);
+void L2NormCond(const Matrix& stiff, double& norm, double& cond) throw (ScaLapackError);
 #else
-void L2NormCond(const Matrix& stiff, const Matrix& mass, double& norm, double& cond) throw (LapackError);
+void L2NormCond(const Matrix& stiff, double& norm, double& cond) throw (LapackError);
 #endif
 
 #ifdef BEM2DMPI
