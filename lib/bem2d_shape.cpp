@@ -63,9 +63,6 @@ pGeometry Polygon::GetGeometry()
         return bem2d::pGeometry(new bem2d::Geometry(elements_));
 }
 
-double AbsDerivative(double t, void* c){
-  return length(((Curve*)c)->Deriv(t));
-}
 
 int InvAbsDerivative(double t, const double y[], double f[], void* c){
   f[0]=1./AbsDerivative(y[0],c);
@@ -96,29 +93,13 @@ pGeometry AnalyticCurve::GetGeometry()
         return pGeometry(new bem2d::Geometry(elements_));
 }
 
-  
-double AnalyticCurve::Length(){
-
-  gsl_integration_workspace* w=gsl_integration_workspace_alloc(1000);
-
-  double result, error;
-  gsl_function F;
-  F.function=&AbsDerivative;
-  F.params=&(*curve_); // (curve) is shared pointer but need standard pointer
-  gsl_integration_qag(&F,0,1,0,1E-4,1000,GSL_INTEG_GAUSS61,w,&result,&error);
-  gsl_integration_workspace_free(w);
-
-  return result;
-
-}
-
 
 
 void AnalyticCurve::ParameterizeArc(int n){
 
   arclengthparam.resize(n+1);
   arclengthparam[0]=0;
-  double L=Length();
+  double L=curve_->Length();
   const gsl_odeiv_step_type* T = gsl_odeiv_step_rk2;
   gsl_odeiv_step* s = gsl_odeiv_step_alloc(T,1);
   gsl_odeiv_control* c=gsl_odeiv_control_y_new(1E-10,0);

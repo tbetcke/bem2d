@@ -8,11 +8,14 @@
 namespace bem2d
 {
 
+  double AbsDerivative(double t, void* c);
+
   class Curve
   {
   public:
     virtual Point Map(double t) const=0;
     virtual Point Deriv(double t) const=0;
+    double Length();
     virtual ~Curve(){};
   };
 

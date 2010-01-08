@@ -3,7 +3,6 @@
 
 #include<vector>
 #include "boost/shared_ptr.hpp"
-#include "gsl/gsl_integration.h"
 #include "bem2d_element.h"
 #include "bem2d_geometry.h"
 #include "bem2d_point.h"
@@ -40,8 +39,6 @@ class AnalyticCurve
 public:
         AnalyticCurve(int n, pCurve curve);
         pGeometry GetGeometry();
-	double Length();
-	friend double AbsDerivative(double t, void* c);
 	friend int InvAbsDerivative(double t, const double y[], double f[], void* c);
 	void ParameterizeArc(int n);
 private:

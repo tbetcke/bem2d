@@ -39,8 +39,7 @@ int main(int argc, char** argv)
         bem2d::pCurve cobj(new bem2d::Kite);
         bem2d::AnalyticCurve circle(n,cobj);
         bem2d::pGeometry pgeom=circle.GetGeometry();
-	std::cout << circle.Length() << std::endl;
-	circle.ParameterizeArc(n);
+	std::cout << cobj->Length() << std::endl;
 
 
         //bem2d::DiskShapePiecewiseConst circle(n,1.0);

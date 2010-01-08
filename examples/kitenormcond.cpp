@@ -8,8 +8,7 @@ int main(int argc, char** argv)
 {
  
         bem2d::freqtype k=10; // Wavenumber
-        int n=(int) 30*k;     // Size of the linear system
-
+	int ppw=10; // How many points per wavelength
 
         clock_t start, finish;
         double time;
@@ -40,6 +39,8 @@ int main(int argc, char** argv)
 #endif
 
         bem2d::pCurve kobj(new bem2d::Kite);
+        int n=(int) 30*k;     // Size of the linear system
+
         bem2d::AnalyticCurve kite(n,kobj);
         bem2d::pGeometry pgeom=kite.GetGeometry();
 
