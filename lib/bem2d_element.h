@@ -5,6 +5,7 @@
 #include "boost/utility.hpp"
 #include "bem2d_defs.h"
 #include "bem2d_point.h"
+#include "bem2d_curve.h"
 
 
 namespace bem2d
@@ -86,34 +87,25 @@ private:
 
 };
 
-template<typename T>
 class AnalyticCurveElement: public Element
 {
 public:
-        AnalyticCurveElement(double t1, double t2, const T& curve, std::size_t index);
+        AnalyticCurveElement(double t1, double t2, pCurve curve, std::size_t index);
 
         inline const Point Map(double t) const {
-                return curve_.Map(tstart_+t*(tend_-tstart_));
+                return curve_->Map(tstart_+t*(tend_-tstart_));
         }
         inline const Point Deriv(double t) const {
-                return (tend_-tstart_)*curve_.Deriv(tstart_+t*(tend_-tstart_));
+                return (tend_-tstart_)*curve_->Deriv(tstart_+t*(tend_-tstart_));
         }
 
 private:
-        T curve_;
+        pCurve curve_;
         double tstart_;
         double tend_;
 };
 
 
-template<typename T>
-AnalyticCurveElement<T>::AnalyticCurveElement(double t1, double t2, const T& curve, std::size_t index):
-                tstart_(t1),
-                tend_(t2),
-                curve_(curve)
-{
-        set_index(index);
-}
 
 }
 #endif	/* _ELEMENT_H */

@@ -25,7 +25,7 @@
 #include "bem2d_curve.h"
 #include "bem2d_basis.h"
 #include "bem2d_basistypes.h"
-
+#include "bem2d_curvetypes.h"
 
 
 #endif // _BEM2D_H

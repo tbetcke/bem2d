@@ -18,5 +18,14 @@ ConstElement::~ConstElement()
 {
 };
 
+AnalyticCurveElement::AnalyticCurveElement(double t1, double t2, pCurve curve, std::size_t index):
+                tstart_(t1),
+                tend_(t2),
+                curve_(curve)
+{
+        set_index(index);
+}
+
+
 }
 

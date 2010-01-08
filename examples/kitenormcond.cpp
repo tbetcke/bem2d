@@ -39,8 +39,8 @@ int main(int argc, char** argv)
         }
 #endif
 
-        bem2d::Kite kobj;
-        bem2d::AnalyticCurve<bem2d::Kite> kite(n,kobj);
+        bem2d::pCurve kobj(new bem2d::Kite);
+        bem2d::AnalyticCurve kite(n,kobj);
         bem2d::pGeometry pgeom=kite.GetGeometry();
 
         bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions

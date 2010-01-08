@@ -3,6 +3,7 @@
 
 #include<vector>
 #include "boost/shared_ptr.hpp"
+#include "gsl/gsl_integration.h"
 #include "bem2d_element.h"
 #include "bem2d_geometry.h"
 #include "bem2d_point.h"
@@ -33,40 +34,23 @@ private:
         std::vector<bem2d::pElement> elements_;
 };
 
-template<typename T>
+
 class AnalyticCurve
 {
 public:
-        AnalyticCurve(int n, const T& curve);
+        AnalyticCurve(int n, pCurve curve);
         pGeometry GetGeometry();
+	double Length();
+	friend double AbsDerivative(double t, void* c);
+	friend int InvAbsDerivative(double t, const double y[], double f[], void* c);
+	void ParameterizeArc(int n);
 private:
         std::vector<bem2d::pElement> elements_;
+	pCurve curve_;
+	dvector arclengthparam; // Stores values of t for parameterization with
+                                // respect to arc length.
+	
 };
-
-template<typename T>
-AnalyticCurve<T>::AnalyticCurve(int n, const T& curve): elements_(n)
-{
-
-        double h=1.0/n;
-        for (int i=0; i<n-1; i++) {
-                elements_[i]=pElement(new AnalyticCurveElement<T>(i*h, (i+1)*h,curve,i));
-        }
-        elements_[n-1]=pElement(new AnalyticCurveElement<T>((n-1)*h, 1,curve,n-1));
-        for (int i=1; i<n-1; i++) {
-                elements_[i]->set_next(i+1);
-                elements_[i]->set_prev(i-1);
-        }
-        elements_[0]->set_next(1);
-        elements_[0]->set_prev(n-1);
-        elements_[n-1]->set_next(0);
-        elements_[n-1]->set_prev(n-2);
-}
-
-template<typename T>
-pGeometry AnalyticCurve<T>::GetGeometry()
-{
-        return pGeometry(new bem2d::Geometry(elements_));
-}
 
 
 
