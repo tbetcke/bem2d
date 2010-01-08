@@ -36,7 +36,7 @@ int main(int argc, char** argv)
         int n=100;
 
 
-        bem2d::pCurve cobj(new bem2d::Kite);
+        bem2d::pCurve cobj(new bem2d::Circle);
         bem2d::AnalyticCurve circle(n,cobj);
         bem2d::pGeometry pgeom=circle.GetGeometry();
 	std::cout << cobj->Length() << std::endl;
