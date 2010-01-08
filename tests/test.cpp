@@ -33,19 +33,19 @@ int main(int argc, char** argv)
         int myrow=b->get_myrow();
         int mycol=b->get_mycol();
 #endif
-        int n=1100;
+        int n=100;
 
 
-        bem2d::Circle cobj;
-        bem2d::AnalyticCurve<bem2d::Circle> circle(n,cobj);
+        bem2d::pCurve cobj(new bem2d::Kite);
+        bem2d::AnalyticCurve circle(n,cobj);
         bem2d::pGeometry pgeom=circle.GetGeometry();
-
-
+	std::cout << circle.Length() << std::endl;
+	circle.ParameterizeArc(n);
 
 
         //bem2d::DiskShapePiecewiseConst circle(n,1.0);
 
-
+	/*
 
         bem2d::freqtype k=5;
         bem2d::PolBasis::AddBasis(0,pgeom);
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 
 	std::cout << lambda/lambda2 << " " << (*pevalues)[0] << std::endl;
 
-	/*
+	
 	bem2d::pcvector eigvalues;
 	std::cout << " Compute Eigenvalues" << std::endl;
 	bem2d::Eigenvalues(*pk,*pm,eigvalues);
