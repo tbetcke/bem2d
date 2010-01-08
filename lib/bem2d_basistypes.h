@@ -31,8 +31,9 @@ public:
         static void AddBasis(int deg, pGeometry pgeom);
         PolBasis(int degree);
         inline complex operator()(double t) const {
-                double result=1; //gsl_sf_legendre_Pl(degree_,2*t-1);
-                for (int i=0; i<degree_; i++) result=result*t;
+                double result=gsl_sf_legendre_Pl(degree_,2*t-1);
+	        // double result=1;
+                // for (int i=0; i<degree_; i++) result=result*t;
                 return result;
         }
 private:

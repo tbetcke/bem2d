@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         bem2d::AnalyticCurve<bem2d::Kite> kite(n,kobj);
         bem2d::pGeometry pgeom=kite.GetGeometry();
 
-        bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
+        bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 
 
 	// Set up direction of incoming wave.
