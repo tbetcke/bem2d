@@ -54,6 +54,11 @@ dirs:
 	test -d bin || mkdir bin;
 	test -d bin/examples || mkdir bin/examples;
 
+.PHONY: normcomps
+normcomps: bem2d dirs
+	test -d bin/normcomps || mkdir bin/normcomps
+	cd normcomps; make
+
 .PHONY: commit
 commit: clean
 	git commit --all

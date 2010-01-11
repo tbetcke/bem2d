@@ -8,7 +8,7 @@ int main(int argc, char** argv)
 {
  
         bem2d::freqtype k=10; // Wavenumber
-	int ppw=100; // How many points per wavelength
+	int ppw=20; // How many points per wavelength
 
         clock_t start, finish;
         double time;
@@ -101,7 +101,11 @@ int main(int argc, char** argv)
         int ypts=200;
         bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2.5,2.5,-2,2,"kite"));
         soundsoft.SetOutput(pout);
-        //soundsoft.WriteAll();
+        soundsoft.WriteAll();
+
+        //bem2d::WriteMatrix("kmatrix2",*(soundsoft.GetMatrix()));
+        //bem2d::WriteMatrix("mmatrix2",*(soundsoft.GetIdent()));
+
 
 
 #ifdef BEM2DMPI
