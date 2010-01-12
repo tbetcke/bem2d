@@ -16,6 +16,7 @@ class Element : private boost::noncopyable
 public:
         virtual const Point Map(double t) const = 0;
         virtual const Point Deriv(double t) const = 0;
+	virtual const double Length() const=0;
 
         inline const Point First() {
                 return Map(0);
@@ -80,6 +81,11 @@ public:
         inline const Point Deriv(double t) const {
                 return d_;
         };
+
+	inline const double Length() const {
+	  return length(d_);
+	};
+
         ~ConstElement();
 private:
         const Point p1_; // Start Point
@@ -98,6 +104,10 @@ public:
         inline const Point Deriv(double t) const {
                 return (tend_-tstart_)*curve_->Deriv(tstart_+t*(tend_-tstart_));
         }
+
+	inline const double Length() const {
+	  return curve_->Length(tstart_,tend_);
+	}
 
 private:
         pCurve curve_;

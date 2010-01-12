@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string filename="disknormcond10.txt";
+  std::string filename="squarenormcond10.txt";
   
  
   std::vector<bem2d::freqtype> freqs;
@@ -22,6 +22,7 @@ int main(int argc, char** argv)
   freqs.push_back(320);
   freqs.push_back(640);
   freqs.push_back(1280);
+
 
   std::vector<double> norm_sl(freqs.size());
   std::vector<double> norm_dl(freqs.size());
@@ -37,14 +38,20 @@ int main(int argc, char** argv)
         clock_t start, finish;
         double time;
         start=clock();
+
+	std::vector<bem2d::Point> square;
+	square.push_back(bem2d::Point(-1,-1));
+	square.push_back(bem2d::Point(1,-1));
+	square.push_back(bem2d::Point(1,1));
+	square.push_back(bem2d::Point(-1,1));
  
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
 
 
-        int nprow=4; // Number of rows in process grid
-        int npcol=2; // Number of columns in process grid
+        int nprow=2; // Number of rows in process grid
+        int npcol=1; // Number of columns in process grid
         int mb=24;  // Row Block size
         int nb=24;  // Column Block size
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
@@ -67,10 +74,8 @@ int main(int argc, char** argv)
 	double k=(double)freqs[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
 	double eta2=cbrt(k*k);
-        bem2d::pCurve cobj(new bem2d::Circle);
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve circle(n,cobj);
-        bem2d::pGeometry pgeom=circle.GetGeometry();
+	bem2d::Polygon poly(square,ppw,k);
+        bem2d::pGeometry pgeom=poly.GetGeometry();
 
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
 
@@ -89,10 +94,10 @@ int main(int argc, char** argv)
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Discretize Kernels with n=" << n << std::endl;
+	  std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 	}
 #else
-	std::cout << "Discretize Kernels with n=" << n << std::endl;
+	std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 #endif
 
 

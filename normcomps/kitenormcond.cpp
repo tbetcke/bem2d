@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string filename="disknormcond10.txt";
+  std::string filename="kitenormcond10.txt";
   
  
   std::vector<bem2d::freqtype> freqs;
@@ -22,6 +22,8 @@ int main(int argc, char** argv)
   freqs.push_back(320);
   freqs.push_back(640);
   freqs.push_back(1280);
+  
+
 
   std::vector<double> norm_sl(freqs.size());
   std::vector<double> norm_dl(freqs.size());
@@ -67,10 +69,10 @@ int main(int argc, char** argv)
 	double k=(double)freqs[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
 	double eta2=cbrt(k*k);
-        bem2d::pCurve cobj(new bem2d::Circle);
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve circle(n,cobj);
-        bem2d::pGeometry pgeom=circle.GetGeometry();
+        bem2d::pCurve kobj(new bem2d::Kite);
+	int n=(int)(kobj->Length()*k*ppw/2.0/bem2d::PI);
+        bem2d::AnalyticCurve kite(n,kobj);
+        bem2d::pGeometry pgeom=kite.GetGeometry();
 
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
 

@@ -1,3 +1,4 @@
+#include<algorithm>
 #include "bem2d_shape.h"
 #include "bem2d_defs.h"
 #include "gsl/gsl_errno.h"
@@ -31,6 +32,34 @@ pGeometry DiskShapePiecewiseConst::GetGeometry()
         return bem2d::pGeometry(new bem2d::Geometry(elements_));
 }
 
+  Polygon::Polygon(const std::vector<Point>& points, int ppw, freqtype k){
+        std::vector<Point> p(points);
+        p.push_back(p[0]); // Add last element again - makes next for-loop easier
+	int elemcount=0;
+        for (int i=0; i<points.size(); i++) {
+                Point direction=p[i+1]-p[i];
+		int n=(int)(ppw*(double)k*length(direction)/2.0/PI);
+		n=std::max(10,n); // At least 10 elements
+                for (int j=0; j<n; j++) {
+                        Point p1=p[i]+(1.0*j)/n*direction;
+                        Point p2=p[i]+(1.0*(j+1))/n*direction;
+                        elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
+			elemcount++;
+                }
+        }
+        for (int i=1; i<elements_.size()-1; i++) {
+                elements_[i]->set_next(i+1);
+                elements_[i]->set_prev(i-1);
+        }
+        elements_[0]->set_next(1);
+        elements_[0]->set_prev(elemcount-1);
+        elements_[elemcount-1]->set_next(0);
+        elements_[elemcount-1]->set_prev(elemcount-2);
+
+}
+
+
+
 Polygon::Polygon(const std::vector<Point>& points, int n)
 {
 
@@ -52,7 +81,7 @@ Polygon::Polygon(const std::vector<Point>& points, int n)
         }
         elements_[0]->set_next(1);
         elements_[0]->set_prev(esize-1);
-        elements_[n-1]->set_next(0);
+        elements_[esize-1]->set_next(0);
         elements_[esize-1]->set_prev(esize-2);
 
 }

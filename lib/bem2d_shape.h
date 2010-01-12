@@ -27,7 +27,9 @@ private:
 class Polygon
 {
 public:
+  Polygon(const std::vector<Point>& points, int ppw, freqtype k);
         Polygon(const std::vector<Point>& points, int n);
+
         pGeometry GetGeometry();
 private:
         std::vector<bem2d::pElement> elements_;

@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string filename="disknormcond10.txt";
+  std::string filename="cracknormcond10.txt";
   
  
   std::vector<bem2d::freqtype> freqs;
@@ -22,22 +22,16 @@ int main(int argc, char** argv)
   freqs.push_back(320);
   freqs.push_back(640);
   freqs.push_back(1280);
+  
 
   std::vector<double> norm_sl(freqs.size());
-  std::vector<double> norm_dl(freqs.size());
-  std::vector<double> norm_combined1(freqs.size());
-  std::vector<double> norm_combined2(freqs.size());
   std::vector<double> cond_sl(freqs.size());
-  std::vector<double> cond_dl(freqs.size());
-  std::vector<double> cond_combined1(freqs.size());
-  std::vector<double> cond_combined2(freqs.size());
 
 
 
         clock_t start, finish;
         double time;
-        start=clock();
- 
+        start=clock(); 
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
@@ -67,19 +61,24 @@ int main(int argc, char** argv)
 	double k=(double)freqs[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
 	double eta2=cbrt(k*k);
-        bem2d::pCurve cobj(new bem2d::Circle);
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve circle(n,cobj);
-        bem2d::pGeometry pgeom=circle.GetGeometry();
+	int n=(int)((int)k*ppw/2.0/bem2d::PI);
 
+	// Create the geometry
+
+	std::vector<bem2d::pElement> elements(n);
+	for (int i=0;i<n;i++){
+	  bem2d::Point p1=(1.0*i)/n*bem2d::Point(0,1);
+	  bem2d::Point p2=(1.0*(i+1))/n*bem2d::Point(0,1);
+	  elements[i]=bem2d::pElement(new bem2d::ConstElement(p1,p2,i));
+	  elements[i]->set_next(i+1);
+	  elements[i]->set_prev(i-1);
+	}
+	bem2d::pGeometry pgeom(new bem2d::Geometry(elements));
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
-
 
 	// Discretize the single and double layer potential
 
 	bem2d::SingleLayer sl(k);
-	bem2d::ConjDoubleLayer cdl(k);
-	bem2d::DoubleLayer dl(k);
 
 	bem2d::QuadOption quadopts;
 
@@ -89,26 +88,18 @@ int main(int argc, char** argv)
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Discretize Kernels with n=" << n << std::endl;
+	  std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 	}
 #else
-	std::cout << "Discretize Kernels with n=" << n << std::endl;
+	std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 #endif
 
 
 
 	bem2d::Matrix dsl=*(DiscreteKernel(*pgeom,quadopts,sl));
-	bem2d::Matrix ddl=(*DiscreteKernel(*pgeom,quadopts,dl));
-	bem2d::Matrix dcdl=*(DiscreteKernel(*pgeom,quadopts,cdl));
 	bem2d::Matrix Id=*(EvalIdent(*pgeom, quadopts));
-	bem2d::Matrix combined1=Id+2.0*dcdl-bem2d::complex(0,2.0)*eta1*dsl;
-	bem2d::Matrix combined2=Id+2.0*dcdl-bem2d::complex(0,2.0)*eta2*dsl;
 	
 	dsl=2.0*bem2d::ChangeBasis(dsl,Id);
-	ddl=2.0*bem2d::ChangeBasis(ddl,Id);
-	dcdl=2.0*bem2d::ChangeBasis(dcdl,Id);
-	combined1=bem2d::ChangeBasis(combined1,Id);
-	combined2=bem2d::ChangeBasis(combined2,Id);
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
@@ -120,9 +111,6 @@ int main(int argc, char** argv)
 	
 
 	bem2d::L2NormCond(dsl,norm_sl[j],cond_sl[j]);
-	bem2d::L2NormCond(ddl,norm_dl[j],cond_dl[j]);
-	bem2d::L2NormCond(combined1,norm_combined1[j],cond_combined1[j]);
-	bem2d::L2NormCond(combined2,norm_combined2[j],cond_combined2[j]);
 	
 	}
         finish=clock();
@@ -140,24 +128,6 @@ int main(int argc, char** argv)
 	    out << "k=" << freqs[j] << " Norm: " << norm_sl[j] << " Norm of Inverse: " << cond_sl[j]/norm_sl[j] << " Condition Nr.: " << cond_sl[j] <<  std::endl;
 	  }
 
- 	  out << "Double Layer" << std::endl;
-	  
-
-	  for (int j=0;j<freqs.size();j++){
-	    out << "k=" << freqs[j] << " Norm: " << norm_dl[j] << " Norm of Inverse: " << cond_dl[j]/norm_dl[j] << " Condition Nr.: " << cond_dl[j] <<  std::endl;
-	  }
-
- 	  out << "Combined Layer eta=k" << std::endl;
-
-	  for (int j=0;j<freqs.size();j++){
-	    out << "k=" << freqs[j] << " Norm: " << norm_combined1[j] << " Norm of Inverse: " << cond_combined1[j]/norm_combined1[j] << " Condition Nr.: " << cond_combined1[j] <<  std::endl;
-	  }
-
- 	  out << "Combined Layer eta=k^(2/3)" << std::endl;
-
-	  for (int j=0;j<freqs.size();j++){
-	    out << "k=" << freqs[j] << " Norm: " << norm_combined2[j] << " Norm of Inverse: " << cond_combined2[j]/norm_combined2[j] << " Condition Nr.: " << cond_combined2[j] <<  std::endl;
-	  }
 
 
 

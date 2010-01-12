@@ -16,6 +16,7 @@ namespace bem2d
     virtual Point Map(double t) const=0;
     virtual Point Deriv(double t) const=0;
     double Length();
+    double Length(double t1,double t2);
     virtual ~Curve(){};
   };
 

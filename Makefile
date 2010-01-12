@@ -42,6 +42,7 @@ clean:
 	cd lib; make clean
 	cd tests; make clean
 	cd examples; make clean
+	cd normcomps; make clean
 	rm -f *~ *.o
 	rm -rf bin
 

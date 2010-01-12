@@ -4,24 +4,36 @@
 #include<ctime>
 #include<vector>
 #include<fstream>
+#include<algorithm>
 
 int main(int argc, char** argv)
 {
 
-  int ppw=10;     // Point per wavelength
-  std::string filename="disknormcond10.txt";
+  int ppw=50;     // Point per wavelength
+  std::string filename="rectanglenormcond10.txt";
   
  
   std::vector<bem2d::freqtype> freqs;
+  freqs.push_back(0.15625);
+  freqs.push_back(0.3125);
+  freqs.push_back(0.625);
+
+
+  
+  freqs.push_back(1.25);
+  freqs.push_back(2.5);
   freqs.push_back(5);
   freqs.push_back(10);
   freqs.push_back(20);
+
+  
   freqs.push_back(40);
   freqs.push_back(80);
   freqs.push_back(160);
   freqs.push_back(320);
   freqs.push_back(640);
   freqs.push_back(1280);
+  
 
   std::vector<double> norm_sl(freqs.size());
   std::vector<double> norm_dl(freqs.size());
@@ -37,14 +49,22 @@ int main(int argc, char** argv)
         clock_t start, finish;
         double time;
         start=clock();
+	double a1=2;
+	double a2=0.02;
+
+	std::vector<bem2d::Point> rectangle;
+	rectangle.push_back(bem2d::Point(0,0));
+	rectangle.push_back(bem2d::Point(a1,0));
+	rectangle.push_back(bem2d::Point(a1,a2));
+	rectangle.push_back(bem2d::Point(0,a2));
  
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
 
 
-        int nprow=4; // Number of rows in process grid
-        int npcol=2; // Number of columns in process grid
+        int nprow=2; // Number of rows in process grid
+        int npcol=1; // Number of columns in process grid
         int mb=24;  // Row Block size
         int nb=24;  // Column Block size
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
@@ -67,10 +87,8 @@ int main(int argc, char** argv)
 	double k=(double)freqs[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
 	double eta2=cbrt(k*k);
-        bem2d::pCurve cobj(new bem2d::Circle);
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve circle(n,cobj);
-        bem2d::pGeometry pgeom=circle.GetGeometry();
+	bem2d::Polygon poly(rectangle,ppw,k);
+        bem2d::pGeometry pgeom=poly.GetGeometry();
 
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
 
@@ -89,10 +107,10 @@ int main(int argc, char** argv)
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Discretize Kernels with n=" << n << std::endl;
+	  std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 	}
 #else
-	std::cout << "Discretize Kernels with n=" << n << std::endl;
+	std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 #endif
 
 

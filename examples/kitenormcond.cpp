@@ -7,7 +7,7 @@
 int main(int argc, char** argv)
 {
  
-        bem2d::freqtype k=10; // Wavenumber
+        bem2d::freqtype k=5; // Wavenumber
 	int ppw=20; // How many points per wavelength
 
         clock_t start, finish;

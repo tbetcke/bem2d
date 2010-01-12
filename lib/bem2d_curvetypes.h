@@ -47,6 +47,19 @@ public:
   }
 };
 
+  class Ellipse: public Curve
+  {
+  public:
+    Ellipse(double rho);
+    inline Point Map(double t) const {
+      return Point(rho_*cos(2*PI*t),1/rho_*sin(2*PI*t));
+    }
+    inline Point Deriv(double t) const {
+      return Point(-rho_*2*PI*sin(2*PI*t),2*PI/rho_*cos(2*PI*t));
+    }
+  private:
+    double rho_;
+  };
 
 }
 
