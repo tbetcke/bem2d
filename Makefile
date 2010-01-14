@@ -60,6 +60,12 @@ normcomps: bem2d dirs
 	test -d bin/normcomps || mkdir bin/normcomps
 	cd normcomps; make
 
+.PHONY: numrangecomps
+numrangecomps: bem2d dirs
+	test -d bin/numrangecomps || mkdir bin/numrangecomps
+	cd numrangecomps; make
+
+
 .PHONY: commit
 commit: clean
 	git commit --all

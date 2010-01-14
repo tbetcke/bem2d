@@ -1,5 +1,7 @@
 #include<algorithm>
 #include<cmath>
+#include<complex>
+#include<fstream>
 #include "bem2d_mathroutines.h"
 #include "gsl/gsl_sf_bessel.h"
 #include "bem2d_cblas.h"
@@ -263,19 +265,18 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 }
 
 #ifdef BEM2DMPI
- void HermitianEigenvalues(const Matrix& k, pdvector& evalues, pMatrix& evectors) throw (ScaLapackError){
+ void HermitianEigenvalues(const Matrix& k, pdvector& evalues) throw (ScaLapackError){
 #else
-   void HermitianEigenvalues(const Matrix& k, pdvector& evalues, pMatrix& evectors) throw (LapackError){
+   void HermitianEigenvalues(const Matrix& k, pdvector& evalues) throw (LapackError){
 #endif
-
+ 
      Matrix tk(k);
-
+ 
      evalues=pdvector(new dvector(tk.dim[0])); 
-     evectors=pMatrix(new Matrix(tk.dim[0]));
-
+ 
 #ifdef BEM2DMPI
      BlacsSystem* b=BlacsSystem::Instance();
-	char jobz='V';
+	char jobz='N';
 	char uplo='U';
 	char range='A';
 	int ia=1;
@@ -283,67 +284,47 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 	int info;
 	complex wsize;
 	int lwork=-1;
-	double rwsize[3];
+	double rwsize;
 	int lrwork=-1;
 	int n=tk.dim[0];
-	char cmach='U';
+	char cmach='S';
 	int ictxt=b->get_ictxt();
-	double abstol=pdlamch_(&ictxt,&cmach);
+	double abstol=2*pdlamch_(&ictxt,&cmach);
 	int m,nz;
 	double orfac=0;
 	int iwsize;
-	//int liwork=std::max(n,b->get_nprow()*b->get_npcol()+1);
-	//liwork=std::max(liwork,4);
 	int liwork=-1;
-	//int iwork[liwork];
 	int ifail[n];
 	int icluster[2*b->get_nprow()*b->get_npcol()];
 	double gap[b->get_nprow()*b->get_npcol()];
 	int il=1;
 	int iu=1;
-
+	int rlwork=-1;
+ 
 	// Workspace query for eigenvalue computation
-
-	pzheevx_(&jobz,&range,&uplo,&n,&(*tk.data)[0],&ia,&ja,tk.desc,NULL,NULL,&il,&iu,&abstol,
-		 &m,&nz,&(*evalues)[0],&orfac,&(*evectors->data)[0],&ia,&ja,evectors->desc,
-		 &wsize,&lwork,rwsize,&lrwork,&iwsize,&liwork,ifail,icluster,gap,&info);
-	std::cout << info << std::endl;
-
+ 
+	pzheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&ia,&ja,tk.desc,&(*evalues)[0],
+		NULL,&ia,&ja,tk.desc,&wsize,&lwork,&rwsize,&rlwork,
+		&info);
+ 
 	lwork=(int)std::real(wsize);
 	complex work[lwork];
-	lrwork=(int)rwsize[0];
-	lrwork=std::max(lrwork,3);
-	double rwork[lrwork];
-	liwork=iwsize;
-	int iwork[liwork];
-
-	pzheevx_(&jobz,&range,&uplo,&n,&(*tk.data)[0],&ia,&ja,tk.desc,NULL,NULL,NULL,NULL,&abstol,
-		 &m,&nz,&(*evalues)[0],&orfac,&(*evectors->data)[0],&ia,&ja,evectors->desc,
-		 work,&lwork,rwork,&lrwork,iwork,&liwork,ifail,icluster,gap,&info);
-	std::cout << info << std::endl;
-
-	/*
-	pzheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&ia,&ja,tk.desc,&(*evalues)[0],
-		&(*evectors->data)[0],&ia,&ja,evectors->desc,&wsize,&lwork,&rwsize,&rlwork,
-		&info);
-
-	lwork=100*(int)std::real(wsize);
-	complex work[lwork];
-	rlwork=100*(int)rwsize;
+	rlwork=(int)rwsize;
 	double rwork[rlwork];
-
+ 
 	
-	pzheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&ia,&ja,tk.desc,&(*evalues)[0],
-		&(*evectors->data)[0],&ia,&ja,evectors->desc,work,&lwork,rwork,&rlwork,
+	pzheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&ia,&ja,tk.desc,&(*evalues)[0],NULL,
+	        &ia,&ja,tk.desc,work,&lwork,rwork,&rlwork,
 		&info);
-	*/
+
+
 	if (info) throw ScaLapackError();
 	
 		
-
+ 
 #else
      int itype=1;
-     char jobz='V';
+     char jobz='N';
      char uplo='U';
      complex wsize;
      int lwork=-1;
@@ -351,20 +332,21 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
      int info;
      
      // Get work size
-
+ 
      zheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&tk.dim[0],&(*evalues)[0],
 	    &wsize,&lwork,rwork,&info);
-
+ 
      lwork=(int)std::real(wsize);
      complex work[lwork];
-
+ 
      zheev_(&jobz,&uplo,&tk.dim[0],&(*tk.data)[0],&tk.dim[0],&(*evalues)[0],
 	    work,&lwork,rwork,&info);
-
-     *evectors=tk;
-
+ 
+ 
 #endif
    }
+
+
 
 #ifdef BEM2DMPI
    void Eigenvalues(const Matrix& k, pcvector& evalues) throw (ScaLapackError){
@@ -491,6 +473,69 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 
      }
 
+     void NumRange(const Matrix& m, int n, std::string filename){
+ // Compute the boundary of the numerical range of a matrix m and write the points to a
+ // file given by 'filename'. n is the number of discretization points from 0 to pi.
+
+       double step=PI/n;
+       dvector eigs(2*n);
+       dvector steps(2*n);
+       pdvector pevalues;
+       complex im=complex(0,1);
+
+       for (int i=0;i<n;i++){
+	 double theta=i*step;
+	 steps[i]=theta; steps[n+i]=theta;
+	 Matrix mtheta=std::exp(im*theta)*m;
+	 // Now take the Hermitian Part
+	 Matrix H=0.5*(mtheta+ConjTranspose(mtheta));
+	 HermitianEigenvalues(H,pevalues);
+	 
+	 double lmin=*(std::min_element(pevalues->begin(),pevalues->end()));
+	 double lmax=*(std::max_element(pevalues->begin(),pevalues->end()));
+	 eigs[i]=lmin; eigs[n+i]=lmax;
+       }
+	
+       // Now iterate through to get the points of the Num. Range approximation
+
+       
+       steps.push_back(0);
+       eigs.push_back(eigs[0]); // Append first element. Makes next for loop easier
+       cvector numrange(2*n+1);
+       for (int i=0;i<2*n;i++){
+	 complex e1=std::exp(-im*steps[i]);
+	 complex e2=std::exp(-im*steps[i+1]);
+	 double c1=std::cos(steps[i]); double c2=std::cos(steps[i+1]);
+	 double s1=std::sin(steps[i]); double s2=std::sin(steps[i+1]);
+	 double lam1=eigs[i];
+	 double lam2=eigs[i+1];
+	 double t1=(lam2-lam1*(c1*c2+s1*s2))/(s1*c2-s2*c1);
+	 numrange[i]=e1*(lam1+im*t1);
+       }
+
+	 // Add first point again for convenience
+       numrange[2*n]=numrange[0];
+
+
+       // Now give out results in file.
+
+#ifdef BEM2DMPI
+       BlacsSystem* b=BlacsSystem::Instance();
+       if (b->IsRoot()){
+#endif
+	 std::ofstream out(filename.c_str());
+	 for (int i=0;i<2*n+1;i++){ 
+	   out << std::real(numrange[i]) << " " << std::imag(numrange[i]) << std::endl;
+	 }
+	 out.close();
+	
+
+#ifdef BEM2DMPI 
+       }
+#endif
+
+
+     }
 
    Matrix ConjTranspose(const Matrix& m){
 

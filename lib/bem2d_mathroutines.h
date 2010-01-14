@@ -64,9 +64,9 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
 #endif
 
 #ifdef BEM2DMPI
- void HermitianEigenvalues(const Matrix& k, pdvector& evalues, pMatrix& evectors) throw (ScaLapackError);
+ void HermitianEigenvalues(const Matrix& k, pdvector& evalues) throw (ScaLapackError);
 #else
- void HermitianEigenvalues(const Matrix& k, pdvector& evalues, pMatrix& evectors) throw (LapackError);
+ void HermitianEigenvalues(const Matrix& k, pdvector& evalues) throw (LapackError);
 #endif
 
 #ifdef BEM2DMPI
@@ -81,6 +81,9 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
  Matrix ChangeBasis(const Matrix& k, const Matrix& m) throw (LapackError);
 #endif
 
+ void NumRange(const Matrix& m, int n, std::string filename);
+ // Compute the boundary of the numerical range of a matrix m and write the points to a
+ // file given by 'filename'. n is the number of discretization points from 0 to pi.
 
  Matrix ConjTranspose(const Matrix& m);
 

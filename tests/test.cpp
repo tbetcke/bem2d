@@ -12,10 +12,10 @@ int main(int argc, char** argv)
         MPI_Init(&argc, &argv);
 
 
-        int nprow=4;
-        int npcol=4;
-        int mb=200;
-        int nb=200;
+        int nprow=2;
+        int npcol=1;
+        int mb=24;
+        int nb=24;
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
 
         if (!b) {
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
         int myrow=b->get_myrow();
         int mycol=b->get_mycol();
 #endif
-        int n=100;
+        int n=1000;
 
 
         bem2d::pCurve cobj(new bem2d::Circle);
@@ -41,12 +41,7 @@ int main(int argc, char** argv)
         bem2d::pGeometry pgeom=circle.GetGeometry();
 	std::cout << cobj->Length() << std::endl;
 
-
-        //bem2d::DiskShapePiecewiseConst circle(n,1.0);
-
-	/*
-
-        bem2d::freqtype k=5;
+        bem2d::freqtype k=50;
         bem2d::PolBasis::AddBasis(0,pgeom);
         std::cout << pgeom->size() << std::endl;
 
@@ -75,32 +70,26 @@ int main(int argc, char** argv)
 	bem2d::pMatrix pk=soundsoft.GetMatrix();
 	bem2d::pMatrix pm=soundsoft.GetIdent();
 
+
 	*pk=bem2d::ChangeBasis(*pk,*pm);
-	bem2d::Matrix H=0.5*(*pk+bem2d::ConjTranspose(*pk));
+	bem2d::NumRange(*pk,100,"testrange");
+
+	/*
+	bem2d::Matrix H=-bem2d::complex(0,0.5)*(*pk-bem2d::ConjTranspose(*pk));
 
 	bem2d::pdvector pevalues;
 	bem2d::pMatrix pevectors;
        
 	std::cout <<" Compute HErmitian eigenvalues" << std::endl;
-
 	
-	bem2d::HermitianEigenvalues(H,pevalues,pevectors);
-
-	
-	std::cout << "Exctract a column and compute inner products" << std::endl;
-
-	bem2d::Matrix z=bem2d::ExtractColumn(*pevectors,0);
-	bem2d::Matrix Hz=H*z;
-	bem2d::complex lambda=DotProduct(z,H*z);
-	bem2d::complex lambda2=DotProduct(z,z);
-
-	std::cout << lambda/lambda2 << " " << (*pevalues)[0] << std::endl;
+	bem2d::HermitianEigenvalues(H,pevalues);
 
 	
 	bem2d::pcvector eigvalues;
 	std::cout << " Compute Eigenvalues" << std::endl;
-	bem2d::Eigenvalues(*pk,*pm,eigvalues);
+	bem2d::Eigenvalues(*pk,eigvalues);
 	
+
 	
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
