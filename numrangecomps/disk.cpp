@@ -10,22 +10,17 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string file1="diskrange";
-  std::string file2="diskeig";
+  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/disk";
 
   int numrange_n=20; // Number of discretization points for num. range.
-  
+  int computenorm=0; // Set to 1 to compute norm and condition number
  
   std::vector<bem2d::freqtype> freqs;
   freqs.push_back(10);
-  freqs.push_back(20);
-
-  /*
   freqs.push_back(50);
   freqs.push_back(100);
   freqs.push_back(200);
-  freqs.push_back(500);
-  */
+  
 
         clock_t start, finish;
         double time;
@@ -102,9 +97,32 @@ int main(int argc, char** argv)
 #else
 	std::cout << "Compute Eigenvalues" << std::endl;
 #endif
+
+	double norm, cond;
 	
 	bem2d::pcvector eigvals;
 	bem2d::Eigenvalues(combined1,eigvals);
+
+	if (computenorm){
+	bem2d::L2NormCond(combined1,norm,cond);
+
+
+	// Write out norm and condition number
+
+#ifdef BEM2DMPI
+	if (b->IsRoot()){
+#endif
+
+	  std::ostringstream osnormcond;
+	  osnormcond << file << "_normcond_" << k; 
+	  std::string s0=osnormcond.str();
+	  std::ofstream o(s0.c_str());
+	  o << norm << std::endl << cond << std::endl;
+	  o.close();
+#ifdef BEM2DMPI
+	}
+#endif
+	}
 
 	// Write out eigenvalues
 
@@ -113,7 +131,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream os;
-	  os << file2 << k; 
+	  os << file << "_eig_" << k; 
 	  std::string s=os.str();
 	  std::ofstream o1(s.c_str());
 	  for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
@@ -135,7 +153,7 @@ int main(int argc, char** argv)
 
 
 	std::ostringstream os2;
-	os2 << file1 << k;
+	os2 << file << "_range_" << k;
 	NumRange(combined1, numrange_n, os2.str());
 
 	

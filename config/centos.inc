@@ -35,7 +35,7 @@ GSL = -lgsl
 LAPACK = /usr/local/atlas/lib/liblapack.a
 
 # Blas
-BLAS   = -lcblas -lf77blas -latlas
+BLAS   = -lptcblas -lptf77blas -latlas -lpthread
 
 # OpenMP
 OMP= -lgomp

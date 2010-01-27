@@ -480,15 +480,16 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
        double step=PI/n;
        dvector eigs(2*n);
        dvector steps(2*n);
-       pdvector pevalues;
        complex im=complex(0,1);
 
+#pragma omp parallel for
        for (int i=0;i<n;i++){
 	 double theta=i*step;
 	 steps[i]=theta; steps[n+i]=theta;
 	 Matrix mtheta=std::exp(im*theta)*m;
 	 // Now take the Hermitian Part
 	 Matrix H=0.5*(mtheta+ConjTranspose(mtheta));
+         pdvector pevalues;
 	 HermitianEigenvalues(H,pevalues);
 	 
 	 double lmin=*(std::min_element(pevalues->begin(),pevalues->end()));

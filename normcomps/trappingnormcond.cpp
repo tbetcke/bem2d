@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string filename="trapping10.txt";
+  std::string filename="trappingnormcond10.txt";
   
  
   std::vector<bem2d::freqtype> freqs;
@@ -21,7 +21,6 @@ int main(int argc, char** argv)
   freqs.push_back(160);
   freqs.push_back(320);
   freqs.push_back(640);
-  freqs.push_back(1280);
 
   std::vector<double> norm_sl(freqs.size());
   std::vector<double> norm_dl(freqs.size());

@@ -13,6 +13,7 @@ int main(int argc, char** argv)
   
  
   std::vector<bem2d::freqtype> freqs;
+
   freqs.push_back(5);
   freqs.push_back(10);
   freqs.push_back(20);
@@ -21,7 +22,6 @@ int main(int argc, char** argv)
   freqs.push_back(160);
   freqs.push_back(320);
   freqs.push_back(640);
-  freqs.push_back(1280);
 
 
   std::vector<double> norm_sl(freqs.size());
@@ -50,8 +50,8 @@ int main(int argc, char** argv)
         MPI_Init(&argc, &argv);
 
 
-        int nprow=2; // Number of rows in process grid
-        int npcol=1; // Number of columns in process grid
+        int nprow=4; // Number of rows in process grid
+        int npcol=2; // Number of columns in process grid
         int mb=24;  // Row Block size
         int nb=24;  // Column Block size
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);

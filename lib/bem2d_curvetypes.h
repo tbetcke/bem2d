@@ -61,7 +61,30 @@ public:
     double rho_;
   };
 
+
+class InvEllipse: public Curve
+{
+ public:
+  InvEllipse(double alpha);
+  inline Point Map(double t) const {
+    complex s=2.0*PI*t*complex(0,1);
+    complex i(0,1);
+    complex res=exp(s)/(1.0+alpha_*exp(2.0*s));
+    return Point(real(res),imag(res));
+  }
+  inline Point Deriv(double t) const {
+    complex s=2.0*PI*t*complex(0,1);
+    complex i(0,1);
+    complex res=2.0*PI*i*exp(s)/(1.0+alpha_*exp(2.0*s))/(1.0+alpha_*exp(2.0*s))*(1.0-alpha_*exp(2.0*s));
+    return Point(real(res),imag(res));
+  }
+ private:
+  double alpha_;
+};
+
 }
+    
+    
 
 
 #endif // _CURVETYPES_H_
