@@ -10,9 +10,9 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string file="/home/tbetcke/svn/numerical_coercivity/data/trapping";
+  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/trapping";
 
-  int numrange_n=50; // Number of discretization points for num. range.
+  int numrange_n=20; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
   
  
@@ -21,7 +21,6 @@ int main(int argc, char** argv)
   freqs.push_back(50);
   freqs.push_back(100);
   freqs.push_back(200);
-  freqs.push_back(500);
 
         clock_t start, finish;
         double time;

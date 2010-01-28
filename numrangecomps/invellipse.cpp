@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/trapping";
+  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/invellipse0.8";
 
   int numrange_n=100; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
@@ -19,8 +19,8 @@ int main(int argc, char** argv)
   std::vector<bem2d::freqtype> freqs;
   freqs.push_back(10);
   freqs.push_back(50);
-  freqs.push_back(100);
-  freqs.push_back(200);
+  //freqs.push_back(100);
+  //freqs.push_back(200);
 
         clock_t start, finish;
         double time;
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
 
 	double k=(double)freqs[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
-        bem2d::pCurve cobj(new bem2d::InvEllipse(0.3));
+        bem2d::pCurve cobj(new bem2d::InvEllipse(0.8));
 	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
         bem2d::AnalyticCurve invellipse(n,cobj);
         bem2d::pGeometry pgeom=invellipse.GetGeometry();
