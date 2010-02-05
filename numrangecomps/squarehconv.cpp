@@ -9,33 +9,46 @@
 int main(int argc, char** argv)
 {
 
-  int ppw=10;     // Point per wavelength
-  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/invellipse0.3";
-  double ellipseparam=0.3;
+  std::string file="/home/tbetcke/svn/numerical_coercivity/data/squarehconv";
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
-  
+  bem2d::freqtype k=1;
  
-  std::vector<bem2d::freqtype> freqs;
-  freqs.push_back(10);
-  freqs.push_back(50);
-  freqs.push_back(100);
-  freqs.push_back(200);
-  freqs.push_back(500);
+  std::vector<int> ppwvec;
+  ppwvec.push_back(20);
+
+  /*
+  ppwvec.push_back(50);
+  ppwvec.push_back(100);
+  ppwvec.push_back(500);
+  ppwvec.push_back(1000);
+  ppwvec.push_back(2000);
+  ppwvec.push_back(3000);
+  */
+  //  ppwvec.push_back(1280);
+
+
+
+
 
         clock_t start, finish;
         double time;
         start=clock();
  
 
+        std::vector<bem2d::Point> square;
+        square.push_back(bem2d::Point(0,0));
+        square.push_back(bem2d::Point(1,0));
+        square.push_back(bem2d::Point(1,1));
+        square.push_back(bem2d::Point(0,1));
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
 
 
-        int nprow=2; // Number of rows in process grid
-        int npcol=1; // Number of columns in process grid
+        int nprow=4; // Number of rows in process grid
+        int npcol=2; // Number of columns in process grid
         int mb=24;  // Row Block size
         int nb=24;  // Column Block size
         bem2d::BlacsSystem* b=bem2d::BlacsSystem::Initialize(nprow,npcol,mb,nb);
@@ -53,14 +66,23 @@ int main(int argc, char** argv)
         }
 #endif
 
-	for (int j=0;j<freqs.size();j++){
+	for (int j=0;j<ppwvec.size();j++){
 
-	double k=(double)freqs[j];
+	int ppw=ppwvec[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
-        bem2d::pCurve cobj(new bem2d::InvEllipse(ellipseparam));
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve invellipse(n,cobj);
-        bem2d::pGeometry pgeom=invellipse.GetGeometry();
+	bem2d::Polygon poly(square,ppw,k,0,0.15);
+        bem2d::pGeometry pgeom=poly.GetGeometry();
+
+	
+	std::vector<bem2d::pElement> elements=pgeom->elements();
+	for (int i=0;i<elements.size();i++){
+	  std::cout << elements[i]->Map(0) << " " << elements[i]->Map(1) << elements[i]->Normal(0.5) <<
+	    elements[i]->index() << " " << elements[i]->prev() << " " << elements[i]->next() << std::endl;
+	}
+	return 0;
+	
+	
+
 
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
 
@@ -117,7 +139,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream osnormcond;
-	  osnormcond << file << "_normcond_" << k; 
+	  osnormcond << file << "_normcond_" << ppw; 
 	  std::string s0=osnormcond.str();
 	  std::ofstream o(s0.c_str());
 	  o << norm << std::endl << cond << std::endl;
@@ -134,7 +156,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream os;
-	  os << file << "_eig_" << k; 
+	  os << file << "_eig_" << ppw; 
 	  std::string s=os.str();
 	  std::ofstream o1(s.c_str());
 	  for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
@@ -156,7 +178,7 @@ int main(int argc, char** argv)
 
 
 	std::ostringstream os2;
-	os2 << file << "_range_" << k;
+	os2 << file << "_range_" << ppw;
 	NumRange(combined1, numrange_n, os2.str());
 
 	

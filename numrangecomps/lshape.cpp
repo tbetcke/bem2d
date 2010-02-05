@@ -10,9 +10,9 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/trapping";
+  std::string file="/home/tbetcke/svn/numerical_coercivity/data/lshape";
 
-  int numrange_n=20; // Number of discretization points for num. range.
+  int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
   
  
@@ -21,28 +21,20 @@ int main(int argc, char** argv)
   freqs.push_back(50);
   freqs.push_back(100);
   freqs.push_back(200);
+  freqs.push_back(500);
 
         clock_t start, finish;
         double time;
         start=clock();
  
 
-        double a=0.31;
-        double c=1;
-        double l=c-a;
-
-        std::vector<bem2d::Point> trapping;
-        trapping.push_back(bem2d::Point(0,0));
-        trapping.push_back(bem2d::Point(-c,0));
-        trapping.push_back(bem2d::Point(-c,-l));
-        trapping.push_back(bem2d::Point(l,-l));
-        trapping.push_back(bem2d::Point(l,2*c-l));
-        trapping.push_back(bem2d::Point(-c,2*c-l));
-        trapping.push_back(bem2d::Point(-c,2*a));
-        trapping.push_back(bem2d::Point(0,2*a));
-
-
-
+        std::vector<bem2d::Point> lshape;
+        lshape.push_back(bem2d::Point(0,0));
+        lshape.push_back(bem2d::Point(1,0));
+        lshape.push_back(bem2d::Point(1,1));
+        lshape.push_back(bem2d::Point(-1,1));
+        lshape.push_back(bem2d::Point(-1,-1));
+        lshape.push_back(bem2d::Point(0,-1));
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
@@ -71,7 +63,7 @@ int main(int argc, char** argv)
 
 	double k=(double)freqs[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
-	bem2d::Polygon poly(trapping,ppw,k);
+	bem2d::Polygon poly(lshape,ppw,k);
         bem2d::pGeometry pgeom=poly.GetGeometry();
 
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions

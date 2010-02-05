@@ -27,8 +27,8 @@ private:
 class Polygon
 {
 public:
-  Polygon(const std::vector<Point>& points, int ppw, freqtype k);
-        Polygon(const std::vector<Point>& points, int n);
+  Polygon(const std::vector<Point>& points, int ppw, freqtype k, int L=0, double sigma=0.15);
+  Polygon(const std::vector<Point>& points, int n);
 
         pGeometry GetGeometry();
 private:

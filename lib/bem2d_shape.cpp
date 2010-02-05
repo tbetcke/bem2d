@@ -1,4 +1,5 @@
 #include<algorithm>
+#include<cmath>
 #include "bem2d_shape.h"
 #include "bem2d_defs.h"
 #include "gsl/gsl_errno.h"
@@ -32,20 +33,72 @@ pGeometry DiskShapePiecewiseConst::GetGeometry()
         return bem2d::pGeometry(new bem2d::Geometry(elements_));
 }
 
-  Polygon::Polygon(const std::vector<Point>& points, int ppw, freqtype k){
+  Polygon::Polygon(const std::vector<Point>& points, int ppw, freqtype k,int L, double sigma){
         std::vector<Point> p(points);
         p.push_back(p[0]); // Add last element again - makes next for-loop easier
 	int elemcount=0;
         for (int i=0; i<points.size(); i++) {
                 Point direction=p[i+1]-p[i];
 		int n=(int)(ppw*(double)k*length(direction)/2.0/PI);
-		n=std::max(10,n); // At least 10 elements
-                for (int j=0; j<n; j++) {
+		//n=std::max(10,n); // At least 10 elements
+		// Add refined version of first element
+		if (L==0){
+		  Point p1=p[i];
+		  Point p2=p[i]+(1.0/n)*direction;
+		  elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
+		  elemcount++;
+		}
+		else{
+		  // Add smallest element
+		    double tsigma=1;
+		    for (int m=0;m<L;m++) tsigma=tsigma*sigma;
+		  {
+		    Point p1=p[i];
+		    Point p2=p[i]+(tsigma/n)*direction;
+		    elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
+		    elemcount++;
+		  }
+		  // Add the other elements
+		  for (int j=0;j<L;j++){
+		    Point p1=p[i]+tsigma/n*direction;
+		    tsigma=tsigma/sigma;
+		    Point p2=p[i]+tsigma/n*direction;
+		    elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
+		    elemcount++;
+		}
+		}
+		  // Add the non-refined elements
+                for (int j=1; j<n-1; j++) {
                         Point p1=p[i]+(1.0*j)/n*direction;
                         Point p2=p[i]+(1.0*(j+1))/n*direction;
                         elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
 			elemcount++;
                 }
+		// Add refined version of last element
+		if (L==0){
+		  Point p1=p[i]+(1.0*(n-1))/n*direction;
+		  Point p2=p[i+1];
+		  elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
+		  elemcount++;
+		}
+		else{
+		  double tsigma=1;
+		  // Add exponentially weighted elements
+		  for (int j=0;j<L;j++){
+		    Point p1=p[i]+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
+		    tsigma*=sigma;
+		    Point p2=p[i]+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
+		    elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
+		    elemcount++;
+		}
+		  // Add largest element
+		  {
+		    Point p1=p[i]+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
+		    Point p2=p[i+1];
+		    elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
+		    elemcount++;
+		  }
+		}	       
         }
         for (int i=1; i<elements_.size()-1; i++) {
                 elements_[i]->set_next(i+1);
@@ -57,8 +110,6 @@ pGeometry DiskShapePiecewiseConst::GetGeometry()
         elements_[elemcount-1]->set_prev(elemcount-2);
 
 }
-
-
 
 Polygon::Polygon(const std::vector<Point>& points, int n)
 {

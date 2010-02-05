@@ -6,29 +6,32 @@
 #include<fstream>
 #include<sstream>
 
+// Program to test the convergence of the numerical range as h->0
+
 int main(int argc, char** argv)
 {
 
-  int ppw=10;     // Point per wavelength
-  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/invellipse0.3";
-  double ellipseparam=0.3;
+  std::string file="/home/tbetcke/svn/numerical_coercivity/data/diskhconv_quadr";
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
-  
+  bem2d::freqtype k=10;
  
-  std::vector<bem2d::freqtype> freqs;
-  freqs.push_back(10);
-  freqs.push_back(50);
-  freqs.push_back(100);
-  freqs.push_back(200);
-  freqs.push_back(500);
+  std::vector<int> ppwvec;
+  ppwvec.push_back(5);
+  ppwvec.push_back(10);
+  ppwvec.push_back(20);
+  // ppwvec.push_back(40);
+  // ppwvec.push_back(80);
+  // ppwvec.push_back(160);
+  // ppwvec.push_back(320);
+  // ppwvec.push_back(640);
+
 
         clock_t start, finish;
         double time;
         start=clock();
  
-
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
@@ -53,16 +56,16 @@ int main(int argc, char** argv)
         }
 #endif
 
-	for (int j=0;j<freqs.size();j++){
+	for (int j=0;j<ppwvec.size();j++){
 
-	double k=(double)freqs[j];
+	int ppw=ppwvec[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
-        bem2d::pCurve cobj(new bem2d::InvEllipse(ellipseparam));
+        bem2d::pCurve cobj(new bem2d::Circle);
 	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve invellipse(n,cobj);
-        bem2d::pGeometry pgeom=invellipse.GetGeometry();
+        bem2d::AnalyticCurve circle(n,cobj);
+        bem2d::pGeometry pgeom=circle.GetGeometry();
 
-        bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
+        bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 
 
 	// Discretize the single and double layer potential
@@ -78,10 +81,10 @@ int main(int argc, char** argv)
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
+	  std::cout << "Discretize Kernels with n=" << n << std::endl;
 	}
 #else
-	std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
+	std::cout << "Discretize Kernels with n=" << n << std::endl;
 #endif
 
 
@@ -95,13 +98,13 @@ int main(int argc, char** argv)
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Compute Eigenvalues and norm" << std::endl;
+	  std::cout << "Compute Eigenvalues" << std::endl;
 	}
 #else
-	std::cout << "Compute Eigenvalues and norm" << std::endl;
+	std::cout << "Compute Eigenvalues" << std::endl;
 #endif
 
-	double norm; double cond;
+	double norm, cond;
 	
 	bem2d::pcvector eigvals;
 	bem2d::Eigenvalues(combined1,eigvals);
@@ -117,7 +120,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream osnormcond;
-	  osnormcond << file << "_normcond_" << k; 
+	  osnormcond << file << "_normcond_" << ppw; 
 	  std::string s0=osnormcond.str();
 	  std::ofstream o(s0.c_str());
 	  o << norm << std::endl << cond << std::endl;
@@ -134,7 +137,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream os;
-	  os << file << "_eig_" << k; 
+	  os << file << "_eig_" << ppw; 
 	  std::string s=os.str();
 	  std::ofstream o1(s.c_str());
 	  for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
@@ -156,7 +159,7 @@ int main(int argc, char** argv)
 
 
 	std::ostringstream os2;
-	os2 << file << "_range_" << k;
+	os2 << file << "_range_" << ppw;
 	NumRange(combined1, numrange_n, os2.str());
 
 	

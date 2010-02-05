@@ -10,23 +10,40 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/trapping";
+  std::string file="/home/tbetcke/svn/numerical_coercivity/data/lshapehconv";
 
-  int numrange_n=100; // Number of discretization points for num. range.
+  int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
-  
+  bem2d::freqtype k=2;
  
-  std::vector<bem2d::freqtype> freqs;
-  freqs.push_back(10);
-  freqs.push_back(50);
-  freqs.push_back(100);
-  freqs.push_back(200);
+  std::vector<int> ppwvec;
+  ppwvec.push_back(5);
+  ppwvec.push_back(10);
+  ppwvec.push_back(20);
+  ppwvec.push_back(50);
+  ppwvec.push_back(100);
+  ppwvec.push_back(150);
+  ppwvec.push_back(200);
+  ppwvec.push_back(250);
+  ppwvec.push_back(300);
+  ppwvec.push_back(400);
+
+
+
+
 
         clock_t start, finish;
         double time;
         start=clock();
  
 
+        std::vector<bem2d::Point> lshape;
+        lshape.push_back(bem2d::Point(0,0));
+        lshape.push_back(bem2d::Point(1,0));
+        lshape.push_back(bem2d::Point(1,1));
+        lshape.push_back(bem2d::Point(-1,1));
+        lshape.push_back(bem2d::Point(-1,-1));
+        lshape.push_back(bem2d::Point(0,-1));
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
@@ -51,14 +68,12 @@ int main(int argc, char** argv)
         }
 #endif
 
-	for (int j=0;j<freqs.size();j++){
+	for (int j=0;j<ppwvec.size();j++){
 
-	double k=(double)freqs[j];
+	int ppw=ppwvec[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
-        bem2d::pCurve cobj(new bem2d::InvEllipse(0.3));
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve invellipse(n,cobj);
-        bem2d::pGeometry pgeom=invellipse.GetGeometry();
+	bem2d::Polygon poly(lshape,ppw,k);
+        bem2d::pGeometry pgeom=poly.GetGeometry();
 
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
 
@@ -115,7 +130,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream osnormcond;
-	  osnormcond << file << "_normcond_" << k; 
+	  osnormcond << file << "_normcond_" << ppw; 
 	  std::string s0=osnormcond.str();
 	  std::ofstream o(s0.c_str());
 	  o << norm << std::endl << cond << std::endl;
@@ -132,7 +147,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream os;
-	  os << file << "_eig_" << k; 
+	  os << file << "_eig_" << ppw; 
 	  std::string s=os.str();
 	  std::ofstream o1(s.c_str());
 	  for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
@@ -154,7 +169,7 @@ int main(int argc, char** argv)
 
 
 	std::ostringstream os2;
-	os2 << file << "_range_" << k;
+	os2 << file << "_range_" << ppw;
 	NumRange(combined1, numrange_n, os2.str());
 
 	
