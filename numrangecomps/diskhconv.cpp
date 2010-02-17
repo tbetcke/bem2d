@@ -15,17 +15,17 @@ int main(int argc, char** argv)
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
-  bem2d::freqtype k=10;
+  bem2d::freqtype k=1;
  
   std::vector<int> ppwvec;
   ppwvec.push_back(5);
   ppwvec.push_back(10);
-  ppwvec.push_back(20);
-  // ppwvec.push_back(40);
-  // ppwvec.push_back(80);
-  // ppwvec.push_back(160);
-  // ppwvec.push_back(320);
-  // ppwvec.push_back(640);
+  ppwvec.push_back(50);
+  ppwvec.push_back(100);
+  ppwvec.push_back(500);
+  //ppwvec.push_back(1000);
+  //ppwvec.push_back(1500);
+  //ppwvec.push_back(2000);
 
 
         clock_t start, finish;
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 	bem2d::QuadOption quadopts;
 
 	quadopts.L=3;
-        quadopts.N=5;
+        quadopts.N=10;
         quadopts.sigma=0.15;
 
 #ifdef BEM2DMPI
@@ -95,6 +95,7 @@ int main(int argc, char** argv)
 	bem2d::Matrix combined1=Id+2.0*dcdl-bem2d::complex(0,2.0)*eta1*dsl;
 	
 	combined1=bem2d::ChangeBasis(combined1,Id);
+
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
@@ -166,6 +167,8 @@ int main(int argc, char** argv)
 	}
         finish=clock();
         time=(double(finish)-double(start))/CLOCKS_PER_SEC/60;
+
+
 
 #ifdef BEM2DMPI
         bem2d::BlacsSystem::Release();

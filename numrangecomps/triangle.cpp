@@ -10,22 +10,31 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string file="/home/tbetcke/svn/numerical_coercivity/disk";
+  std::string file="/home/tbetcke/svn/numerical_coercivity/data/triangle";
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
+  
  
   std::vector<bem2d::freqtype> freqs;
   //freqs.push_back(10);
   freqs.push_back(50);
   //freqs.push_back(100);
   //freqs.push_back(200);
-  
 
         clock_t start, finish;
         double time;
         start=clock();
  
+
+
+        std::vector<bem2d::Point> triangle;
+        triangle.push_back(bem2d::Point(0,0));
+        triangle.push_back(bem2d::Point(1,0));
+        triangle.push_back(bem2d::Point(.5,.5*sqrt(3)));
+
+
+
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
@@ -54,10 +63,8 @@ int main(int argc, char** argv)
 
 	double k=(double)freqs[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
-        bem2d::pCurve cobj(new bem2d::Circle);
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve circle(n,cobj);
-        bem2d::pGeometry pgeom=circle.GetGeometry();
+	bem2d::Polygon poly(triangle,ppw,k,10,0.15);
+        bem2d::pGeometry pgeom=poly.GetGeometry();
 
         bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 
@@ -70,15 +77,15 @@ int main(int argc, char** argv)
 	bem2d::QuadOption quadopts;
 
 	quadopts.L=3;
-        quadopts.N=5;
+        quadopts.N=10;
         quadopts.sigma=0.15;
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Discretize Kernels with n=" << n << std::endl;
+	  std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 	}
 #else
-	std::cout << "Discretize Kernels with n=" << n << std::endl;
+	std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 #endif
 
 
@@ -92,13 +99,13 @@ int main(int argc, char** argv)
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Compute Eigenvalues" << std::endl;
+	  std::cout << "Compute Eigenvalues and norm" << std::endl;
 	}
 #else
-	std::cout << "Compute Eigenvalues" << std::endl;
+	std::cout << "Compute Eigenvalues and norm" << std::endl;
 #endif
 
-	double norm, cond;
+	double norm; double cond;
 	
 	bem2d::pcvector eigvals;
 	bem2d::Eigenvalues(combined1,eigvals);
@@ -137,6 +144,7 @@ int main(int argc, char** argv)
 	  for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
 			     << " " << std::imag((*eigvals)[i]) << std::endl;
 	  o1.close();
+
 #ifdef BEM2DMPI
 	}
 #endif

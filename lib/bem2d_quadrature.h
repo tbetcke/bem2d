@@ -77,7 +77,8 @@ complex IntegrateIdent(std::pair<pElement,pBasis> testfun, std::pair<pElement,pB
 
         complex result=0;
         for (int i=0; i<g2d.Size(); i++) {
-                g.SetNormal(elem1->Normal(x[i]),elem2->Normal(y[i]));
+	        // g.SetNormal(elem1->Normal(x[i]),elem2->Normal(y[i]));
+	  g.SetNormal(elem1->Normal(x[i]),elem2->Normal((1-y[i])*x[i]));
 
                 complex f1=std::conj((*fun1)(x[i]));
                 complex f2=(*fun2)((1-y[i])*x[i]);
@@ -87,6 +88,8 @@ complex IntegrateIdent(std::pair<pElement,pBasis> testfun, std::pair<pElement,pB
                 double s1=length(elem1->Deriv(x[i]));
                 double s2=length(elem2->Deriv((1-y[i])*x[i]));
                 result+= x[i]*gvalue*f1*f2*s1*s2*w[i];
+
+		g.SetNormal(elem1->Normal(1-x[i]),elem2->Normal((1-x[i]+y[i]*x[i])));
 
 
                 f1=std::conj((*fun1)(1-x[i]));

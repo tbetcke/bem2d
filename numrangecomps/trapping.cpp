@@ -18,10 +18,10 @@ int main(int argc, char** argv)
  
   std::vector<bem2d::freqtype> freqs;
   freqs.push_back(10);
-  freqs.push_back(50);
-  freqs.push_back(100);
-  freqs.push_back(200);
-  freqs.push_back(500);
+  //freqs.push_back(50);
+  //freqs.push_back(100);
+  //freqs.push_back(200);
+  //freqs.push_back(500);
 
         clock_t start, finish;
         double time;
@@ -72,10 +72,10 @@ int main(int argc, char** argv)
 
 	double k=(double)freqs[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
-	bem2d::Polygon poly(trapping,ppw,k);
+	bem2d::Polygon poly(trapping,ppw,k,10,0.15);
         bem2d::pGeometry pgeom=poly.GetGeometry();
 
-        bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
+        bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 
 
 	// Discretize the single and double layer potential

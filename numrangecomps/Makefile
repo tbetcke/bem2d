@@ -1,4 +1,4 @@
-all: disk diskhconv trapping invellipse lshape lshapehconv squarehconv
+all: disk diskhconv trapping invellipse lshape lshapehconv squarehconv square triangle
 
 disk: disk.o
 	$(CPP) $(CFLAGS) -o ../bin/numrangecomps/disk disk.cpp ../lib/bem2d.a $(LDFLAGS)
@@ -21,6 +21,12 @@ lshapehconv: lshapehconv.o
 
 squarehconv: squarehconv.o
 	$(CPP) $(CFLAGS) -o ../bin/numrangecomps/squarehconv squarehconv.cpp ../lib/bem2d.a $(LDFLAGS)
+
+square: square.o
+	$(CPP) $(CFLAGS) -o ../bin/numrangecomps/square square.cpp ../lib/bem2d.a $(LDFLAGS)
+
+triangle: triangle.o
+	$(CPP) $(CFLAGS) -o ../bin/numrangecomps/triangle triangle.cpp ../lib/bem2d.a $(LDFLAGS)
 
 
 %.o: %.cpp

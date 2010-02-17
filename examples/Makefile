@@ -1,4 +1,4 @@
-all: trapping wedge triangle disknormcond kitenormcond invellipse
+all: trapping wedge triangle disknormcond kitenormcond invellipse disk
 
 trapping: trapping.o
 	$(CPP) $(CFLAGS) -o ../bin/examples/trapping trapping.cpp ../lib/bem2d.a $(LDFLAGS)
@@ -18,6 +18,9 @@ disknormcond: disknormcond.o
 
 kitenormcond: kitenormcond.o
 	$(CPP) $(CFLAGS) -o ../bin/examples/kitenormcond kitenormcond.cpp ../lib/bem2d.a $(LDFLAGS)
+
+disk: disk.o
+	$(CPP) $(CFLAGS) -o ../bin/examples/disk disk.cpp ../lib/bem2d.a $(LDFLAGS)
 
 
 %.o: %.cpp
