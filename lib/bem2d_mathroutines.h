@@ -73,6 +73,8 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);
  void Eigenvalues(const Matrix& k, pcvector& evalues) throw (ScaLapackError);
 #else
  void Eigenvalues(const Matrix& k, pcvector& evalues) throw (LapackError);
+ void Eigenvalues(const Matrix& k, pcvector& evalues, pMatrix& evectors)
+   throw (LapackError);
 #endif
 
 #ifdef BEM2DMPI

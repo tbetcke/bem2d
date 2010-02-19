@@ -417,6 +417,34 @@ pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError)
 
    }
 
+#ifndef BEM2DMPI
+
+ void Eigenvalues(const Matrix& k, pcvector& evalues, pMatrix& evectors)
+   throw (LapackError){
+ 
+
+       Matrix tstiff(k);
+       evalues=pcvector(new cvector(tstiff.dim[0]));
+       evectors=pMatrix(new Matrix(tstiff.dim[0]));
+
+	char jobvl='N';
+	char jobvr='V';
+	int n=tstiff.dim[0];
+	int info;
+	int lwork=4*n;
+	complex work[4*n];
+	double rwork[2*n];
+
+	zgeev_(&jobvl,&jobvr,&n,&(*tstiff.data)[0],&n,&(*evalues)[0],
+	       NULL,&n,&(*evectors->data)[0],&n,work,&lwork,rwork,&info);
+	if (info) throw LapackError();
+
+ }
+
+
+#endif
+
+
 #ifdef BEM2DMPI
    Matrix ChangeBasis(const Matrix& k, const Matrix& m) throw (ScaLapackError){
 #else

@@ -1,5 +1,7 @@
 #include<fstream>
 #include<complex>
+#include<vector>
+#include<map>
 #include "bem2d_outputroutines.h"
 
 namespace bem2d
@@ -89,6 +91,69 @@ void WriteMatrix(std::string fname, const Matrix m)
         outr.close();
         outi.close();
 }
+
+  void WriteDensity(std::string name, const Matrix& m, pGeometry pgeom, int npoints)
+{
+
+  // Get the elements map from the geometry
+  std::vector<pElement> elements=pgeom->elements();
+  
+  // Get the flat basis map from the geometry
+  boost::shared_ptr<Geometry::flat_basis_map> pflatmap=pgeom->FlatMap();
+  int nbases=pflatmap->size();
+  int nelem=elements.size();
+
+  // Create a keymap from element ids to entries in the elements map
+
+  std::map<std::size_t,std::size_t> elemkeys;
+
+  for (int i=0;i<elements.size();i++) 
+    elemkeys[elements[i]->index()]=i;
+
+  std::vector<std::vector<Point> > points(nelem); // Stores the evaluation
+                                                  // points for each element
+
+  std::vector<std::vector<cvector>  > vals(nelem); // Stores the associated values
+  
+
+  for (int i=0;i<pflatmap->size();i++)
+    {
+
+      pElement elem=(*pflatmap)[i].first;
+      pBasis base=(*pflatmap)[i].second;
+      int ind=elemkeys[elem->index()];
+      // Initialize if element was not yet previously used
+      if (points[ind].size()==0)
+	{
+	  for (int j=0;j<npoints;j++) points[ind].push_back(elem->Map(j/npoints));
+	  vals[ind].resize(npoints);
+	  for (int j=0;j<npoints;j++) vals[ind][j].resize(m.dim[1]);
+	}
+      // Now add up the values
+      for (int j=0;j<npoints;j++)
+	for (int t=0;t<m.dim[1];t++)
+	  vals[ind][j][t]+=(*base)(j/npoints)*(*m.data)[t*m.dim[0]+i];
+    }
+
+  // Now write data into a file
+
+  std::ofstream out(name.c_str());
+
+  for (int i=0;i<nelem;i++)
+    for (int j=0;j<npoints;j++)
+      {
+	out << points[i][j].x << " " << points[i][j].y << " ";
+	for (int t=0;t<m.dim[1];t++)
+	  out << real(vals[i][j][t]) << " ";
+	for (int t=0;t<m.dim[1];t++)
+	  out << imag(vals[i][j][t]) << " ";
+	out << std::endl;
+      }
+
+  out.close();
+	
+}
+
 
 }
 

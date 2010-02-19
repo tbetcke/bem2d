@@ -26,6 +26,10 @@ public:
                 return elements_;
         }
 
+	inline const Geometry::basis_map elements_bases(){
+	  return elements_bases_;
+	}
+
         inline void AddBasis(pBasis b) {
                 for (std::size_t i=0; i<elements_.size(); i++) {
                         elements_bases_[i].insert(std::pair<std::size_t,pBasis>(size_,b));

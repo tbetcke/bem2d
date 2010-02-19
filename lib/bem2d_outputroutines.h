@@ -5,6 +5,7 @@
 #include "bem2d_defs.h"
 #include "bem2d_point.h"
 #include "bem2d_mathroutines.h"
+#include "bem2d_geometry.h"
 
 
 namespace bem2d
@@ -21,6 +22,7 @@ void GplotOut(std::string name, const std::vector<Point>& points, const dvector&
 
 void WriteMatrix(std::string fname, const Matrix m);
 
+ void WriteDensity(std::string name, const Matrix& m, pGeometry pgeom, int npoints);
 
 }
 
