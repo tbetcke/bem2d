@@ -10,19 +10,18 @@ int main(int argc, char** argv)
 {
 
   int ppw=10;     // Point per wavelength
-  std::string file="/home/tbetcke/svn/numerical_coercivity/matlab/invellipse0.3";
-  double ellipseparam=0.3;
+  std::string file="/home/tbetcke/svn/numerical_coercivity/data/invellipse";
+  double ellipseparam=0.5;
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
   
  
   std::vector<bem2d::freqtype> freqs;
-  freqs.push_back(10);
-  freqs.push_back(50);
-  freqs.push_back(100);
+  //freqs.push_back(10);
+  //freqs.push_back(50);
+  //freqs.push_back(100);
   freqs.push_back(200);
-  freqs.push_back(500);
 
         clock_t start, finish;
         double time;
@@ -61,8 +60,10 @@ int main(int argc, char** argv)
 	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
         bem2d::AnalyticCurve invellipse(n,cobj);
         bem2d::pGeometry pgeom=invellipse.GetGeometry();
+	bem2d::WriteDomain("/home/tbetcke/svn/numerical_coercivity/data/invellipse_shape",pgeom,5);
 
-        bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
+
+        bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 
 
 	// Discretize the single and double layer potential

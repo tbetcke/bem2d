@@ -9,20 +9,21 @@
 int main(int argc, char** argv)
 {
 
-  std::string file="/home/tbetcke/svn/numerical_coercivity/data/squarehconv";
+  std::string file="squarehconv_hp";
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
   bem2d::freqtype k=1;
  
   std::vector<int> ppwvec;
+  //ppwvec.push_back(10);
+  //ppwvec.push_back(50);
+  //ppwvec.push_back(100);
+  //ppwvec.push_back(500);
   ppwvec.push_back(10);
-  ppwvec.push_back(50);
-  ppwvec.push_back(100);
-  ppwvec.push_back(500);
-  ppwvec.push_back(1000);
-  ppwvec.push_back(1500);
-  ppwvec.push_back(2000);
+  //ppwvec.push_back(1000);
+  //ppwvec.push_back(1500);
+  //ppwvec.push_back(2000);
   //  ppwvec.push_back(1280);
 
 
@@ -67,12 +68,12 @@ int main(int argc, char** argv)
 
 	int ppw=ppwvec[j];
 	double eta1=k; // Coupling between conj. double and single layer pot.
-	bem2d::Polygon poly(square,ppw,k,0,0.15);
+	bem2d::Polygon poly(square,ppw,k,10,0.15);
         bem2d::pGeometry pgeom=poly.GetGeometry();
 	
 
 
-        bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
+        bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 
 
 	// Discretize the single and double layer potential

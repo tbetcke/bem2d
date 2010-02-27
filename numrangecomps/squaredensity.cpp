@@ -16,8 +16,8 @@ int main(int argc, char** argv)
   exit(0);
 #endif
 
-  int ppw=200;     // Point per wavelength
-  std::string file="/Users/tbetcke/svn/numerical_coercivity/data/squaredensity";
+  int ppw=1000;     // Point per wavelength
+  std::string file="/home/tbetcke/svn/numerical_coercivity/data/squaredensity";
 
   int computenorm=0; // Set to 1 to compute norm and condition number
   
@@ -119,7 +119,7 @@ int main(int argc, char** argv)
 	bem2d::Eigenvalues(combined1,eigvals,evectors);
 
 	// Extract the first nvec eigenvectors
-	int nvec=50;
+	int nvec=200;
 
 	bem2d::Matrix ev2(evectors->dim[0],nvec);
 	for (int i=0;i<evectors->dim[0]*nvec;i++)
@@ -135,8 +135,11 @@ int main(int argc, char** argv)
 	  os << file << "_eig_" << k; 
 	  std::string s=os.str();
 	  std::ofstream o1(s.c_str());
-	  for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
-			     << " " << std::imag((*eigvals)[i]) << std::endl;
+	  std::cout << s << std::endl;
+	  for (int i=0;i<eigvals->size();i++){ 
+	    o1 << std::real((*eigvals)[i]) << " " << std::imag((*eigvals)[i]) << std::endl;
+	  }
+
 	  o1.close();
 
 #ifdef BEM2DMPI
@@ -145,10 +148,10 @@ int main(int argc, char** argv)
 
 	// Write out eigenfunctions evaluated on boundary
 
+
 	std::ostringstream os2;
 	os2 << file << "_density_" << k;
 	std::string s2=os2.str();
-	std::ofstream o2(s.c_str());
 	bem2d::WriteDensity(s2,ev2,pgeom,100);	
 
 	}

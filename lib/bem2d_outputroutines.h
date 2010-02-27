@@ -24,6 +24,8 @@ void WriteMatrix(std::string fname, const Matrix m);
 
  void WriteDensity(std::string name, const Matrix& m, pGeometry pgeom, int npoints);
 
+ void WriteDomain(std::string name, pGeometry pgeom, int npoints);
+
 }
 
 

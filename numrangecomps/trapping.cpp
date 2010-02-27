@@ -17,7 +17,8 @@ int main(int argc, char** argv)
   
  
   std::vector<bem2d::freqtype> freqs;
-  freqs.push_back(10);
+  freqs.push_back(8);
+  //freqs.push_back(10);
   //freqs.push_back(50);
   //freqs.push_back(100);
   //freqs.push_back(200);
@@ -74,6 +75,7 @@ int main(int argc, char** argv)
 	double eta1=k; // Coupling between conj. double and single layer pot.
 	bem2d::Polygon poly(trapping,ppw,k,10,0.15);
         bem2d::pGeometry pgeom=poly.GetGeometry();
+	bem2d::WriteDomain("/home/svn/numerical_coercivity/data/trapping_shape",pgeom,5);
 
         bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 

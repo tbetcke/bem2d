@@ -125,7 +125,7 @@ void WriteMatrix(std::string fname, const Matrix m)
       // Initialize if element was not yet previously used
       if (points[ind].size()==0)
 	{
-	  for (int j=0;j<npoints;j++) points[ind].push_back(elem->Map(j/npoints));
+	  for (int j=0;j<npoints;j++) points[ind].push_back(elem->Map((1.0*j)/npoints));
 	  vals[ind].resize(npoints);
 	  for (int j=0;j<npoints;j++) vals[ind][j].resize(m.dim[1]);
 	}
@@ -153,6 +153,21 @@ void WriteMatrix(std::string fname, const Matrix m)
   out.close();
 	
 }
+
+void WriteDomain(std::string name, pGeometry pgeom, int npoints)
+{
+  std::vector<pElement> elements=pgeom->elements();
+  std::ofstream out(name.c_str());
+  
+
+  for (int i=0;i<elements.size();i++)
+    for (int j=0;j<npoints;j++){
+      Point p=elements[i]->Map((1.0*j)/npoints);
+      out << p.x << " " << p.y << std::endl;
+    }
+  out.close();
+}
+      
 
 
 }
