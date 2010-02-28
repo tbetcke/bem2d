@@ -5,6 +5,9 @@ OBJECTS	= bem2d_point.o bem2d_element.o bem2d_basis.o bem2d_quadrature.o bem2d_q
 all: $(OBJECTS)
 	ar rcs bem2d.a $(OBJECTS)
 
+%.o: %.f
+	$(F77) $(FFLAGS) -c $<
+
 %.o: %.cpp
 	$(CPP) $(CFLAGS) -c $<
 

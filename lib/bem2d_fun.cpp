@@ -17,7 +17,7 @@ CombinedPlaneWave::CombinedPlaneWave(Point direction, freqtype k, double eta):
                 direction_(direction), k_(k), eta_(eta) {}
 
 CombinedPlaneWave::CombinedPlaneWave(Point direction, freqtype k):
-                direction_(direction), k_(k), eta_(k) {}
+                direction_(direction), k_(k), eta_(k.re) {}
 
 
 CombinedPlaneWave::CombinedPlaneWave(const CombinedPlaneWave& np):

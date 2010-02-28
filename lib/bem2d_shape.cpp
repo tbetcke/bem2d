@@ -39,7 +39,16 @@ pGeometry DiskShapePiecewiseConst::GetGeometry()
 	int elemcount=0;
         for (int i=0; i<points.size(); i++) {
                 Point direction=p[i+1]-p[i];
-		int n=(int)ceil(ppw*(double)k*length(direction)/2.0/PI);
+		double absk;
+		if (k.im==0)
+		  {
+		    absk=k.re;
+		  }
+		else
+		  {
+		    absk=std::abs(complex(k.re,k.im));
+		  }
+		int n=(int)ceil(ppw*(double)absk*length(direction)/2.0/PI);
 		//n=std::max(10,n); // At least 10 elements
 		// Add refined version of first element
 		if (L==0){

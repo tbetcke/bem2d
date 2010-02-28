@@ -7,7 +7,7 @@
 int main(int argc, char** argv)
 {
  
-        bem2d::freqtype k=5; // Wavenumber
+  bem2d::freqtype k={5,0}; // Wavenumber
 	int ppw=20; // How many points per wavelength
 
         clock_t start, finish;
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 #endif
 
         bem2d::pCurve kobj(new bem2d::Kite);
-	int n=(int)ppw*kobj->Length()*k/2/bem2d::PI;
+	int n=(int)ppw*kobj->Length()*k.re/2/bem2d::PI;
 
         bem2d::AnalyticCurve kite(n,kobj);
         bem2d::pGeometry pgeom=kite.GetGeometry();

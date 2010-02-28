@@ -20,7 +20,7 @@ public:
 
         inline complex operator()(Point p) const {
                 complex i(0,1);
-                return std::exp(k_*i*(direction_.x*p.x+direction_.y*p.y));
+                return std::exp(complex(k_.re,k_.im)*i*(direction_.x*p.x+direction_.y*p.y));
         }
         void SetNormal(Point normal) {};
         inline freqtype k() const {
@@ -43,8 +43,8 @@ public:
 
         inline complex operator()(Point p) const {
                 complex i(0,1);
-                complex f=std::exp(k_*i*(direction_.x*p.x+direction_.y*p.y));
-                return i*k_*f*(n_.x*direction_.x+n_.y*direction_.y);
+                complex f=std::exp(complex(k_.re,k_.im)*i*(direction_.x*p.x+direction_.y*p.y));
+                return i*complex(k_.re,k_.im)*f*(n_.x*direction_.x+n_.y*direction_.y);
         }
         inline void SetNormal(Point normal) {
                 n_=normal;
@@ -70,8 +70,8 @@ public:
 
         inline complex operator()(Point p) const {
                 complex i(0,1);
-                complex f=std::exp(k_*i*(direction_.x*p.x+direction_.y*p.y));
-                return i*k_*f*(n_.x*direction_.x+n_.y*direction_.y)-i*eta_*f;
+                complex f=std::exp(complex(k_.re,k_.im)*i*(direction_.x*p.x+direction_.y*p.y));
+                return i*complex(k_.re,k_.im)*f*(n_.x*direction_.x+n_.y*direction_.y)-i*eta_*f;
         }
         inline void SetNormal(Point normal) {
                 n_=normal;

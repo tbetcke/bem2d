@@ -17,7 +17,14 @@ complex SingleLayer::operator()(Point x, Point y) const
 
         double d=length(x-y);
         complex i(0,1);
-        return i/4.0*(BesselH0(k_*d));
+	if (k_.im==0)
+	  {
+	    return i/4.0*(BesselH0(k_.re*d));
+	  }
+	else
+	  {
+	    return i/4.0*(BesselH0(complex(k_.re,k_.im)*d));
+	  }
 
 
 }
@@ -36,8 +43,15 @@ complex DoubleLayer::operator()(Point x, Point y) const
         Point w=y-x;
         double d=length(w);
         complex i(0,1);
-
-        return -i*k_/4.0*(BesselH1(k_*d)/d*(n2_.x*w.x+n2_.y*w.y));
+	
+	if (k_.im==0)
+	  {
+	    return -i*k_.re/4.0*(BesselH1(k_.re*d)/d*(n2_.x*w.x+n2_.y*w.y));
+	  }
+	else
+	  {
+	    return -i*complex(k_.re,k_.im)/4.0*(BesselH1(complex(k_.re,k_.im)*d)/d*(n2_.x*w.x+n2_.y*w.y));
+	  }
 }
 
 
@@ -57,7 +71,14 @@ complex ConjDoubleLayer::operator()(Point x, Point y) const
         double d=length(w);
         complex i(0,1);
 
-        return -i*k_/4.0*(BesselH1(k_*d)/d*(n1_.x*w.x+n1_.y*w.y));
+	if (k_.im==0)
+	  {
+	    return -i*k_.re/4.0*(BesselH1(k_.re*d)/d*(n1_.x*w.x+n1_.y*w.y));
+ 	  }
+	else
+	  {
+      	    return -i*complex(k_.re,k_.im)/4.0*(BesselH1(complex(k_.re,k_.im)*d)/d*(n1_.x*w.x+n1_.y*w.y));
+	  }
 }
 
 CombinedSingleConjDouble::CombinedSingleConjDouble(freqtype k, double eta):
@@ -65,7 +86,7 @@ CombinedSingleConjDouble::CombinedSingleConjDouble(freqtype k, double eta):
                 eta_(eta)
 {}
 
-CombinedSingleConjDouble::CombinedSingleConjDouble(freqtype k): k_(k), eta_(k) {}
+  CombinedSingleConjDouble::CombinedSingleConjDouble(freqtype k): k_(k), eta_(k_.re) {}
 
 CombinedSingleConjDouble::CombinedSingleConjDouble(const CombinedSingleConjDouble& scdl):
                 k_(scdl.k_), eta_(scdl.eta_) {}
@@ -75,9 +96,19 @@ complex CombinedSingleConjDouble::operator()(Point x, Point y) const
         Point w=x-y;
         double d=length(w);
         complex i(0,1);
-        complex slayer=i/4.0*(BesselH0(k_*d));
-        complex cdlayer=-i*k_/4.0*(BesselH1(k_*d)/d*(n1_.x*w.x+n1_.y*w.y));
-        return cdlayer-i*eta_*slayer;
+
+	if (k_.im==0)
+	  {
+	    complex slayer=i/4.0*(BesselH0(k_.re*d));
+	    complex cdlayer=-i*k_.re/4.0*(BesselH1(k_.re*d)/d*(n1_.x*w.x+n1_.y*w.y));
+	    return cdlayer-i*eta_*slayer;
+	  }
+	else
+	  {
+	    complex slayer=i/4.0*(BesselH0(complex(k_.re,k_.im)*d));
+	    complex cdlayer=-i*complex(k_.re,k_.im)/4.0*(BesselH1(complex(k_.re,k_.im)*d)/d*(n1_.x*w.x+n1_.y*w.y));
+	    return cdlayer-i*eta_*slayer;
+	  }	    
 }
 
 }

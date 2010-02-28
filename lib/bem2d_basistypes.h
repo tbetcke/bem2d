@@ -48,7 +48,7 @@ public:
         static void AddBasis(freqtype k, pGeometry pgeom);
         WaveBasis(double direction, freqtype k);
         inline complex operator()(double t) const {
-                return std::exp(complex(0,1)*k_*direction_*t);
+	  return std::exp(complex(0,1)*complex(k_.re,k_.im)*direction_*t);
         }
 private:
         double direction_;
@@ -65,7 +65,7 @@ public:
         inline complex operator()(double t) const {
                 double result=1;
                 for (int i=0; i<degree_; i++) result=result*t;
-                return std::exp(complex(0,1)*k_*direction_*t)*result;
+                return std::exp(complex(0,1)*complex(k_.re,k_.im)*direction_*t)*result;
         }
 private:
         double direction_;

@@ -17,7 +17,11 @@ namespace bem2d
 typedef std::complex<double> complex;
 typedef std::vector<double> dvector;
 typedef std::vector<complex> cvector;
-typedef double freqtype;
+struct freqtype
+{
+  double re;
+  double im;
+};
 
 
 typedef boost::shared_ptr<cvector> pcvector;
@@ -48,6 +52,9 @@ extern "C" {
 	     const int* ldvl, complex* vr, const int* ldvr, 
 	     complex* work, const int* lwork, double* rwork,
 	     int* info);
+  void zbesh_(const double* zr, const double* zi,const double* fnu,
+	      const int* kode, const int* M, const int* N, double* cyr,
+	      double* cyi, int* nz, int* ierr);
 }
 
 

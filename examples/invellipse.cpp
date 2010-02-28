@@ -35,10 +35,10 @@ int main(int argc, char** argv)
 
 
 
-	bem2d::freqtype k=10;
+	bem2d::freqtype k={10,0};
 	int ppw=10;
         bem2d::pCurve cobj(new bem2d::InvEllipse(0.8));
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
+	int n=(int)(cobj->Length()*k.re*ppw/2.0/bem2d::PI);
         bem2d::AnalyticCurve invellipse(n,cobj);
         bem2d::pGeometry pgeom=invellipse.GetGeometry();
 
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
 
 
-        std::cout << "Discretizing with k=" << k << " and n=" << pgeom->size() << std::endl;
+        std::cout << "Discretizing with k=" << bem2d::complex(k.re,k.im) << " and n=" << pgeom->size() << std::endl;
         clock_t start, finish;
         double time;
 

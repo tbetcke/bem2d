@@ -7,7 +7,7 @@
 int main(int argc, char** argv)
 {
  
-        bem2d::freqtype k=10; // Wavenumber
+  bem2d::freqtype k={10,.01}; // Wavenumber
         int n=(int) 100;     // Size of the linear system
 
 

@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
-  bem2d::freqtype k=1;
+  bem2d::freqtype k={1,0};
  
   std::vector<int> ppwvec;
   //ppwvec.push_back(10);
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 	for (int j=0;j<ppwvec.size();j++){
 
 	int ppw=ppwvec[j];
-	double eta1=k; // Coupling between conj. double and single layer pot.
+	double eta1=k.re; // Coupling between conj. double and single layer pot.
 	bem2d::Polygon poly(square,ppw,k,10,0.15);
         bem2d::pGeometry pgeom=poly.GetGeometry();
 	

@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 
 
         int m=4;
-        bem2d::freqtype k=5*m;
+        bem2d::freqtype k={5*m,0};
         int n=20*m;
 
         double a=0.31;
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
 
 
-        std::cout << "Discretizing with k=" << k << " and n=" << pgeom->size() << std::endl;
+        std::cout << "Discretizing with k=" << bem2d::complex(k.re,k.im) << " and n=" << pgeom->size() << std::endl;
         clock_t start, finish;
         double time;
 

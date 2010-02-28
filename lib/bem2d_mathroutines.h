@@ -18,6 +18,8 @@ namespace bem2d
 
 complex BesselH0(double x);
 complex BesselH1(double x);
+complex BesselH0(complex x);
+complex BesselH1(complex x);
 
 // ----------------------------
 

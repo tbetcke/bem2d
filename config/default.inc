@@ -47,11 +47,13 @@ SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lmpi_f77 -lgfortran
 # Compiler and Flags
 ############################################
 CPP	= mpic++
+F77     = gfortran
+FFLAGS  = -m64 -O
 INCLUDES = -I$(GSLINC)
 CFLAGS  += $(INCLUDES)
 DEBUGFLAGS = -g -save-temps
 OPTFLAGS = -O3
 LDFLAGS = -L$(GSLLIB) -L$(SCLAPACKLIB) -L$(LAPACKLIB) -L$(BLAS)
-LDFLAGS += $(GSL) $(SCLAPACK) $(LAPACK) $(BLAS) $(OMP)
+LDFLAGS += $(GSL) $(SCLAPACK) $(LAPACK) $(BLAS) $(OMP) -lgfortran
 
 

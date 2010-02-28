@@ -22,7 +22,7 @@ int main(int argc, char** argv)
   int computenorm=0; // Set to 1 to compute norm and condition number
   
  
-  std::vector<bem2d::freqtype> freqs;
+  std::vector<double> freqs;
   //freqs.push_back(10);
   freqs.push_back(1);
   //freqs.push_back(100);
@@ -68,8 +68,8 @@ int main(int argc, char** argv)
 
 	for (int j=0;j<freqs.size();j++){
 
-	double k=(double)freqs[j];
-	double eta1=k; // Coupling between conj. double and single layer pot.
+	  bem2d::freqtype k={(double)freqs[j],0};
+	double eta1=k.re; // Coupling between conj. double and single layer pot.
 	bem2d::Polygon poly(square,ppw,k,10,0.15);
         bem2d::pGeometry pgeom=poly.GetGeometry();
 
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream os;
-	  os << file << "_eig_" << k; 
+	  os << file << "_eig_" << k.re; 
 	  std::string s=os.str();
 	  std::ofstream o1(s.c_str());
 	  std::cout << s << std::endl;
@@ -150,7 +150,7 @@ int main(int argc, char** argv)
 
 
 	std::ostringstream os2;
-	os2 << file << "_density_" << k;
+	os2 << file << "_density_" << k.re;
 	std::string s2=os2.str();
 	bem2d::WriteDensity(s2,ev2,pgeom,100);	
 

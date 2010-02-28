@@ -15,7 +15,7 @@ int main(int argc, char** argv)
   int numrange_n=200; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
  
-  std::vector<bem2d::freqtype> freqs;
+  std::vector<double> freqs;
   freqs.push_back(0.01);
   freqs.push_back(1);
   freqs.push_back(0.1);
@@ -55,10 +55,10 @@ int main(int argc, char** argv)
 
 	for (int j=0;j<freqs.size();j++){
 
-	double k=(double)freqs[j];
-	double eta1=k; // Coupling between conj. double and single layer pot.
+	  bem2d::freqtype k={(double)freqs[j],0};
+	double eta1=k.re; // Coupling between conj. double and single layer pot.
         bem2d::pCurve cobj(new bem2d::Circle);
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
+	int n=(int)(cobj->Length()*k.re*ppw/2.0/bem2d::PI);
 	n=std::max(n,200);
         bem2d::AnalyticCurve circle(n,cobj);
         bem2d::pGeometry pgeom=circle.GetGeometry();
@@ -118,7 +118,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream osnormcond;
-	  osnormcond << file << "_normcond_" << k; 
+	  osnormcond << file << "_normcond_" << k.re; 
 	  std::string s0=osnormcond.str();
 	  std::ofstream o(s0.c_str());
 	  o << norm << std::endl << cond << std::endl;
@@ -135,7 +135,7 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ostringstream os;
-	  os << file << "_eig_" << k; 
+	  os << file << "_eig_" << k.re; 
 	  std::string s=os.str();
 	  std::ofstream o1(s.c_str());
 	  for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
@@ -157,7 +157,7 @@ int main(int argc, char** argv)
 
 
 	std::ostringstream os2;
-	os2 << file << "_range_" << k;
+	os2 << file << "_range_" << k.re;
 	NumRange(combined1, numrange_n, os2.str());
 
 	

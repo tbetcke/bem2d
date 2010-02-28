@@ -23,23 +23,30 @@ ifeq ($(omp),y)
 endif
 
 export CFLAGS
+export FFLAGS
 export LDFLAGS
 export CPP
+export F77
 
-all:	bem2d tests examples
+all:	amos bem2d examples
 
 
 .PHONY: tests
-tests: bem2d dirs
+tests: bem2d amos dirs
 	cd tests; make
 
 .PHONY: bem2d
 bem2d:
 	cd lib; make
 
+.PHONY: amos
+amos:
+	cd amos; make
+
 .PHONY: clean 
 clean:
 	cd lib; make clean
+	cd amos; make clean
 	cd tests; make clean
 	cd examples; make clean
 	cd normcomps; make clean
@@ -48,7 +55,7 @@ clean:
 	rm -rf bin
 
 .PHONY: examples
-examples: bem2d dirs
+examples: bem2d amos dirs
 	cd examples; make
 
 .PHONY: dirs
@@ -57,12 +64,12 @@ dirs:
 	test -d bin/examples || mkdir bin/examples;
 
 .PHONY: normcomps
-normcomps: bem2d dirs
+normcomps: bem2d amos dirs
 	test -d bin/normcomps || mkdir bin/normcomps
 	cd normcomps; make
 
 .PHONY: numrangecomps
-numrangecomps: bem2d dirs
+numrangecomps: bem2d amos dirs
 	test -d bin/numrangecomps || mkdir bin/numrangecomps
 	cd numrangecomps; make
 

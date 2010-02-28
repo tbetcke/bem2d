@@ -41,6 +41,38 @@ complex BesselH1(double x)
 
 }
 
+complex BesselH0(complex x)
+{
+  double zr=std::real(x);
+  double zi=std::imag(x);
+  double fnu=0;
+  int kode=1;
+  int M=1;
+  int N=1;
+  double cyr,cyi;
+  int nz;
+  int ierr;
+
+  zbesh_(&zr,&zi,&fnu,&kode,&M,&N,&cyr,&cyi,&nz,&ierr);
+  return complex(cyr,cyi);
+
+}
+complex BesselH1(complex x)
+{
+  double zr=std::real(x);
+  double zi=std::imag(x);
+  double fnu=1;
+  int kode=1;
+  int M=1;
+  int N=1;
+  double cyr,cyi;
+  int nz;
+  int ierr;
+
+  zbesh_(&zr,&zi,&fnu,&kode,&M,&N,&cyr,&cyi,&nz,&ierr);
+  return complex(cyr,cyi);
+
+}
 
 
 Matrix::Matrix(int n)
