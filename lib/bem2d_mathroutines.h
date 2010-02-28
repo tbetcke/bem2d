@@ -60,6 +60,13 @@ void L2NormCond(const Matrix& stiff, double& norm, double& cond) throw (LapackEr
 #endif
 
 #ifdef BEM2DMPI
+void SingularValues(const Matrix& stiff, pdvector& singvals) throw (ScaLapackError);
+#else
+void SingularValues(const Matrix& stiff, pdvector& singvals) throw (LapackError);
+#endif
+
+
+#ifdef BEM2DMPI
 pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError);
 #else
 pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (LapackError);

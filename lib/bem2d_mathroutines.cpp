@@ -265,6 +265,60 @@ void L2NormCond(const Matrix& stiff, double& norm, double& cond) throw (LapackEr
 #endif
 }
 
+#ifdef BEM2DMPI
+void SingularValues(const Matrix& stiff, pdvector& singvals) throw (ScaLapackError)
+{
+#else
+void SingularValues(const Matrix& stiff, pdvector& singvals) throw (LapackError)
+{
+#endif
+
+
+        Matrix tstiff(stiff);
+	int n=tstiff.dim[1];
+	singvals=pdvector(new dvector(n));
+
+#ifdef BEM2DMPI
+
+        // Compute singular values
+
+        char jobu='N';
+        char jobvt='N';
+        complex wsize;
+        int lwork=-1;
+        double rwork[1+4*n];
+	int info;
+	int ia=1;
+	int ja=1;
+
+
+
+        // Compute Workspace Size
+        pzgesvd_(&jobu,&jobvt,&tstiff.dim[0],&tstiff.dim[1],&(*tstiff.data)[0],&ia,&ja,tstiff.desc,&(*singvals)[0],0,&ia,&ja,tstiff.desc,0,&ia,&ja,tstiff.desc,&wsize,&lwork,rwork,&info);
+        // Now do the actual call
+
+        lwork=(int) real(wsize);
+        complex work[lwork];
+
+        pzgesvd_(&jobu,&jobvt,&tstiff.dim[0],&tstiff.dim[1],&(*tstiff.data)[0],&ia,&ja,tstiff.desc,&(*singvals)[0],0,&ia,&ja,tstiff.desc,0,&ia,&ja,tstiff.desc,work,&lwork,rwork,&info);
+
+#else
+
+
+        // Compute singular values of stiffness matrix
+
+        char jobu='N';
+        char jobvt='N';
+        int lwork=5*n;
+        cvector work(lwork);
+        dvector rwork(lwork);
+	int info;
+
+        zgesvd_(&jobu, &jobvt, &n, &n, &(*tstiff.data)[0], &n,&(*singvals)[0], NULL, &n, NULL, &n, &work[0], &lwork, &rwork[0], &info);
+        if (info!=0) throw LapackError();
+#endif
+}
+
 
 #ifdef BEM2DMPI
 pMatrix SolveSystem(Matrix& m, Matrix& rhs) throw (ScaLapackError)

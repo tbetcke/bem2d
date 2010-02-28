@@ -51,6 +51,7 @@ clean:
 	cd examples; make clean
 	cd normcomps; make clean
 	cd numrangecomps; make clean
+	cd resonances; make clean
 	rm -f *~ *.o
 	rm -rf bin
 
@@ -62,6 +63,12 @@ examples: bem2d amos dirs
 dirs:
 	test -d bin || mkdir bin;
 	test -d bin/examples || mkdir bin/examples;
+
+.PHONY: resonances
+resonances: bem2d amos dirs
+	test -d bin/resonances || mkdir bin/resonances;
+	cd resonances; make
+
 
 .PHONY: normcomps
 normcomps: bem2d amos dirs
