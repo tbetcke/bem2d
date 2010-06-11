@@ -18,7 +18,7 @@ GSLLIB	= /opt/local/lib
 BLASLIB =/Users/tbetcke/lib
 
 # LAPACK
-LAPACKLIB =
+LAPACKLIB =/Users/tbetcke/lib
 
 # SCLAPACK
 SCLAPACKLIB= /Users/tbetcke/lib
@@ -46,14 +46,14 @@ SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lmpi_f77 -lgfortran
 ############################################
 # Compiler and Flags
 ############################################
-CPP	= mpic++
+CPP	= g++
 F77     = gfortran
 FFLAGS  = -m64 -O
 INCLUDES = -I$(GSLINC)
 CFLAGS  += $(INCLUDES)
 DEBUGFLAGS = -g -save-temps
 OPTFLAGS = -O3
-LDFLAGS = -L$(GSLLIB) -L$(SCLAPACKLIB) -L$(LAPACKLIB) -L$(BLAS)
-LDFLAGS += $(GSL) $(SCLAPACK) $(LAPACK) $(BLAS) $(OMP) -lgfortran
+LDFLAGS = -L$(GSLLIB) -L$(LAPACKLIB) -L$(BLASLIB)
+LDFLAGS += $(GSL) $(LAPACK) $(BLAS) $(OMP) -lgfortran
 
 

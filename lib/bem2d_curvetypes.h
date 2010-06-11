@@ -61,6 +61,22 @@ public:
     double rho_;
   };
 
+class EllipseArc: public Curve
+{
+public:
+    EllipseArc(double a, double b, double theta1, double theta2);
+    inline Point Map(double t) const {
+        return Point(a_*cos(theta1_+t*(theta2_-theta1_)),b_*sin(theta1_+t*(theta2_-theta1_)));
+        }
+    inline Point Deriv(double t) const {
+        return Point(-a_*(theta2_-theta1_)*sin(theta1_+t*(theta2_-theta1_)),b_*(theta2_-theta1_)*cos(theta1_+t*(theta2_-theta1_)));
+};
+private:
+    double theta1_;
+    double theta2_;
+    double a_;
+    double b_;
+};    
 
 class InvEllipse: public Curve
 {

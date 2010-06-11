@@ -35,11 +35,21 @@ private:
         std::vector<bem2d::pElement> elements_;
 };
 
+class Line
+{
+public:
+    Line(Point p0, Point p1, int ppw, freqtype k, int L=0, double sigma=0.15);
+    Line(Point p0, Point p1, int n);
+
+    pGeometry GetGeometry();
+private:
+    std::vector<pElement> elements_;
+};
 
 class AnalyticCurve
 {
 public:
-        AnalyticCurve(int n, pCurve curve);
+        AnalyticCurve(int n, pCurve curve,int closed=1);
         pGeometry GetGeometry();
 	friend int InvAbsDerivative(double t, const double y[], double f[], void* c);
 	void ParameterizeArc(int n);
@@ -50,8 +60,6 @@ private:
                                 // respect to arc length.
 	
 };
-
-
 
 
 }

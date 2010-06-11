@@ -11,6 +11,8 @@
 namespace bem2d
 {
 
+class Geometry;
+typedef boost::shared_ptr<Geometry> pGeometry;
 
 class Geometry
 {
@@ -20,9 +22,9 @@ public:
         typedef std::vector< std::pair<pElement,pBasis> > flat_basis_map;
 
         Geometry(const std::vector<pElement>& elems);
+        Geometry(std::vector<pGeometry>& geoms);
 
-
-        inline const std::vector<pElement>& elements() {
+        inline std::vector<pElement>& elements() {
                 return elements_;
         }
 
@@ -31,6 +33,7 @@ public:
 	}
 
         inline void AddBasis(pBasis b) {
+		std::cout << "Elems: " << elements_.size() << std::endl;
                 for (std::size_t i=0; i<elements_.size(); i++) {
                         elements_bases_[i].insert(std::pair<std::size_t,pBasis>(size_,b));
                         size_++;
@@ -71,7 +74,6 @@ private:
         int size_; // Number of basis functions
 };
 
-typedef boost::shared_ptr<Geometry> pGeometry;
 
 }
 

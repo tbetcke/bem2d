@@ -153,12 +153,117 @@ pGeometry Polygon::GetGeometry()
 }
 
 
+Line::Line(Point p0, Point p1, int ppw, freqtype k, int L, double sigma)
+{
+    int elemcount=0;
+            Point direction=p1-p0;
+            double absk;
+            if (k.im==0)
+              {
+                absk=k.re;
+              }
+            else
+              {
+                absk=std::abs(complex(k.re,k.im));
+              }
+            int n=(int)ceil(ppw*(double)absk*length(direction)/2.0/PI);
+            //n=std::max(10,n); // At least 10 elements
+            // Add refined version of first element
+            if (L==0){
+              elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p0,p1,elemcount)));
+              elemcount++;
+            }
+            else{
+              // Add smallest element
+                double tsigma=1;
+                for (int m=0;m<L;m++) tsigma=tsigma*sigma;
+              {
+                Point pp1=p0;
+                Point pp2=p0+(tsigma/n)*direction;
+                elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,elemcount)));
+                elemcount++;
+              }
+              // Add the other elements
+              for (int j=0;j<L;j++){
+                Point pp1=p0+tsigma/n*direction;
+                tsigma=tsigma/sigma;
+                Point pp2=p0+tsigma/n*direction;
+                elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,elemcount)));
+                elemcount++;
+            }
+            }
+              // Add the non-refined elements
+            for (int j=1; j<n-1; j++) {
+                    Point pp1=p0+(1.0*j)/n*direction;
+                    Point pp2=p1+(1.0*(j+1))/n*direction;
+                    elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,elemcount)));
+                    elemcount++;
+            }
+            // Add refined version of last element
+            if (L==0){
+              Point pp1=p0+(1.0*(n-1))/n*direction;
+              Point pp2=p1;
+              elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,elemcount)));
+              elemcount++;
+            }
+            else{
+              double tsigma=1;
+              // Add exponentially weighted elements
+              for (int j=0;j<L;j++){
+                Point pp1=p0+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
+                tsigma*=sigma;
+                Point pp2=p1+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
+                elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,elemcount)));
+                elemcount++;
+            }
+              // Add smallest element
+              {
+                Point pp1=p0+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
+                Point pp2=p1;
+                elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,elemcount)));
+                elemcount++;
+              }
+            }
+        for (int i=1; i<elements_.size()-1; i++) {
+                elements_[i]->set_next(i+1);
+                elements_[i]->set_prev(i-1);
+        }
+        elements_[0]->set_next(1);
+        elements_[0]->set_prev(elemcount-1);
+        elements_[elemcount-1]->set_next(0);
+        elements_[elemcount-1]->set_prev(elemcount-2);
+
+
+}
+ 
+
+Line::Line(Point p0, Point p1, int n){
+            Point direction=p1-p0;
+            for (int j=0; j<n; j++) {
+                        Point pp1=p0+(1.0*j)/n*direction;
+                        Point pp2=p0+(1.0*(j+1))/n*direction;
+                        elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,j)));
+                }
+        
+        for (int i=1; i<elements_.size()-1; i++) {
+                elements_[i]->set_next(i+1);
+                elements_[i]->set_prev(i-1);
+        }
+        elements_[0]->set_next(1);
+        elements_[n-1]->set_prev(n-2);
+}
+
+pGeometry Line::GetGeometry(){
+
+        return bem2d::pGeometry(new bem2d::Geometry(elements_));
+}
+
 int InvAbsDerivative(double t, const double y[], double f[], void* c){
   f[0]=1./AbsDerivative(y[0],c);
   return GSL_SUCCESS;
 }
 
-  AnalyticCurve::AnalyticCurve(int n, pCurve curve): elements_(n), curve_(curve)
+  AnalyticCurve::AnalyticCurve(int n, pCurve curve,int closed): elements_(n), curve_(curve)
 {
         ParameterizeArc(n);
         double h=1.0/n;
@@ -172,10 +277,14 @@ int InvAbsDerivative(double t, const double y[], double f[], void* c){
                 elements_[i]->set_prev(i-1);
         }
         elements_[0]->set_next(1);
-        elements_[0]->set_prev(n-1);
-        elements_[n-1]->set_next(0);
         elements_[n-1]->set_prev(n-2);
+        if (closed) {
+            elements_[0]->set_prev(n-1);
+            elements_[n-1]->set_next(0);
+        }
 }
+
+
 
 pGeometry AnalyticCurve::GetGeometry()
 {

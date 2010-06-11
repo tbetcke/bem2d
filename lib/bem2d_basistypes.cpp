@@ -11,7 +11,7 @@ PolBasis::PolBasis(int degree): degree_(degree) {};
 
 void PolBasis::AddBasis(int degree, pGeometry pgeom)
 {
-
+        std::cout << "In AddBasis" << std::endl;
         for (int i=0; i<=degree; i++) {
                 pgeom->AddBasis(pBasis(new PolBasis(i)));
         }
