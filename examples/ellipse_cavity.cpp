@@ -33,11 +33,11 @@ int main(int argc, char** argv)
         int mycol=b->get_mycol();
 #endif
 
-        int n=40;
+        int n=2;
         double a= 1;
         double ah=1.3;
-        double b=1;
-        double bh=1.3;
+        double b=0.5;
+        double bh=0.6;
         double t0=0.1*bem2d::PI;
         double t1=acos(-a/ah*cos(t0));
         double alpha=bh*sin(t1)-b*sin(t0);
@@ -50,14 +50,14 @@ int main(int argc, char** argv)
         bem2d::pCurve cobj(new bem2d::Circle);
         bem2d::AnalyticCurve circle(n,cobj);
  
-        bem2d::freqtype k={5,0};
+        bem2d::freqtype k={20,0};
         bem2d::pCurve Arc(new bem2d::EllipseArc(a,b,bem2d::PI-t0,-bem2d::PI+t0));
-        bem2d::AnalyticCurve ellipseArc(n,Arc,0);
+        bem2d::AnalyticCurve ellipseArc(10,k,Arc,0,5);
         bem2d::pCurve Arc2(new bem2d::EllipseArc(ah,bh,-t1,t1));
-        bem2d::AnalyticCurve ellipseArc2(n,Arc2,0);
-        bem2d::Line l0(p1,p0,n);
-        bem2d::Line l1(p3,p2,n);
-
+        bem2d::AnalyticCurve ellipseArc2(10,k,Arc2,0,5);
+        bem2d::Line l0(p1,p0,10,k,5);
+        bem2d::Line l1(p3,p2,10,k,5);
+	
 
 
         std::vector<bem2d::pGeometry> geoms;
@@ -67,12 +67,12 @@ int main(int argc, char** argv)
         geoms.push_back(l1.GetGeometry());
         bem2d::pGeometry pgeom(new bem2d::Geometry(geoms));
 
-/*
+
         std::vector<bem2d::pElement> elems =pgeom->elements();
-        for (int i=0;i<elems.size();i++){
-            std::cout << elems[i]->index() << " " << elems[i]->next() << " " << elems[i]->prev() << std::endl;
+        for (int i=1;i<elems.size();i++){
+            std::cout << elems[i]->First() << " " << elems[i]->Last() << " " << elems[i]->First()-elems[i-1]->Last() << std::endl;
         }
-*/
+
         bem2d::PolBasis::AddBasis(0,pgeom);
 
         bem2d::Point direction=bem2d::normalize(bem2d::Point(1,0));

@@ -39,16 +39,7 @@ pGeometry DiskShapePiecewiseConst::GetGeometry()
 	int elemcount=0;
         for (int i=0; i<points.size(); i++) {
                 Point direction=p[i+1]-p[i];
-		double absk;
-		if (k.im==0)
-		  {
-		    absk=k.re;
-		  }
-		else
-		  {
-		    absk=std::abs(complex(k.re,k.im));
-		  }
-		int n=(int)ceil(ppw*(double)absk*length(direction)/2.0/PI);
+		int n=(int)ceil(ppw*(double)k.re*length(direction)/2.0/PI);
 		//n=std::max(10,n); // At least 10 elements
 		// Add refined version of first element
 		if (L==0){
@@ -56,7 +47,7 @@ pGeometry DiskShapePiecewiseConst::GetGeometry()
 		  Point p2=p[i]+(1.0/n)*direction;
 		  elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p1,p2,elemcount)));
 		  elemcount++;
-		}
+		 }
 		else{
 		  // Add smallest element
 		    double tsigma=1;
@@ -157,20 +148,11 @@ Line::Line(Point p0, Point p1, int ppw, freqtype k, int L, double sigma)
 {
     int elemcount=0;
             Point direction=p1-p0;
-            double absk;
-            if (k.im==0)
-              {
-                absk=k.re;
-              }
-            else
-              {
-                absk=std::abs(complex(k.re,k.im));
-              }
-            int n=(int)ceil(ppw*(double)absk*length(direction)/2.0/PI);
-            //n=std::max(10,n); // At least 10 elements
+            int n=(int)ceil(ppw*(double)k.re*length(direction)/2.0/PI);
+            n=std::max(10,n); // At least 10 elements
             // Add refined version of first element
             if (L==0){
-              elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p0,p1,elemcount)));
+              elements_.push_back(bem2d::pElement(new bem2d::ConstElement(p0,p0+1./n*direction,elemcount)));
               elemcount++;
             }
             else{
@@ -195,7 +177,7 @@ Line::Line(Point p0, Point p1, int ppw, freqtype k, int L, double sigma)
               // Add the non-refined elements
             for (int j=1; j<n-1; j++) {
                     Point pp1=p0+(1.0*j)/n*direction;
-                    Point pp2=p1+(1.0*(j+1))/n*direction;
+                    Point pp2=p0+(1.0*(j+1))/n*direction;
                     elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,elemcount)));
                     elemcount++;
             }
@@ -212,7 +194,7 @@ Line::Line(Point p0, Point p1, int ppw, freqtype k, int L, double sigma)
               for (int j=0;j<L;j++){
                 Point pp1=p0+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
                 tsigma*=sigma;
-                Point pp2=p1+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
+                Point pp2=p0+(1.0*(n-1))/n*direction+(1-tsigma)/n*direction;
                 elements_.push_back(bem2d::pElement(new bem2d::ConstElement(pp1,pp2,elemcount)));
                 elemcount++;
             }
@@ -265,8 +247,11 @@ int InvAbsDerivative(double t, const double y[], double f[], void* c){
 
   AnalyticCurve::AnalyticCurve(int n, pCurve curve,int closed): elements_(n), curve_(curve)
 {
-        ParameterizeArc(n);
-        double h=1.0/n;
+
+		double curveLength=curve_->Length();
+		dvector partition(n+1);
+	for (int i=0;i<=n;i++) partition[i]=i*curveLength/n;
+        ParameterizeArc(partition);
         for (int i=0; i<n-1; i++) {
                 elements_[i]=pElement(new AnalyticCurveElement(arclengthparam[i], 
 							       arclengthparam[i+1],curve,i));
@@ -284,7 +269,60 @@ int InvAbsDerivative(double t, const double y[], double f[], void* c){
         }
 }
 
+	AnalyticCurve::AnalyticCurve(int ppw, freqtype k, pCurve curve, int closed, int L, double sigma): curve_(curve)
+	{
 
+		double curveLength=curve_->Length();
+		dvector partition;
+		partition.push_back(0);
+		int c=(int)ceil(ppw*(double)k.re*curveLength/2.0/PI);
+		c=std::max(c,10);
+		if (L==0){ 
+			partition.push_back(curveLength/c);
+		}
+		else {
+			double tsigma=1;
+			for (int m=0;m<L;m++) tsigma=tsigma*sigma;
+			partition.push_back(tsigma*curveLength/c);
+			for (int m=0;m<L;m++){
+				tsigma=tsigma/sigma;
+				partition.push_back(tsigma*curveLength/c);
+			}
+		}
+		for (int j=2;j<c;j++) partition.push_back(curveLength/c*j);
+		if (L==0){
+			partition.push_back(curveLength);
+		}
+		else {
+			double td=curveLength/c*(c-1);
+			double tsigma=1;
+			for (int m=0;m<L;m++){
+				tsigma=tsigma*sigma;
+				partition.push_back(td+curveLength/c*(1-tsigma));
+			}
+			partition.push_back(curveLength);
+		}
+			
+        ParameterizeArc(partition);
+		int n=partition.size()-1;
+		elements_.resize(n);
+        for (int i=0; i<n-1; i++) {
+			elements_[i]=pElement(new AnalyticCurveElement(arclengthparam[i], 
+														   arclengthparam[i+1],curve,i));
+        }
+        elements_[n-1]=pElement(new AnalyticCurveElement(arclengthparam[n-1], 1,curve,n-1));
+        for (int i=1; i<n-1; i++) {
+			elements_[i]->set_next(i+1);
+			elements_[i]->set_prev(i-1);
+        }
+        elements_[0]->set_next(1);
+        elements_[n-1]->set_prev(n-2);
+        if (closed) {
+            elements_[0]->set_prev(n-1);
+            elements_[n-1]->set_next(0);
+        }
+	}
+	
 
 pGeometry AnalyticCurve::GetGeometry()
 {
@@ -293,8 +331,9 @@ pGeometry AnalyticCurve::GetGeometry()
 
 
 
-void AnalyticCurve::ParameterizeArc(int n){
+void AnalyticCurve::ParameterizeArc(dvector& partition){
 
+  int n=partition.size()-1;
   arclengthparam.resize(n+1);
   arclengthparam[0]=0;
   double L=curve_->Length();
@@ -305,13 +344,13 @@ void AnalyticCurve::ParameterizeArc(int n){
   gsl_odeiv_system sys={&InvAbsDerivative,NULL,1,&(*curve_)};
   double t0=0.0, t1=L;
 
-  double h=L/n;
   double y=0.0;
   double t=0;
 
   for (int i=1; i<=n;i++)
     {
-      double ti=i*t1/n;
+      double ti=partition[i];
+	  double h=partition[i]-partition[i-1];
       while (t<ti){
 	gsl_odeiv_evolve_apply(e,c,s,
 			       &sys,

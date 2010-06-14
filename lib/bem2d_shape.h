@@ -50,9 +50,10 @@ class AnalyticCurve
 {
 public:
         AnalyticCurve(int n, pCurve curve,int closed=1);
+		AnalyticCurve(int ppw, freqtype k, pCurve curve, int closed=1, int L=0, double sigma=0.15);
         pGeometry GetGeometry();
 	friend int InvAbsDerivative(double t, const double y[], double f[], void* c);
-	void ParameterizeArc(int n);
+	void ParameterizeArc(dvector& partition);
 private:
         std::vector<bem2d::pElement> elements_;
 	pCurve curve_;
