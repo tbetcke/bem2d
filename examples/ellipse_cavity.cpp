@@ -33,15 +33,16 @@ int main(int argc, char** argv)
         int mycol=b->get_mycol();
 #endif
 
-        int n=2;
-        double a= 1;
+        int n=10;
+		double a= 1;
         double ah=1.3;
         double b=0.5;
         double bh=0.6;
-        double t0=0.1*bem2d::PI;
+        double t0=0.01*bem2d::PI;
         double t1=acos(-a/ah*cos(t0));
         double alpha=bh*sin(t1)-b*sin(t0);
-        
+		bem2d::freqtype k={n*bem2d::PI/2/b,0};
+	
         bem2d::Point p0(-a*cos(t0),b*sin(t0));
         bem2d::Point p1(-a*cos(t0),alpha+b*sin(t0));
         bem2d::Point p2(-a*cos(t0),-alpha-b*sin(t0));
@@ -50,7 +51,7 @@ int main(int argc, char** argv)
         bem2d::pCurve cobj(new bem2d::Circle);
         bem2d::AnalyticCurve circle(n,cobj);
  
-        bem2d::freqtype k={20,0};
+       
         bem2d::pCurve Arc(new bem2d::EllipseArc(a,b,bem2d::PI-t0,-bem2d::PI+t0));
         bem2d::AnalyticCurve ellipseArc(10,k,Arc,0,5);
         bem2d::pCurve Arc2(new bem2d::EllipseArc(ah,bh,-t1,t1));
@@ -73,7 +74,7 @@ int main(int argc, char** argv)
             std::cout << elems[i]->First() << " " << elems[i]->Last() << " " << elems[i]->First()-elems[i-1]->Last() << std::endl;
         }
 
-        bem2d::PolBasis::AddBasis(0,pgeom);
+        bem2d::PolBasis::AddBasis(2,pgeom);
 
         bem2d::Point direction=bem2d::normalize(bem2d::Point(1,0));
         bem2d::PlaneWave pw(direction,k);
