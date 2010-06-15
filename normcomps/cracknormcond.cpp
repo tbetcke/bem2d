@@ -12,7 +12,7 @@ int main(int argc, char** argv)
   std::string filename="cracknormcond10.txt";
   
  
-  std::vector<bem2d::freqtype> freqs;
+  std::vector<double> freqs;
   freqs.push_back(5);
   freqs.push_back(10);
   freqs.push_back(20);
@@ -57,10 +57,10 @@ int main(int argc, char** argv)
 
 	for (int j=0;j<freqs.size();j++){
 
-	double k=(double)freqs[j];
-	double eta1=k; // Coupling between conj. double and single layer pot.
-	double eta2=cbrt(k*k);
-	int n=(int)((int)k*ppw/2.0/bem2d::PI);
+		bem2d::freqtype k={(double)freqs[j],0};
+	double eta1=k.re; // Coupling between conj. double and single layer pot.
+	double eta2=cbrt(k.re*k.re);
+	int n=(int)((int)k.re*ppw/2.0/bem2d::PI);
 
 	// Create the geometry
 

@@ -12,7 +12,7 @@ int main(int argc, char** argv)
   std::string filename="disknormcond10.txt";
   
  
-  std::vector<bem2d::freqtype> freqs;
+  std::vector<double> freqs;
   freqs.push_back(5);
   freqs.push_back(10);
   freqs.push_back(20);
@@ -66,11 +66,11 @@ int main(int argc, char** argv)
 
 	for (int j=0;j<freqs.size();j++){
 
-	double k=(double)freqs[j];
-	double eta1=k; // Coupling between conj. double and single layer pot.
-	double eta2=cbrt(k*k);
+		bem2d::freqtype k={(double)freqs[j],0};
+	double eta1=k.re; // Coupling between conj. double and single layer pot.
+	double eta2=cbrt(k.re*k.re);
         bem2d::pCurve cobj(new bem2d::Circle);
-	int n=(int)(cobj->Length()*k*ppw/2.0/bem2d::PI);
+	int n=(int)(cobj->Length()*k.re*ppw/2.0/bem2d::PI);
         bem2d::AnalyticCurve circle(n,cobj);
         bem2d::pGeometry pgeom=circle.GetGeometry();
 

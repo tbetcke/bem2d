@@ -13,7 +13,7 @@ int main(int argc, char** argv)
   std::string filename="rectanglenormcond10.txt";
   
  
-  std::vector<bem2d::freqtype> freqs;
+  std::vector<double> freqs;
   freqs.push_back(0.15625);
   freqs.push_back(0.3125);
   freqs.push_back(0.625);
@@ -83,9 +83,9 @@ int main(int argc, char** argv)
 
 	for (int j=0;j<freqs.size();j++){
 
-	double k=(double)freqs[j];
-	double eta1=k; // Coupling between conj. double and single layer pot.
-	double eta2=cbrt(k*k);
+		bem2d::freqtype k={(double)freqs[j],0};
+	double eta1=k.re; // Coupling between conj. double and single layer pot.
+	double eta2=cbrt(k.re*k.re);
 	bem2d::Polygon poly(rectangle,ppw,k);
         bem2d::pGeometry pgeom=poly.GetGeometry();
 
