@@ -38,10 +38,11 @@ int main(int argc, char** argv)
         double ah=1.3;
         double b=0.5;
         double bh=0.6;
-        double t0=0.01*bem2d::PI;
+        double t0=0.1*bem2d::PI;
         double t1=acos(-a/ah*cos(t0));
         double alpha=bh*sin(t1)-b*sin(t0);
-		bem2d::freqtype k={n*bem2d::PI/2/b,0};
+		//bem2d::freqtype k={n*bem2d::PI/2/b,0};
+		bem2d::freqtype k={100.309,0};
 	
         bem2d::Point p0(-a*cos(t0),b*sin(t0));
         bem2d::Point p1(-a*cos(t0),alpha+b*sin(t0));
@@ -67,14 +68,14 @@ int main(int argc, char** argv)
 		geoms.push_back(ellipseArc.GetGeometry());
         geoms.push_back(l1.GetGeometry());
         bem2d::pGeometry pgeom(new bem2d::Geometry(geoms));
-
+/*
 
         std::vector<bem2d::pElement> elems =pgeom->elements();
         for (int i=1;i<elems.size();i++){
             std::cout << elems[i]->First() << " " << elems[i]->Last() << " " << elems[i]->First()-elems[i-1]->Last() << std::endl;
         }
-
-        bem2d::PolBasis::AddBasis(2,pgeom);
+*/
+        bem2d::PolBasis::AddBasis(0,pgeom);
 
         bem2d::Point direction=bem2d::normalize(bem2d::Point(1,0));
         bem2d::PlaneWave pw(direction,k);
@@ -118,10 +119,10 @@ int main(int argc, char** argv)
 #endif
 
         int xpts=200;
-        int ypts=200;
-        bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,3,-2,2,"ellipse_cavity"));
+        int ypts=100;
+        bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-1,1,"ellipse_cavity"));
         soundsoft.SetOutput(pout);
-        soundsoft.WriteAll();
+        //soundsoft.WriteAll();
 
 
 
