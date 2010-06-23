@@ -42,7 +42,7 @@ int main(int argc, char** argv)
         double t1=acos(-a/ah*cos(t0));
         double alpha=bh*sin(t1)-b*sin(t0);
 		//bem2d::freqtype k={n*bem2d::PI/2/b,0};
-		bem2d::freqtype k={100.309,0};
+		bem2d::freqtype k={9.9771,0};
 	
         bem2d::Point p0(-a*cos(t0),b*sin(t0));
         bem2d::Point p1(-a*cos(t0),alpha+b*sin(t0));
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
         int ypts=100;
         bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-1,1,"ellipse_cavity"));
         soundsoft.SetOutput(pout);
-        //soundsoft.WriteAll();
+        soundsoft.WriteAll();
 
 
 

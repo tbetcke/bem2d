@@ -1,4 +1,4 @@
-all: disknormcond kitenormcond ellipsenormcond squarenormcond cracknormcond rectanglenormcond trappingnormcond
+all: disknormcond kitenormcond ellipsenormcond squarenormcond cracknormcond rectanglenormcond trappingnormcond ellipse_cavity_normcond arc_cavity_normcond
 
 disknormcond: disknormcond.o
 	$(CPP) $(CFLAGS) -o ../bin/normcomps/disknormcond disknormcond.cpp ../lib/bem2d.a ../amos/amos.a $(LDFLAGS)
@@ -23,6 +23,9 @@ trappingnormcond: trappingnormcond.o
 
 ellipse_cavity_normcond: ellipse_cavity_normcond.o
 	$(CPP) $(CFLAGS) -o ../bin/normcomps/ellipse_cavity_normcond ellipse_cavity_normcond.cpp ../lib/bem2d.a ../amos/amos.a $(LDFLAGS)
+
+arc_cavity_normcond: arc_cavity_normcond.o
+	$(CPP) $(CFLAGS) -o ../bin/normcomps/arc_cavity_normcond arc_cavity_normcond.cpp ../lib/bem2d.a ../amos/amos.a $(LDFLAGS)
 
 
 %.o: %.cpp

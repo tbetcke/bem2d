@@ -47,6 +47,7 @@ SCLAPACK= -lscalapack -lblacsC -lblacs -lblacsC -lmpi_f77 -lgfortran
 # Compiler and Flags
 ############################################
 CPP	= mpic++
+F77     = gfortran
 INCLUDES = -I$(GSLINC)
 CFLAGS  += $(INCLUDES)
 DEBUGFLAGS = -g -save-temps

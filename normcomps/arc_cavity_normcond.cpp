@@ -9,14 +9,14 @@ int main(int argc, char** argv)
 {
 	
 	int ppw=10;     // Point per wavelength
-	std::string filename="ellipsecavitynormcond10.txt";
+	std::string filename="arccavitynormcond10.txt";
 	
 	
 	std::vector<double> freqs;
-	freqs.push_back(9.9771201566136298);
-	freqs.push_back(28.807002784875433);
-	freqs.push_back(60.218097688523919);
-	freqs.push_back(91.632551202864647);
+	freqs.push_back(7.588342434503804);
+	freqs.push_back(46.648409498285680);
+	freqs.push_back(2.110291665105556e+02);
+	freqs.push_back(4.138135410752807e+02);
 	
 	
 	
@@ -61,44 +61,50 @@ int main(int argc, char** argv)
 	
 	for (int j=0;j<freqs.size();j++){
 		
-        int n=10;
-		double a= 1;
-        double ah=1.3;
-        double b=0.5;
-        double bh=0.6;
-        double t0=0.1*bem2d::PI;
-        double t1=acos(-a/ah*cos(t0));
-        double alpha=bh*sin(t1)-b*sin(t0);
 		//bem2d::freqtype k={n*bem2d::PI/2/b,0};
 		bem2d::freqtype k={freqs[j],0};
 		double eta1=k.re; // Coupling between conj. double and single layer pot.
 		double eta2=cbrt(k.re*k.re);
-
 		
-        bem2d::Point p0(-a*cos(t0),b*sin(t0));
-        bem2d::Point p1(-a*cos(t0),alpha+b*sin(t0));
-        bem2d::Point p2(-a*cos(t0),-alpha-b*sin(t0));
-        bem2d::Point p3(-a*cos(t0),-b*sin(t0));
-		
-        bem2d::pCurve cobj(new bem2d::Circle);
-        bem2d::AnalyticCurve circle(n,cobj);
-		
-		
-        bem2d::pCurve Arc(new bem2d::EllipseArc(a,b,bem2d::PI-t0,-bem2d::PI+t0));
-        bem2d::AnalyticCurve ellipseArc(10,k,Arc,0,0);
-        bem2d::pCurve Arc2(new bem2d::EllipseArc(ah,bh,-t1,t1));
-        bem2d::AnalyticCurve ellipseArc2(10,k,Arc2,0,0);
-        bem2d::Line l0(p1,p0,10,k,0);
-        bem2d::Line l1(p3,p2,10,k,0);
+		int L=0;
+		double l=3./4;
+		double ang=bem2d::PI/4;
+		bem2d::Point p0(cos(ang),sin(ang));
+		bem2d::Point p1(l*cos(ang),l*sin(ang));
+		bem2d::Point p2(l*cos(ang),1);
+		bem2d::Point p3(1.2,1);
+		bem2d::Point p4(1.2,-0.2);
+		bem2d::Point p5(l,-0.2);
+		bem2d::Point p6(l,0);
+		bem2d::Point p7(1,0);
 		
 		
 		
-        std::vector<bem2d::pGeometry> geoms;
-		geoms.push_back(ellipseArc2.GetGeometry());
-        geoms.push_back(l0.GetGeometry());
+		bem2d::pCurve Arc(new bem2d::EllipseArc(1,1,ang,0));
+		bem2d::AnalyticCurve ellipseArc(ppw,k,Arc,0,L);
+		bem2d::Line l0(p7,p6,ppw,k,L);
+		bem2d::Line l1(p6,p5,ppw,k,L);
+		bem2d::Line l2(p5,p4,ppw,k,L);
+		bem2d::Line l3(p4,p3,ppw,k,L);
+		bem2d::Line l4(p3,p2,ppw,k,L);
+		bem2d::Line l5(p2,p1,ppw,k,L);
+		bem2d::Line l6(p1,p0,ppw,k,L);
+		
+		
+		
+		std::vector<bem2d::pGeometry> geoms;
+		geoms.push_back(l0.GetGeometry());
+		geoms.push_back(l1.GetGeometry());
+		geoms.push_back(l2.GetGeometry());
+		geoms.push_back(l3.GetGeometry());
+		geoms.push_back(l4.GetGeometry());
+		geoms.push_back(l5.GetGeometry());
+		geoms.push_back(l6.GetGeometry());
 		geoms.push_back(ellipseArc.GetGeometry());
-        geoms.push_back(l1.GetGeometry());
-        bem2d::pGeometry pgeom(new bem2d::Geometry(geoms));
+		
+
+						  
+		bem2d::pGeometry pgeom(new bem2d::Geometry(geoms));
 		
         bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
 		
@@ -111,16 +117,16 @@ int main(int argc, char** argv)
 		
 		bem2d::QuadOption quadopts;
 		
-		quadopts.L=7;
-        quadopts.N=20;
+		quadopts.L=5;
+        quadopts.N=5;
         quadopts.sigma=0.15;
 		
 #ifdef BEM2DMPI
 		if (b->IsRoot()){
-			std::cout << "Discretize Kernels with n=" << n << std::endl;
+			std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 		}
 #else
-		std::cout << "Discretize Kernels with n=" << n << std::endl;
+		std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 #endif
 		
 		
@@ -204,6 +210,8 @@ int main(int argc, char** argv)
 #endif
 	
 }
+
+
 
 
 

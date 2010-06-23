@@ -37,7 +37,7 @@ int main(int argc, char** argv)
         double time;
         start=clock();
 
-        double a=0.31;
+	double a=bem2d::PI/10;
         double c=1;
         double l=c-a;
 
