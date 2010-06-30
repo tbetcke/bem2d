@@ -14,6 +14,9 @@ int main(int argc, char** argv)
   
  
   std::vector<double> freqs;
+
+ 
+	
   freqs.push_back(0.15625);
   freqs.push_back(0.3125);
   freqs.push_back(0.625);
@@ -32,7 +35,7 @@ int main(int argc, char** argv)
   freqs.push_back(160);
   freqs.push_back(320);
   freqs.push_back(640);
-  
+ 
 
   std::vector<double> norm_sl(freqs.size());
   std::vector<double> norm_dl(freqs.size());
