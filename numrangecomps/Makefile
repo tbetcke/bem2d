@@ -1,4 +1,4 @@
-all: disk diskhconv trapping invellipse lshape lshapehconv squarehconv square triangle squaredensity gww poly kite
+all: disk diskhconv trapping invellipse lshape lshapehconv squarehconv square triangle squaredensity gww poly kite ellipse
 
 disk: disk.o
 	$(CPP) $(CFLAGS) -o ../bin/numrangecomps/disk disk.cpp ../lib/bem2d.a ../amos/amos.a $(LDFLAGS)
@@ -39,6 +39,9 @@ kite: kite.o
 
 poly: poly.o
 	$(CPP) $(CFLAGS) -o ../bin/numrangecomps/poly poly.cpp ../lib/bem2d.a ../amos/amos.a $(LDFLAGS)
+
+ellipse: ellipse.o
+	$(CPP) $(CFLAGS) -o ../bin/numrangecomps/ellipse ellipse.cpp ../lib/bem2d.a ../amos/amos.a $(LDFLAGS)
 
 
 %.o: %.cpp

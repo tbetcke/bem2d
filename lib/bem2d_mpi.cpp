@@ -1,5 +1,5 @@
+#ifdef BEM2DMPI
 #include "bem2d_mpi.h"
-
 namespace bem2d
 {
 
@@ -36,4 +36,4 @@ int BlacsSystem::NSize(int n)
 
 
 }
-
+#endif
