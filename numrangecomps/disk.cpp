@@ -16,9 +16,9 @@ int main(int argc, char** argv)
   int computenorm=0; // Set to 1 to compute norm and condition number
  
   std::vector<double> freqs;
-  freqs.push_back(0.01);
-  freqs.push_back(1);
-  freqs.push_back(0.1);
+  //freqs.push_back(0.01);
+  //freqs.push_back(1);
+  //freqs.push_back(0.1);
   freqs.push_back(10);
   //freqs.push_back(50);
   //freqs.push_back(100);

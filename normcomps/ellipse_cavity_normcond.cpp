@@ -8,7 +8,7 @@
 int main(int argc, char** argv)
 {
 	
-	int ppw=10;     // Point per wavelength
+	int ppw=20;     // Point per wavelength
 	std::string filename="ellipsecavitynormcond10.txt";
 	
 	
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
         double ah=1.3;
         double b=0.5;
         double bh=0.6;
-        double t0=0.1*bem2d::PI;
+        double t0=0.3*bem2d::PI;
         double t1=acos(-a/ah*cos(t0));
         double alpha=bh*sin(t1)-b*sin(t0);
 		//bem2d::freqtype k={n*bem2d::PI/2/b,0};
@@ -83,13 +83,13 @@ int main(int argc, char** argv)
         bem2d::pCurve cobj(new bem2d::Circle);
         bem2d::AnalyticCurve circle(n,cobj);
 		
-		
+		int L=0;
         bem2d::pCurve Arc(new bem2d::EllipseArc(a,b,bem2d::PI-t0,-bem2d::PI+t0));
-        bem2d::AnalyticCurve ellipseArc(10,k,Arc,0,0);
+        bem2d::AnalyticCurve ellipseArc(ppw,k,Arc,0,L);
         bem2d::pCurve Arc2(new bem2d::EllipseArc(ah,bh,-t1,t1));
-        bem2d::AnalyticCurve ellipseArc2(10,k,Arc2,0,0);
-        bem2d::Line l0(p1,p0,10,k,0);
-        bem2d::Line l1(p3,p2,10,k,0);
+        bem2d::AnalyticCurve ellipseArc2(ppw,k,Arc2,0,L);
+        bem2d::Line l0(p1,p0,ppw,k,L);
+        bem2d::Line l1(p3,p2,ppw,k,L);
 		
 		
 		
@@ -111,16 +111,16 @@ int main(int argc, char** argv)
 		
 		bem2d::QuadOption quadopts;
 		
-		quadopts.L=7;
-        quadopts.N=20;
+		quadopts.L=5;
+        quadopts.N=5;
         quadopts.sigma=0.15;
 		
 #ifdef BEM2DMPI
 		if (b->IsRoot()){
-			std::cout << "Discretize Kernels with n=" << n << std::endl;
+			std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 		}
 #else
-		std::cout << "Discretize Kernels with n=" << n << std::endl;
+		std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 #endif
 		
 		

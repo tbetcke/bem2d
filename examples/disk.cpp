@@ -1,4 +1,6 @@
 #include<iostream>
+#include<fstream>
+#include<iomanip>
 #include "../lib/bem2d.h"
 #include<cmath>
 #include<ctime>
@@ -7,14 +9,28 @@
 int main(int argc, char** argv)
 {
  
-  bem2d::freqtype k={10,.01}; // Wavenumber
-        int n=(int) 100;     // Size of the linear system
+  bem2d::freqtype k={1,0};
+ 
+  std::vector<int> ppwvec;
+  ppwvec.push_back(5);
+  ppwvec.push_back(10);
+  ppwvec.push_back(50);
 
+  /*
+  ppwvec.push_back(100);
+  ppwvec.push_back(500);
+  ppwvec.push_back(1000);
+  ppwvec.push_back(1500);
+  ppwvec.push_back(2000);
+  */
 
         clock_t start, finish;
         double time;
         start=clock();
  
+	bem2d::dvector result_real;
+	bem2d::dvector result_imag;
+
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
@@ -39,11 +55,19 @@ int main(int argc, char** argv)
         }
 #endif
 
+
+	for (int j=0;j<ppwvec.size();j++){
+
+
+	int ppw=ppwvec[j];
+	double eta1=k.re; // Coupling between conj. double and single layer pot.
         bem2d::pCurve cobj(new bem2d::Circle);
+	int n=(int)(cobj->Length()*k.re*ppw/2.0/bem2d::PI);
         bem2d::AnalyticCurve circle(n,cobj);
         bem2d::pGeometry pgeom=circle.GetGeometry();
 
         bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
+
 
 
 	// Set up direction of incoming wave.
@@ -80,12 +104,38 @@ int main(int argc, char** argv)
         }
 #endif
 
+	std::vector<bem2d::Point> pts;
+	pts.push_back(bem2d::Point(-1.5,0));
+	bem2d::pcvector output=soundsoft.EvalSol(pts);
+
+	std::cout << (*output)[0] << std::endl;
+	result_real.push_back(std::real((*output)[0]));
+	result_imag.push_back(std::imag((*output)[0]));
+	 
+
+	}
+
+	std::string fr="result_real";
+        std::ofstream outr(fr.c_str());
+	std::string fi="result_imag";
+	std::ofstream outi(fi.c_str());
+
+	for (int j=0;j<result_real.size();j++){
+	  outr << std::setprecision(16) << result_real[j] << std::endl;
+	  outi << result_imag[j] << std::endl;
+	}
+
+	outr.close();
+	outi.close();
+
+
+	/*
         int xpts=100;
         int ypts=100;
         bem2d::pOutputHandler pout(new bem2d::GplotOutput(xpts,ypts,-2,2,-2,2,"disk"));
         soundsoft.SetOutput(pout);
         soundsoft.WriteAll();
-
+	*/
 
 
 

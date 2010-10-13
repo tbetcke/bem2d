@@ -38,7 +38,7 @@ int main(int argc, char** argv)
         double ah=1.3;
         double b=0.5;
         double bh=0.6;
-        double t0=0.1*bem2d::PI;
+        double t0=0.3*bem2d::PI;
         double t1=acos(-a/ah*cos(t0));
         double alpha=bh*sin(t1)-b*sin(t0);
 		//bem2d::freqtype k={n*bem2d::PI/2/b,0};

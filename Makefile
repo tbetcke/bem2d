@@ -63,6 +63,7 @@ examples: bem2d amos dirs
 dirs:
 	test -d bin || mkdir bin;
 	test -d bin/examples || mkdir bin/examples;
+	test -d bin/gmrestest || mkdir bin/gmrestest;
 
 .PHONY: resonances
 resonances: bem2d amos dirs
@@ -79,6 +80,9 @@ normcomps: bem2d amos dirs
 numrangecomps: bem2d amos dirs
 	test -d bin/numrangecomps || mkdir bin/numrangecomps
 	cd numrangecomps; make
+
+gmrestest: bem2d amos dirs
+	cd gmrestest; make
 
 
 .PHONY: commit
