@@ -15,8 +15,14 @@ int main(int argc, char** argv)
  
   std::vector<double> freqs;
 
- 
-	
+  freqs.push_back(1E-5);
+  freqs.push_back(1E-4);
+  freqs.push_back(1E-3); 
+  freqs.push_back(1E-2);
+  freqs.push_back(1E-1);
+  freqs.push_back(1);
+
+/*	
   freqs.push_back(0.15625);
   freqs.push_back(0.3125);
   freqs.push_back(0.625);
@@ -35,7 +41,7 @@ int main(int argc, char** argv)
   freqs.push_back(160);
   freqs.push_back(320);
   freqs.push_back(640);
- 
+*/
 
   std::vector<double> norm_sl(freqs.size());
   std::vector<double> norm_dl(freqs.size());
@@ -88,7 +94,15 @@ int main(int argc, char** argv)
 
 		bem2d::freqtype k={(double)freqs[j],0};
 	double eta1=k.re; // Coupling between conj. double and single layer pot.
-	double eta2=cbrt(k.re*k.re);
+	//double eta2=cbrt(k.re*k.re);
+	double R0=sqrt(4.0004);
+	double eta2;
+	if (freqs[j]<300){
+		eta2=1.0/R0/(1-log(freqs[j]*R0));
+	}
+	else {
+		eta2=freqs[j];
+	}
 	bem2d::Polygon poly(rectangle,ppw,k);
         bem2d::pGeometry pgeom=poly.GetGeometry();
 
@@ -138,9 +152,9 @@ int main(int argc, char** argv)
 	std::cout << "Compute norms and condition numbers" << std::endl;
 #endif
 	
-
-	bem2d::L2NormCond(dsl,norm_sl[j],cond_sl[j]);
-	bem2d::L2NormCond(ddl,norm_dl[j],cond_dl[j]);
+	
+	//bem2d::L2NormCond(dsl,norm_sl[j],cond_sl[j]);
+	//bem2d::L2NormCond(ddl,norm_dl[j],cond_dl[j]);
 	bem2d::L2NormCond(combined1,norm_combined1[j],cond_combined1[j]);
 	bem2d::L2NormCond(combined2,norm_combined2[j],cond_combined2[j]);
 	
@@ -154,18 +168,18 @@ int main(int argc, char** argv)
 #endif
 
 	  std::ofstream out(filename.c_str());
- 	  out << "Single Layer" << std::endl;
+ 	  //out << "Single Layer" << std::endl;
 
-	  for (int j=0;j<freqs.size();j++){
-	    out << "k=" << freqs[j] << " Norm: " << norm_sl[j] << " Norm of Inverse: " << cond_sl[j]/norm_sl[j] << " Condition Nr.: " << cond_sl[j] <<  std::endl;
-	  }
+	 // for (int j=0;j<freqs.size();j++){
+	 //   out << "k=" << freqs[j] << " Norm: " << norm_sl[j] << " Norm of Inverse: " << cond_sl[j]/norm_sl[j] << " Condition Nr.: " << cond_sl[j] <<  std::endl;
+	  //}
 
- 	  out << "Double Layer" << std::endl;
+ 	  //out << "Double Layer" << std::endl;
 	  
 
-	  for (int j=0;j<freqs.size();j++){
-	    out << "k=" << freqs[j] << " Norm: " << norm_dl[j] << " Norm of Inverse: " << cond_dl[j]/norm_dl[j] << " Condition Nr.: " << cond_dl[j] <<  std::endl;
-	  }
+	  //for (int j=0;j<freqs.size();j++){
+	  //  out << "k=" << freqs[j] << " Norm: " << norm_dl[j] << " Norm of Inverse: " << cond_dl[j]/norm_dl[j] << " Condition Nr.: " << cond_dl[j] <<  std::endl;
+	  //}
 
  	  out << "Combined Layer eta=k" << std::endl;
 

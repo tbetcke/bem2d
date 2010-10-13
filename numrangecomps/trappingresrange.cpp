@@ -6,32 +6,45 @@
 #include<fstream>
 #include<sstream>
 
-// Program to test the convergence of the numerical range as h->0
-
 int main(int argc, char** argv)
 {
 
-  std::string file="/home/tbetcke/svn/numerical_coercivity/data/diskhconv_highquad";
+  int ppw=10;     // Point per wavelength
+  std::string file="/home/tbetcke/svn/numerical_coercivity/data/trappingresrange";
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
-  bem2d::freqtype k={1,0};
+  
  
-  std::vector<int> ppwvec;
-  ppwvec.push_back(5);
-  ppwvec.push_back(10);
-  ppwvec.push_back(50);
-  ppwvec.push_back(100);
-  ppwvec.push_back(500);
-  ppwvec.push_back(1000);
-  ppwvec.push_back(1500);
-  ppwvec.push_back(2000);
-
+  std::vector<double> freqs;
+  freqs.push_back(8);
+  //freqs.push_back(10);
+  //freqs.push_back(50);
+  //freqs.push_back(100);
+  //freqs.push_back(200);
+  //freqs.push_back(500);
 
         clock_t start, finish;
         double time;
         start=clock();
  
+
+        double a=0.31;
+        double c=1;
+        double l=c-a;
+
+        std::vector<bem2d::Point> trapping;
+        trapping.push_back(bem2d::Point(0,0));
+        trapping.push_back(bem2d::Point(-c,0));
+        trapping.push_back(bem2d::Point(-c,-l));
+        trapping.push_back(bem2d::Point(l,-l));
+        trapping.push_back(bem2d::Point(l,2*c-l));
+        trapping.push_back(bem2d::Point(-c,2*c-l));
+        trapping.push_back(bem2d::Point(-c,2*a));
+        trapping.push_back(bem2d::Point(0,2*a));
+
+
+
 
 #ifdef BEM2DMPI
         MPI_Init(&argc, &argv);
@@ -56,16 +69,15 @@ int main(int argc, char** argv)
         }
 #endif
 
-	for (int j=0;j<ppwvec.size();j++){
+	for (int j=0;j<1;j++){
 
-	int ppw=ppwvec[j];
+	  bem2d::freqtype k={5.7,-0.29};
 	double eta1=k.re; // Coupling between conj. double and single layer pot.
-        bem2d::pCurve cobj(new bem2d::Circle);
-	int n=(int)(cobj->Length()*k.re*ppw/2.0/bem2d::PI);
-        bem2d::AnalyticCurve circle(n,cobj);
-        bem2d::pGeometry pgeom=circle.GetGeometry();
+	bem2d::Polygon poly(trapping,ppw,k,10,0.15);
+        bem2d::pGeometry pgeom=poly.GetGeometry();
+	bem2d::WriteDomain("/home/svn/numerical_coercivity/data/trapping_shape",pgeom,5);
 
-        bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
+        bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 
 
 	// Discretize the single and double layer potential
@@ -75,16 +87,16 @@ int main(int argc, char** argv)
 
 	bem2d::QuadOption quadopts;
 
-	quadopts.L=5;
-        quadopts.N=20;
+	quadopts.L=3;
+        quadopts.N=5;
         quadopts.sigma=0.15;
 
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Discretize Kernels with n=" << n << std::endl;
+	  std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 	}
 #else
-	std::cout << "Discretize Kernels with n=" << n << std::endl;
+	std::cout << "Discretize Kernels with n=" << pgeom->size() << std::endl;
 #endif
 
 
@@ -96,19 +108,18 @@ int main(int argc, char** argv)
 	
 	combined1=bem2d::ChangeBasis(combined1,Id);
 
-
 #ifdef BEM2DMPI
 	if (b->IsRoot()){
-	  std::cout << "Compute Eigenvalues" << std::endl;
+	  std::cout << "Compute Eigenvalues and norm" << std::endl;
 	}
 #else
-	std::cout << "Compute Eigenvalues" << std::endl;
+	std::cout << "Compute Eigenvalues and norm" << std::endl;
 #endif
 
-	double norm, cond;
+	double norm; double cond;
 	
 	bem2d::pcvector eigvals;
-	bem2d::Eigenvalues(combined1,eigvals);
+	//bem2d::Eigenvalues(combined1,eigvals);
 
 	if (computenorm){
 	bem2d::L2NormCond(combined1,norm,cond);
@@ -120,12 +131,12 @@ int main(int argc, char** argv)
 	if (b->IsRoot()){
 #endif
 
-	  std::ostringstream osnormcond;
-	  osnormcond << file << "_normcond_" << ppw; 
-	  std::string s0=osnormcond.str();
-	  std::ofstream o(s0.c_str());
-	  o << norm << std::endl << cond << std::endl;
-	  o.close();
+	  //std::ostringstream osnormcond;
+	  //osnormcond << file << "_normcond_" << k.re; 
+	  //std::string s0=osnormcond.str();
+	  //std::ofstream o(s0.c_str());
+	  //o << norm << std::endl << cond << std::endl;
+	  //o.close();
 #ifdef BEM2DMPI
 	}
 #endif
@@ -137,17 +148,17 @@ int main(int argc, char** argv)
 	if (b->IsRoot()){
 #endif
 
-	  std::ostringstream os;
-	  os << file << "_eig_" << ppw; 
-	  std::string s=os.str();
-	  std::ofstream o1(s.c_str());
-	  for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
-			     << " " << std::imag((*eigvals)[i]) << std::endl;
-	  o1.close();
+	  //std::ostringstream os;
+	  //os << file << "_eig_" << k.re; 
+	  //std::string s=os.str();
+	  //std::ofstream o1(s.c_str());
+	  //for (int i=0;i<eigvals->size();i++) o1 << std::real((*eigvals)[i])
+//			     << " " << std::imag((*eigvals)[i]) << std::endl;
+//	  o1.close();
 #ifdef BEM2DMPI
 	}
 #endif
-
+/*
 	
 
 #ifdef BEM2DMPI
@@ -160,15 +171,15 @@ int main(int argc, char** argv)
 
 
 	std::ostringstream os2;
-	os2 << file << "_range_" << ppw;
+	os2 << file << "_range_" << k.re;
 	NumRange(combined1, numrange_n, os2.str());
 
+*/
+	bem2d::WriteMatrix("trap5_7",combined1);
 	
 	}
         finish=clock();
         time=(double(finish)-double(start))/CLOCKS_PER_SEC/60;
-
-
 
 #ifdef BEM2DMPI
         bem2d::BlacsSystem::Release();

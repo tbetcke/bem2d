@@ -14,6 +14,15 @@ int main(int argc, char** argv)
  
   std::vector<double> freqs;
 
+  freqs.push_back(1E-5);
+  freqs.push_back(1E-4);
+  freqs.push_back(1E-3);
+  freqs.push_back(1E-2);
+  freqs.push_back(1E-1);
+  freqs.push_back(1);
+
+
+/*
   freqs.push_back(5);
   freqs.push_back(10);
   freqs.push_back(20);
@@ -22,7 +31,7 @@ int main(int argc, char** argv)
   freqs.push_back(160);
   freqs.push_back(320);
   freqs.push_back(640);
-
+*/
 
   std::vector<double> norm_sl(freqs.size());
   std::vector<double> norm_dl(freqs.size());
@@ -73,7 +82,9 @@ int main(int argc, char** argv)
 
 		bem2d::freqtype k={(double)freqs[j],0};
 	double eta1=k.re; // Coupling between conj. double and single layer pot.
-	double eta2=cbrt(k.re*k.re);
+	//double eta2=cbrt(k.re*k.re);
+	double R0=sqrt(2);
+	double eta2=1.0/R0/(1-log(freqs[j]*R0));
 	bem2d::Polygon poly(square,ppw,k);
         bem2d::pGeometry pgeom=poly.GetGeometry();
 
