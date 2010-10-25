@@ -16,13 +16,11 @@ int main(int argc, char** argv)
   ppwvec.push_back(10);
   ppwvec.push_back(50);
 
-  /*
   ppwvec.push_back(100);
   ppwvec.push_back(500);
   ppwvec.push_back(1000);
   ppwvec.push_back(1500);
   ppwvec.push_back(2000);
-  */
 
         clock_t start, finish;
         double time;
@@ -66,7 +64,7 @@ int main(int argc, char** argv)
         bem2d::AnalyticCurve circle(n,cobj);
         bem2d::pGeometry pgeom=circle.GetGeometry();
 
-        bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
+        bem2d::LinBasis::AddBasis(pgeom); // Add constant basis functions
 
 
 
@@ -78,7 +76,7 @@ int main(int argc, char** argv)
         bem2d::CombinedPlaneWave cpw(direction,k);
 
         bem2d::SoundSoftScattering<bem2d::PlaneWave,bem2d::CombinedPlaneWave> soundsoft(pgeom,k,pw,cpw);
-        soundsoft.SetQuadOption(7,15,0.15);
+        soundsoft.SetQuadOption(7,30,0.15);
         soundsoft.set_polygons(pgeom);
         soundsoft.set_plotInterior();
 
@@ -122,7 +120,7 @@ int main(int argc, char** argv)
 
 	for (int j=0;j<result_real.size();j++){
 	  outr << std::setprecision(16) << result_real[j] << std::endl;
-	  outi << result_imag[j] << std::endl;
+	  outi << std::setprecision(16) << result_imag[j] << std::endl;
 	}
 
 	outr.close();

@@ -40,6 +40,31 @@ private:
         int degree_;
 };
 
+class LinBasis: public Basis
+{
+public:
+        static void AddBasis(pGeometry pgeom);
+        LinBasis(int sign);
+        inline complex operator()(double t) const {
+	  //double result=gsl_sf_legendre_Pl(degree_,2*t-1);
+
+	if (sign_==-1)
+	{
+	return 1-t;
+	}
+	else
+	{
+	return t;
+	}
+        }
+private:
+        int sign_;
+};
+
+typedef boost::shared_ptr<LinBasis> pLinBasis;
+
+
+
 typedef boost::shared_ptr<PolBasis> pPolBasis;
 
 class WaveBasis: public Basis

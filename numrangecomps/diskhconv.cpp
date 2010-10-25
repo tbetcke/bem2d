@@ -1,10 +1,13 @@
 #include<iostream>
+#include<fstream>
 #include "../lib/bem2d.h"
 #include<cmath>
 #include<ctime>
 #include<vector>
 #include<fstream>
 #include<sstream>
+#include<algorithm>
+#include<iomanip>
 
 // Program to test the convergence of the numerical range as h->0
 
@@ -12,6 +15,9 @@ int main(int argc, char** argv)
 {
 
   std::string file="/home/tbetcke/svn/numerical_coercivity/data/diskhconv_highquad";
+
+  std::string eigdists="eigmax";
+  std::ofstream outdist(eigdists.c_str());
 
   int numrange_n=50; // Number of discretization points for num. range.
   int computenorm=0; // Set to 1 to compute norm and condition number
@@ -65,7 +71,7 @@ int main(int argc, char** argv)
         bem2d::AnalyticCurve circle(n,cobj);
         bem2d::pGeometry pgeom=circle.GetGeometry();
 
-        bem2d::PolBasis::AddBasis(0,pgeom); // Add constant basis functions
+        bem2d::PolBasis::AddBasis(2,pgeom); // Add constant basis functions
 
 
 	// Discretize the single and double layer potential
@@ -109,6 +115,10 @@ int main(int argc, char** argv)
 	
 	bem2d::pcvector eigvals;
 	bem2d::Eigenvalues(combined1,eigvals);
+
+	std::vector<double> dist(eigvals->size());
+	for (int j=0;j<eigvals->size();j++) dist[j]=std::abs((*eigvals)[j]); 
+	outdist << std::setprecision(16) << *(std::max_element(dist.begin(),dist.end())) << std::endl;
 
 	if (computenorm){
 	bem2d::L2NormCond(combined1,norm,cond);
@@ -158,16 +168,16 @@ int main(int argc, char** argv)
 	std::cout << "Compute Numerical Range" << std::endl;
 #endif
 
-
+/*
 	std::ostringstream os2;
 	os2 << file << "_range_" << ppw;
 	NumRange(combined1, numrange_n, os2.str());
-
+*/
 	
 	}
         finish=clock();
         time=(double(finish)-double(start))/CLOCKS_PER_SEC/60;
-
+	outdist.close();
 
 
 #ifdef BEM2DMPI

@@ -11,11 +11,21 @@ PolBasis::PolBasis(int degree): degree_(degree) {};
 
 void PolBasis::AddBasis(int degree, pGeometry pgeom)
 {
-        std::cout << "In AddBasis" << std::endl;
         for (int i=0; i<=degree; i++) {
                 pgeom->AddBasis(pBasis(new PolBasis(i)));
         }
 }
+
+LinBasis::LinBasis(int sign): sign_(sign) {};
+
+void LinBasis::AddBasis(pGeometry pgeom)
+{
+      pgeom->AddBasis(pBasis(new LinBasis(1)));
+      pgeom->AddBasis(pBasis(new LinBasis(-1)));
+        
+}
+
+
 
 WaveBasis::WaveBasis(double direction, freqtype k): direction_(direction), k_(k) {}
 
